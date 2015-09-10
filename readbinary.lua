@@ -24,5 +24,21 @@ function fromfile(fname)
    return x:float()
 end
 
+function synthetic_data(numLabs, timelength, numpeople)
+   x = torch.Tensor(numLabs,numpeople,timelength)
+   x[{{1},{},{}}] = torch.randn(1,numpeople,timelength)
+   x[{{2},{},{}}] = torch.randn(1,numpeople,timelength)*2
+   x[{{3},{},{}}] = x[{{2},{},{}}] + x[{{1},{},{}}]
+   xmissing = torch.randn(numLabs,numpeople,timelength)
+   xmissing[xmissing:lt(0.9)]=0.0
+   x = torch.cmul(x,xmissing)
+   return x
+end
+
+-- x = synthetic_data(3,109,10000)
+-- return x
+
+
 x = fromfile('../diagnosisFromLabs/data/valid/valid_lab_to_icd9_normalized.bin')
 return x
+

@@ -71,9 +71,9 @@ So the kernel regression formulation of Nadaraya and Watson reduces to the follo
 
 $$ \mathbf{E}_{x \sim P(x|t=t_{new})}[x] = \frac{(K \ast \bar X_{train}) (t_{new})}{(K \ast (\bar X_{train} \neq 0)) (t_{new})} $$
 
-The benefit of this formulation, is that we can now differentiate this ratio with respect to each $K(\tau)$ at each position $\tau$ within the kernel domain, using function composition and back-propagation, and estimate the optimal value of the kernel at each $tau$. We can also plug in the kernel regression module within any subsequent differentiable operators and perform multiple tasks such as classification, reconstruction or beyond via gradient descent and back-propagation.
+The benefit of this formulation, is that we can now differentiate this ratio with respect to each $K(\tau)$ at each position $\tau$ within the kernel domain, using function composition and back-propagation\cite{}. We can also compose this differentiable kernel regression module within any subsequent differentiable operators and perform multiple tasks such as classification, reconstruction or beyond via gradient descent and back-propagation. In practice, we assume the domain of K is bounded over $[-M M]$ range, therefore the learning task will have $2M+1$ parameters.
 
-This formulation easily extends beyond single time series. Assuming that we now have $D$ time series with 
+Our formulation easily extends beyond single time series. Assuming that we now have $D$ time series, we can assume the kernel $K$ is a matrix of size $D \timex (2M-1)$, and optimize each kernel value between series $i$ at time $r$ and series $j$ at time $s$. The formulation of the kernel regression then becomes a 2D convolution of this kernel matrix with all time series' observed points in the numerator, divided by the 2D convolution of the kernel matrix with a binary matrix encoding which series at which time point does have a nonzero observation.
 
 \section{Related Work}
 

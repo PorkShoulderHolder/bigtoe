@@ -21,7 +21,7 @@ function  init()
 	learningRate = 0.01
 	sigma2 = 10
 	basis = torch.range(-30,30)
-	normal_kernel = torch.exp(torch.div(torch.abs(basis), -1*sigma2))
+	normal_kernel = torch.exp(torch.div(torch.abs(basis), -1*sigma2)):fill(1)
 	halfkwidth = math.floor(normal_kernel:size(1)/2)
 	max_grad = 10
 	max_bias = 10
@@ -102,9 +102,6 @@ function regress()
 			local input = pad(x1[{{1},{i},{}}]:view(1,1,1,109), halfkwidth):clone()			
 			input, inputnnx, mean, std = normalize(input)
 
-			-- local outputtmp = conv_layer_top:forward(inputnnx)
-			-- print(outputtmp)
-
 			local output = big_model:forward({input, inputnnx})
 			local results = (output * std) + mean
 			local target =  x1[{{1},{i},{}}]:cuda()
@@ -114,11 +111,7 @@ function regress()
 					total_mse = total_mse + (results:squeeze()[t]-target:squeeze()[t]) * (results:squeeze()[t]-target:squeeze()[t])
 					total_mse_counter = total_mse_counter + 1
 				end
-			end			
-			-- if i == 3 then
-			-- 	gnuplot.figure(3)
-			-- 	gnuplot.plot({'points',x1[{{1},{i},{}}]:view(1,1,1,109):squeeze():float(), '+'},{'regressed',results:squeeze():float(), '-'}) --{'normalization',normaliztion, '-'},
-			-- end
+			end				
 		end
 	end
 	print('regress:')
@@ -140,18 +133,16 @@ function augment_input(input, t)
 	local newinput = input + torch.cmul(nnx, gaussian_noise_vector)
 	nnx = nnx:squeeze()
 	if augment_time == 1 then
-		--print(newinput)
 		for tix = halfkwidth+1, input:size(4)-halfkwidth do
 			if nnx[tix] == 1 and tix ~= t then
 				local jump = math.floor((torch.randn(1) * gaussian_noise_var_t):squeeze())
 				if tix+jump > 0 and tix+jump < input:size(4)+1 then
-					local tmp_input = newinput[1][1][1][tix+jump]--:squeeze()
+					local tmp_input = newinput[1][1][1][tix+jump]
 					newinput[{{1},{1},{1},{tix+jump}}] = input[{{},{},{},{tix}}]:squeeze()
 					newinput[{{1},{1},{1},{tix}}]= tmp_input
 				end
 			end			
 		end		
-		--print(newinput)
 	end
 	return newinput:clone()
 end
@@ -169,24 +160,6 @@ function train(maxEpoch)
 		shuffled_ix = torch.randperm(x1:size(2))
 		shuffled_time = torch.randperm(x1:size(3))
 		regress()		
-		--for ix = 1,x1:size(2) do
-			-- i = shuffled_ix[ix]
-			-- if x1[{{1},{i},{}}]:gt(0):sum() > 2 then
-			-- 	big_model:zeroGradParameters()					
-			-- 	local input = pad(x1[{{1},{i},{}}]:view(1,1,1,109), halfkwidth):clone()		
-			-- 	input, inputnnx, mean, std = normalize(input)
-			-- 	local target = input[{{1},{1},{1},{1+halfkwidth,109+halfkwidth}}]:clone()
-			-- 	local output = big_model:forward({input, inputnnx}); 
-			-- 	local mseloss = criterion:forward(output, target); 
-			-- 	local backward_gradients = criterion:backward(output, target); 
-			-- 	for t =1, x1:size(3) do
-			-- 		if inputnnx[1][1][1][t+halfkwidth] == 0 then
-			-- 			backward_gradients[{{1},{1},{1},{t}}]:fill(0)
-			-- 		end
-			-- 	end
-			-- 	big_model:backward({input, inputnnx}, backward_gradients)
-			-- 	big_model:updateParameters(learningRate)				
-			-- end				
 
 		for ox = 1, x1:size(3)*x1:size(2) - 1 do
 			tx = math.fmod(ox,109); if tx == 0 then; tx = 109; end;
@@ -244,5 +217,4 @@ end
 
 init()
 setup_network(4, 5000)
---regress()
- train(100)
+train(100)
