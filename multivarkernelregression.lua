@@ -70,6 +70,7 @@ function  init()
 	peopleCountForTrain = 10000
 	peopleCountForValidate = 10000	
 	batchSize = 100
+	batchSizeRegress = 1000
 
 	x = assert(loadfile('readbinary.lua'))(datafilename)
 	labcounts = x:size(1)
@@ -179,21 +180,37 @@ end
 function regress(data, model)
 	total_mse = 0
 	total_mse_counter = 0
-	for i= 1,data:size(2) do
+
+	batch_input = torch.CudaTensor(batchSizeRegress, 1, labcounts, timecounts)
+	batch_input_nnx = torch.CudaTensor(batchSizeRegress, 1, labcounts, timecounts)
+	batch_target = torch.CudaTensor(batchSizeRegress, 1, timecounts)
+	batch_mu_labix = torch.CudaTensor(batchSizeRegress,1, 1, 1)
+	batch_std_labix = torch.CudaTensor(batchSizeRegress,1, 1, 1)
+	bix = 0
+
+	for i= 1, peoplecounts do
 		if data[{{labix},{i},{}}]:gt(0):sum() > 2 then
 			local input = data[{{},{i},{}}]:clone():view(1,1,labcounts,timecounts):clone()
 			input, inputnnx, mean, std = normalize(input)			
-
-			local output = big_model:forward({input, inputnnx})			
-			local results = (output * std[labix]:squeeze()) + mean[labix]:squeeze()
 			local target = data[{{labix},{i},{}}]
+			
+			bix = bix + 1
+			batch_input[{{bix},{1},{},{}}] = input:clone()
+			batch_input_nnx[{{bix},{1},{},{}}] = inputnnx:clone()
+			batch_target[{{bix},{1},{}}] = target:clone()
+			batch_mu_labix[{{bix},{1},{1},{1}}] =  mean[labix]:squeeze()
+			batch_std_labix[{{bix},{1},{1},{1}}] =  std[labix]:squeeze()
+			
+			if (bix == batchSizeRegress) then
+				bix = 0
+				local output = model:forward({batch_input, batch_input_nnx})				
+				local results = torch.cmul(output, batch_std_labix:expand(output:size())) + batch_mu_labix:expand(output:size())				
 
-			for t =1, timecounts do
-				if inputnnx[1][1][labix][t] ~= 0 then
-					total_mse = total_mse + (results:squeeze()[t] - target:squeeze()[t]) * (results:squeeze()[t] - target:squeeze()[t])
-					total_mse_counter = total_mse_counter + 1
-				end
-			end				
+				local results_nnz = torch.cmul(results,batch_input_nnx[{{},{},{labix},{}}]:clone()):squeeze()
+				local targets_nnz = batch_target:squeeze()
+				total_mse = total_mse + torch.pow( results_nnz - targets_nnz, 2):sum()
+				total_mse_counter = total_mse_counter + batch_input_nnx:sum()
+			end
 		end
 	end
 	log_file_open:write('regress finished')
@@ -302,7 +319,8 @@ function train(maxEpoch, labix)
 		  os.execute('mv ' .. filename .. ' ' .. filename .. '.old')
 		end
 		print('Saving network to '..filename)
-		torch.save(filename, big_model)	
+		torch.save(filename, big_model)
+
 	end
 end
 
@@ -373,6 +391,7 @@ if mode == 'test' then
 	for modelix, model_lists_item in ipairs(model_lists) do	
 		print (modelix .. ' ' .. model_lists_item)	
 		load_network(labix, model_lists_item, peopleCountForValidate)
+
 		rmse_i = regress(data, big_model)
 		print(rmse_i)
 	end

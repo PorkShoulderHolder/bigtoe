@@ -66,6 +66,8 @@ function  init()
 	trainIterations = 100
 	peopleCountForTrain = 10000
 	peopleCountForValidate = 10000
+	batchSize = 100
+	batchSizeRegress = 1000
 
 	x = assert(loadfile('readbinary.lua'))(datafilename)
 	labcounts = x:size(1)
@@ -109,7 +111,6 @@ function setup_network(labix, countX)
 	dmsedf_table = {}
 	mseloss_table = {}
 	log_file_open:write('finished building model:')
-	--log_file_open:write(big_model)
 	log_file_open:write('\n')
 end
 
@@ -123,7 +124,6 @@ function load_network(labix, load_network_name, countX)
 	big_model = torch.load(load_network_name)
 	
 	log_file_open:write('finished loading model from ' .. load_network_name)
-	--log_file_open:write(dump(big_model))
 	log_file_open:write('\n')
 end
 
@@ -152,22 +152,40 @@ end
 function regress(data, model)
 	total_mse = 0
 	total_mse_counter = 0
+
+	batch_input = torch.CudaTensor(batchSizeRegress, 1, 1, timecounts)
+	batch_input_nnx = torch.CudaTensor(batchSizeRegress, 1, 1, timecounts)
+	batch_target = torch.CudaTensor(batchSizeRegress, 1, timecounts)
+	batch_mu_labix = torch.CudaTensor(batchSizeRegress,1, 1, 1)
+	batch_std_labix = torch.CudaTensor(batchSizeRegress,1, 1, 1)
+	bix = 0
+
 	for i= 1,data:size(2) do
 		if data[{{1},{i},{}}]:gt(0):sum() > 2 then
 
 			local input = data[{{1},{i},{}}]:view(1,1,1,109):clone()
 			input, inputnnx, mean, std = normalize(input)
-
-			local output = model:forward({input, inputnnx})
-			local results = (output * std) + mean
 			local target =  data[{{1},{i},{}}]:cuda()
 
-			for t =1, timecounts do
-				if inputnnx[1][1][1][t] ~= 0 then
-					total_mse = total_mse + (results:squeeze()[t]-target:squeeze()[t]) * (results:squeeze()[t]-target:squeeze()[t])
-					total_mse_counter = total_mse_counter + 1
-				end
-			end				
+			bix = bix + 1
+			batch_input[{{bix},{1},{},{}}] = input:clone()
+			batch_input_nnx[{{bix},{1},{},{}}] = inputnnx:clone()
+			batch_target[{{bix},{1},{}}] = target:clone()
+			batch_mu_labix[{{bix},{1},{1},{1}}] =  mean
+			batch_std_labix[{{bix},{1},{1},{1}}] =  std
+			
+			if (bix == batchSizeRegress) then
+				bix = 0
+				local output = model:forward({batch_input, batch_input_nnx})
+				print(output:size())				
+				local results = torch.cmul(output, batch_std_labix:expand(output:size())) + batch_mu_labix:expand(output:size())				
+				print(results:size())
+
+				local results_nnz = torch.cmul(results, batch_input_nnx):squeeze()
+				local targets_nnz = batch_target:squeeze()
+				total_mse = total_mse + torch.pow( results_nnz - targets_nnz, 2):sum()
+				total_mse_counter = total_mse_counter + batch_input_nnx:sum()
+			end
 		end
 	end
 	log_file_open:write('regress finished: ')
