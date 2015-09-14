@@ -61,7 +61,7 @@ We can now rewrite the nonparametric regression using convolution operator. Deno
 
 $$ \sum_{i=1}^n{x_{t_{i}}K(t_{i} - t_{new})} = (K \ast \bar X_{train}) (t_{new})$$
 
-The numerator $P(t_{new})$ can similarly be written as a convolution of the kernel function with a sequence of $1$s at each point at which we have a sample, denoted as $I(\bar X_{train} \neq 0)$.
+The denominator $P(t_{new})$ can similarly be written as a convolution of the kernel function with a sequence of $1$s at each point at which we have a sample, denoted as $I(\bar X_{train} \neq 0)$.
 
 $$ \sum_{i=1}^n{K(t_{new}, t_{i})} = (K \ast I(\bar X_{train} \neq 0)) (t_{new}) $$
 
