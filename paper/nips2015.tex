@@ -55,13 +55,15 @@ $$\mathbf{E}_{x \sim P(x|t=t_{new})}[x] = \int_x x P(x|t=t_{new}) dx =\int_x x \
 
 At this point, one can use kernel density estimation to estimate the probabilities $P(x , t=t_{new})$ and $P(t_{new})$ from the training data. Nadaraya\cite{} and Watson\cite{}showed that using a positive semidefinite kernel function $K(t, t')$, the nonparametric regression formulation is reduced to:
 
-$$\mathbf{E}_{x \sim P(x|t=t_{new})}[x] = \frac{\sum_{i=1}^n{x_{t_{i}}K(t_{new}, t_{i})}} {\sum_{i=1}^n{K(t_{new}, t_{i})}}$$
+\begin{equation}
+\mathbf{E}_{x \sim P(x|t=t_{new})}[x] = \frac{\sum_{i=1}^n{x_{t_{i}}K(t_{new}, t_{i})}} {\sum_{i=1}^n{K(t_{new}, t_{i})}}
+\end{equation}
 
 We can now rewrite the nonparametric regression using convolution operator. Denoting convolution operator as $\ast$, i.e. $(k \ast f)(t) = \int_\tau K(t-\tau) f(\tau) d\tau$, and having the observed nonzero samples $\bar X_{train}$ = {$x_{t_1}$,...,$x_{t_n}$}, the numerator of the kernel regression is equal to the following.
 
 $$ \sum_{i=1}^n{x_{t_{i}}K(t_{i} - t_{new})} = (K \ast \bar X_{train}) (t_{new})$$
 
-The numerator $P(t_{new})$ can similarly be written as a convolution of the kernel function with a sequence of $1$s at each point at which we have a sample, denoted as $I(\bar X_{train} \neq 0)$.
+The denominator $P(t_{new})$ can similarly be written as a convolution of the kernel function with a sequence of $1$s at each point at which we have a sample, denoted as $I(\bar X_{train} \neq 0)$.
 
 $$ \sum_{i=1}^n{K(t_{new}, t_{i})} = (K \ast I(\bar X_{train} \neq 0)) (t_{new}) $$
 
