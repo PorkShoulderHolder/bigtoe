@@ -36,17 +36,17 @@ test_flag=1
 --train uni and multikernelregression
 if (train_flag == 1) then
 	--assert(loadfile('kernelregression.lua'))('train', train_data_torch_bin_filename, labix, save_train_network_dir_univar, save_valid_network_dir_univar, save_logfile_train)
-	--assert(loadfile('multivarkernelregression.lua'))('train', train_data_torch_bin_filename, labix, save_train_network_dir_multivar, save_valid_network_dir_multivar, save_logfile_train)
+	assert(loadfile('multivarkernelregression.lua'))('train', train_data_torch_bin_filename, labix, save_train_network_dir_multivar, save_valid_network_dir_multivar, save_logfile_train)
 end
 
 if (valid_flag ==1) then
-	assert(loadfile("kernelregression.lua"))('valid', valid_data_torch_bin_filename, labix,save_train_network_dir_univar, save_valid_network_dir_univar, save_logfile_train)
-	--assert(loadfile("multivarkernelregression.lua"))('valid', valid_data_torch_bin_filename, labix, save_train_network_dir_multivar	, save_valid_network_dir_multivar, save_logfile_train)
+	--assert(loadfile("kernelregression.lua"))('valid', valid_data_torch_bin_filename, labix,save_train_network_dir_univar, save_valid_network_dir_univar, save_logfile_train)
+	assert(loadfile("multivarkernelregression.lua"))('valid', valid_data_torch_bin_filename, labix, save_train_network_dir_multivar	, save_valid_network_dir_multivar, save_logfile_train)
 end
 
 if (test_flag==1) then
 	assert(loadfile('kernelregression.lua'))('test',test_data_torch_bin_filename, labix, save_train_network_dir_univar, save_valid_network_dir_univar, save_logfile_train)
-	--assert(loadfile('multivarkernelregression.lua'))('test',test_data_torch_bin_filename, labix, save_train_network_dir_multivar	, save_valid_network_dir_multivar, save_logfile_train)
+	assert(loadfile('multivarkernelregression.lua'))('test',test_data_torch_bin_filename, labix, save_train_network_dir_multivar	, save_valid_network_dir_multivar, save_logfile_train)
 end
 
 

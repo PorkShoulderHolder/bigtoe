@@ -14,6 +14,8 @@ local opt = lapp[[
 	--save_train_network_dir (default 'networks_univar_train')
 	--save_valid_network_dir (default 'networks_univar_validbest')
 	--log_file (default 'log.txt')
+	--evaluate_separately (default 1)
+
 ]]
 augment_time = opt.augment_time
 flag_limit_gradient = opt.flag_limit_gradient
@@ -23,6 +25,7 @@ save_valid_network_dir = opt.save_valid_network_dir
 cutorch.setDevice(opt.gpuid)
 labix = opt.labix
 log_file = opt.log_file
+evaluate_separately = opt.evaluate_separately
 print(opt)
 
 local args = {...}
@@ -152,16 +155,22 @@ end
 function regress(data, model)
 	total_mse = 0
 	total_mse_counter = 0
-
+	
+	if (evaluate_separately) then
+		local w = model:get(1):get(1).weight		
+		local kernel_width =  math.floor(w:size(2)/labcounts)
+		w:view(labcounts,kernel_width)[{{labix},{math.floor((kernel_width+1)/2)}}]:fill(0)		
+	end
+	
 	batch_input = torch.CudaTensor(batchSizeRegress, 1, 1, timecounts)
 	batch_input_nnx = torch.CudaTensor(batchSizeRegress, 1, 1, timecounts)
 	batch_target = torch.CudaTensor(batchSizeRegress, 1, timecounts)
-	batch_mu_labix = torch.CudaTensor(batchSizeRegress,1, 1, 1)
-	batch_std_labix = torch.CudaTensor(batchSizeRegress,1, 1, 1)
+	batch_mu_labix = torch.CudaTensor(batchSizeRegress, 1, 1, 1)
+	batch_std_labix = torch.CudaTensor(batchSizeRegress, 1, 1, 1)
 	bix = 0
 
 	for i= 1,data:size(2) do
-		if data[{{1},{i},{}}]:gt(0):sum() > 2 then
+		if data[{{1},{i},{}}]:ne(0):sum() > 2 then
 
 			local input = data[{{1},{i},{}}]:view(1,1,1,109):clone()
 			input, inputnnx, mean, std = normalize(input)
@@ -177,9 +186,7 @@ function regress(data, model)
 			if (bix == batchSizeRegress) then
 				bix = 0
 				local output = model:forward({batch_input, batch_input_nnx})
-				print(output:size())				
 				local results = torch.cmul(output, batch_std_labix:expand(output:size())) + batch_mu_labix:expand(output:size())				
-				print(results:size())
 
 				local results_nnz = torch.cmul(results, batch_input_nnx):squeeze()
 				local targets_nnz = batch_target:squeeze()

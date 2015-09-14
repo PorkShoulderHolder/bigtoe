@@ -16,6 +16,9 @@ local opt = lapp[[
 	--save_train_network_dir (default 'networks_multivar_train')
 	--save_valid_network_dir (default 'networks_multivar_validbest')
 	--log_file (default 'log.txt')
+	--test_baseline_gp (default 1)
+	--test_baseline_kr (default 1)
+	--evaluate_separately (default 1)
 ]]
 
 augment_time = opt.augment_time
@@ -26,6 +29,9 @@ save_valid_network_dir = opt.save_valid_network_dir
 cutorch.setDevice(opt.gpuid)
 torch.setnumthreads(1)
 log_file = opt.log_file
+test_baseline_gp = opt.test_baseline_gp
+test_baseline_kr = opt.test_baseline_kr
+evaluate_separately = opt.evaluate_separately
 print(opt)
 
 local args = {...}
@@ -102,7 +108,6 @@ function setup_network(labix, countX)
 
 	print(labels_all[labix])
 	data = x[{{},{1,countX},{}}]:cuda()
-	--x1valid = x[{{},{countX+1,peoplecounts},{}}]:cuda()
 	covmatrix = covariance(x)
 	
 	cov_row = covmatrix[{{},{labix}}] / covmatrix[labix][labix]
@@ -131,7 +136,6 @@ function setup_network(labix, countX)
 	mseloss_table = {}
 
 	log_file_open:write('finished building model:')
-	--log_file_open:write(big_model)
 	log_file_open:write('\n')
 end
 
@@ -144,7 +148,6 @@ function load_network(labix, load_network_name, countX)
 	big_model = torch.load(load_network_name)
 	
 	log_file_open:write('finished loading model from ' .. load_network_name)
-	--log_file_open:write(big_model)
 	log_file_open:write('\n')
 end
 
@@ -181,6 +184,15 @@ function regress(data, model)
 	total_mse = 0
 	total_mse_counter = 0
 
+	if (evaluate_separately) then
+		-- we want to do leave=-one-out evaluation. So we make the kernel be blind to 
+		-- the current value, and only use rest of the values to impute this. 
+		-- this is achieved by zeroing out the kernel in the middle of it (for x=x')
+		local w = model:get(1):get(1).weight		
+		local kernel_width =  math.floor(w:size(2)/labcounts)
+		w:view(labcounts,kernel_width)[{{labix},{math.floor((kernel_width+1)/2)}}]:fill(0)		
+	end
+
 	batch_input = torch.CudaTensor(batchSizeRegress, 1, labcounts, timecounts)
 	batch_input_nnx = torch.CudaTensor(batchSizeRegress, 1, labcounts, timecounts)
 	batch_target = torch.CudaTensor(batchSizeRegress, 1, timecounts)
@@ -188,18 +200,18 @@ function regress(data, model)
 	batch_std_labix = torch.CudaTensor(batchSizeRegress,1, 1, 1)
 	bix = 0
 
-	for i= 1, peoplecounts do
-		if data[{{labix},{i},{}}]:gt(0):sum() > 2 then
-			local input = data[{{},{i},{}}]:clone():view(1,1,labcounts,timecounts):clone()
+	for i = 1, peoplecounts do
+		if data[{{labix},{i},{}}]:ne(0):sum() > 2 then
+			local input = data[{{},{i},{}}]:clone():view(1,1,labcounts,timecounts):clone()			
 			input, inputnnx, mean, std = normalize(input)			
 			local target = data[{{labix},{i},{}}]
-			
+
 			bix = bix + 1
 			batch_input[{{bix},{1},{},{}}] = input:clone()
 			batch_input_nnx[{{bix},{1},{},{}}] = inputnnx:clone()
 			batch_target[{{bix},{1},{}}] = target:clone()
-			batch_mu_labix[{{bix},{1},{1},{1}}] =  mean[labix]:squeeze()
-			batch_std_labix[{{bix},{1},{1},{1}}] =  std[labix]:squeeze()
+			batch_mu_labix[{{bix},{1},{1},{1}}] = mean[labix]:squeeze()
+			batch_std_labix[{{bix},{1},{1},{1}}] = std[labix]:squeeze()
 			
 			if (bix == batchSizeRegress) then
 				bix = 0
@@ -209,7 +221,7 @@ function regress(data, model)
 				local results_nnz = torch.cmul(results,batch_input_nnx[{{},{},{labix},{}}]:clone()):squeeze()
 				local targets_nnz = batch_target:squeeze()
 				total_mse = total_mse + torch.pow( results_nnz - targets_nnz, 2):sum()
-				total_mse_counter = total_mse_counter + batch_input_nnx:sum()
+				total_mse_counter = total_mse_counter + batch_input_nnx:sum()				
 			end
 		end
 	end
@@ -236,9 +248,9 @@ function augment_input(input, t)
 	local newinput = input + torch.cmul(nnx, gaussian_noise_vector)	
 
 	if augment_time == 1 then		
-		for labixx = 1, input:size(3) do
+		for labixx = 1, labcounts do
 			nnxlab = nnx[{{},{},{labixx},{}}]:ne(0):squeeze() --1x169
-			for tix = 1, input:size(4) do			
+			for tix = 1, timecounts do			
 				if nnxlab[tix] == 1 and tix ~= t then
 					local jump = math.floor((torch.randn(1) * gaussian_noise_var_t):squeeze())
 					if jump ~= 0 and tix+jump > 1 and tix+jump < input:size(4) then
