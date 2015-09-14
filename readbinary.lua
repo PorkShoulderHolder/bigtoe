@@ -1,5 +1,9 @@
 require 'torch'
 
+local arg = {...}
+datafilename = arg[1]
+print('loading '..datafilename)
+
 function fromfile(fname)
    local file = io.open(fname .. '.type')
    local type = file:read('*all')
@@ -35,10 +39,6 @@ function synthetic_data(numLabs, timelength, numpeople)
    return x
 end
 
--- x = synthetic_data(3,109,10000)
--- return x
-
-
-x = fromfile('../diagnosisFromLabs/data/valid/valid_lab_to_icd9_normalized.bin')
+x = fromfile(datafilename)
 return x
 
