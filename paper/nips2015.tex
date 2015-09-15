@@ -2,6 +2,7 @@
 \usepackage{nips15submit_e,times}
 \usepackage{hyperref}
 \usepackage{url}
+\usepackage{graphicx}
 %\documentstyle[nips14submit_09,times,art10]{article} % For LaTeX 2.09
 \title{Differentiable Kernel Regression using Convolutional Neural Networks}
 
@@ -59,34 +60,44 @@ At this point, one can use kernel density estimation to estimate the probabiliti
 \mathbf{E}_{x \sim P(x|t=t_{new})}[x] = \frac{\sum_{i=1}^n{x_{t_{i}}K(t_{new}, t_{i})}} {\sum_{i=1}^n{K(t_{new}, t_{i})}}
 \end{equation}
 
-We can now rewrite the nonparametric regression using convolution operator. Denoting convolution operator as $\ast$, i.e. $(k \ast f)(t) = \int_\tau K(t-\tau) f(\tau) d\tau$, and having the observed nonzero samples $\bar X_{train}$ = {$x_{t_1}$,...,$x_{t_n}$}, the numerator of the kernel regression is equal to the following.
+We can now rewrite the nonparametric regression using convolution operator. To be able to use functional notation, we first write the sequence of observed samples {$x_{t_1}$,...,$x_{t_n}$} as a function: $\bar X_{train}(t)$ = $\sum_{i=1}^{n} x_{t_i}\delta(t,{t_i})$, where $\delta(t,\tau_0) = 1$ when $t=\tau_0$, and 0 otherwise. 
+
+Denoting convolution operator as $\ast$, i.e. $(k \ast f)(t) = \int_\tau K(t-\tau) f(\tau) d\tau$, the numerator of the kernel regression is equal to the following.
 
 $$ \sum_{i=1}^n{x_{t_{i}}K(t_{i} - t_{new})} = (K \ast \bar X_{train}) (t_{new})$$
 
-The denominator $P(t_{new})$ can similarly be written as a convolution of the kernel function with a sequence of $1$s at each point at which we have a sample, denoted as $I(\bar X_{train} \neq 0)$.
+The denominator $P(t_{new})$ can similarly be written as a convolution of the kernel function with a sequence of $1$s at each point at which we have a sample, denoted as $I(\bar X_{train}:observed)(t) = \sum_{i=1}^{n}\delta(t,{t_i})$.
 
-$$ \sum_{i=1}^n{K(t_{new}, t_{i})} = (K \ast I(\bar X_{train} \neq 0)) (t_{new}) $$
+$$ \sum_{i=1}^n{K(t_{new}, t_{i})} = (K \ast I(\bar X_{train}:observed)) (t_{new}) $$
 
 So the kernel regression formulation of Nadaraya and Watson reduces to the following formulation.
 
-$$ \mathbf{E}_{x \sim P(x|t=t_{new})}[x] = \frac{(K \ast \bar X_{train}) (t_{new})}{(K \ast I(\bar X_{train} \neq 0)) (t_{new})} $$
+$$ \mathbf{E}_{x \sim P(x|t=t_{new})}[x] = \frac{(K \ast \bar X_{train}) (t_{new})}{(K \ast I(\bar X_{train} :observed)) (t_{new})} $$
 
-The benefit of this formulation, is that we can now differentiate this ratio with respect to each $K(\tau)$ at each position $\tau$ within the kernel domain, using function composition and back-propagation\cite{}. We can also compose this differentiable kernel regression module within any subsequent differentiable operators and perform multiple tasks such as classification, reconstruction or beyond via gradient descent and back-propagation. In this paper, we used leave-one-out imputation mean squared error as the loss function. In practice, we assume the domain of K is bounded over $[-M M]$ range, therefore the learning task will have $2M+1$ parameters.
+We summarize this formulation in figure \ref{fig:formulation}. The benefit of this formulation, is that we can now differentiate this ratio with respect to each $K(\tau)$ at each position $\tau$ within the kernel domain, using function composition and back-propagation\cite{}. We can also compose this differentiable kernel regression module within any subsequent differentiable operators and perform multiple tasks such as classification, reconstruction or beyond via gradient descent and back-propagation. In this paper, we used leave-one-out imputation mean squared error as the loss function. In practice, we assume the domain of K is bounded over $[-M, M]$ range, therefore the learning task will have $2M+1$ parameters.
 
-Our formulation easily extends beyond single time series. Assuming that we now have $D$ time series, we can assume the kernel $K$ is a matrix of size $D \times (2M+1)$, and optimize each kernel value between series $i$ at time $r$ and series $j$ at time $s$. The formulation of the kernel regression then becomes a 2D convolution of this kernel matrix with all time series' observed points in the numerator, divided by the 2D convolution of the kernel matrix with a binary matrix encoding which series at which time point does have a nonzero observation.
+Our formulation easily extends beyond single time series. Assuming that we now have $D$ time series, we can assume the kernel $K$ is a matrix of size $D \times (2M+1)$, and optimize each kernel value between series $i$ at time $r$ and series $j$ at time $s$. The formulation of the kernel regression then becomes a 2D convolution of this kernel matrix with all time series' observed points in the numerator, divided by the 2D convolution of the kernel matrix with a binary matrix encoding which series at which time point does have a nonzero observation. To our knowledge, this is the first formulation which allows modeling of any possible interactions between different time series and input variables.
 
 Figure \ref{fig:arch} shows the architecture of the entire model for the kernel regression.
 
 \begin{figure}[h]
 \begin{center}
-\fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+\includegraphics[width=\textwidth]{img/formulation-crop.pdf}
+\end{center}
+\caption{Visualization of an example data series and kernel regression as convolution.}\label{fig:formulation}
+\end{figure}
+
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=\textwidth]{img/kernel_regression_images-crop.pdf}
 \end{center}
 \caption{Architecture for kernel regression.}\label{fig:arch}
 \end{figure}
 
 
 \section{Related Work}
-traditional kernel methods, GP, univariate and multivariate.
+traditional kernel methods, GP, univariat2e and multivariate.
 (For GP)
 http://www.cs.toronto.edu/~rgrosse/icml2013-gp.pdf
 code: https://github.com/jamesrobertlloyd/gp-structure-search
@@ -107,13 +118,6 @@ In order to successfully train the model with finite training data, we augmented
 \subsection{Technical Details of the implementation}
 In order for the back-propagation to remain stable, we limited the derivative of the ratio such that if the magnitude of denominator was smaller than an epsilon, we did not back-propagate its derivative. We also filtered the gradients within range of [-10 +10], as higher values would potentially cause numerical instability. The effect of the limit was that the convergence would be slower, but more stable.
 
-% \begin{figure}[h]
-% \begin{center}
-% %\framebox[4.0in]{$\;$}
-% \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-% \end{center}
-% \caption{Sample figure caption.}
-% \end{figure}
 
 % \begin{table}[t]
 % \caption{Sample table title}
