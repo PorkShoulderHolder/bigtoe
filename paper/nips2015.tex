@@ -42,7 +42,7 @@ In particular, we focus on irregularly measured temporal time series, and show h
 
 This paper is motivated by medical domain, where measurements of different biomarkers in our bodies are often performed asynchronously and measurements are often sparse in time. Models which impute the unobserved values between measurements can help discover abnormal temporal patterns and diagnose unknown diseases before late stage symptoms develop. We evaluate our method on a public temporal dataset (physionet challenge) and use the 
 
-\section{Univatiate kernel regression: Learning the Kernel}
+\section{Univariate kernel regression: Learning the Kernel}
 Imagine the input to be samples from D time series, each sampled irregularly. An example context would be different types of lab measurements for a patient at different time points across their life. We denote the samples as ${x^1_{t^1_1}}$, ${x^1_{t^1_2}}$, ..., ${x^1_{t^1_{n_1}}}$, ...,${x^D_{t^D_1}}$, ${x^D_{t^D_2}}$, ..., ${x^D_{t^D_{n_D}}}$, where $x^d$ refers to time series $d$ and $t^d_1$,... $t^d_{n_d}$ refer to the time points over which time series $d$ is sampled. 
 
 Kernel regression provides a general formalism for estimating any function with additive noise. Let's start from a single time series, $x(t)$. Kernel regression assumes the following.
@@ -93,50 +93,53 @@ Figure \ref{fig:arch} shows the architecture of this model.
 
 \section{Multivariate kernel regression: Learning the Temporal Kernel and Dependency structure}
 
-Let's assume that we have $D$ time series now, where time series are sampled assynchronously. Traditional multivatiate kernel methods can not handle this case, because the kernels are defined over observations of all variables at each time point. Additionally, most traditional kernel methods assume the kernel to be the product of independent kernels on each dimension therefore missing the correlation structure between variables.
+Let's assume that we have $D$ time series now, where time series are sampled asynchronously. Traditional multivariate kernel methods can not handle this case, because the kernels are defined over observations of all variables at each time point. Additionally, most traditional kernel methods assume the kernel to be the product of independent kernels on each dimension therefore missing the correlation structure between variables.
 
 We provide two extensions of our univariate formulation of kernel regression here. 
 
-\subsection{Shallow Model: Linear Multivatiate Kernel}
+\subsection{Shallow Model: Linear Multivariate Kernel}
 In our first extension, we can extend the kernel $K$ to a matrix of size $D \times (2M+1)$, and optimize each kernel value between series $i$ at time $r$ and series $j$ at time $s$. The formulation of the kernel regression then becomes a 2D convolution of this kernel matrix with all time series' observed points in the numerator, normalized by the 2D convolution of the kernel matrix with a binary matrix encoding which series at which time point does have a nonzero observation. 
 % 
 $$ \mathbf{E}_{x^d \sim P(x^d|t=t_{new})}[x^d] = \frac{(K \ast \bar X^{1..d}_{train})(t_{new})}{(K \ast I(\bar X^{1..d}_{train} :observed)) (t_{new})} $$
 % 
-This formulation allows every variable at time t to be a linear function of all other variables between $t-M$ and $t+M$. An example shown in the experiments section includes a lab value that is a ratio of two other lab values by definition. If we hadn't known this in advance and applied multivariate kernel regression, based on this formualtion, the lab value is approximated with the difference of the two observations instead of the ratio. In practice, however, for many settings this model is sufficient and has strong empirical performance as we will show in experiments section.
+This formulation allows every variable at time t to be a linear function of all other variables between $t-M$ and $t+M$. An example shown in the experiments section includes a lab value that is a ratio of two other lab values by definition. If we hadn't known this in advance and applied multivariate kernel regression, based on this formulation, the lab value is approximated with the difference of the two observations instead of the ratio. In practice, however, for many settings this model is sufficient and has strong empirical performance as we will show in experiments section.
 
 Figure \ref{fig:deepkr} on the left shows the model for one output variable. When learning models for multiple time series, each variable would learn a separate kernel over the full set of time series.
 
-\subsection{Deep Model: Nonlinear Multivatiate Kernel}
+\subsection{Deep Model: Nonlinear Multivariate Kernel}
 
 In out next extension, we define the imputation function to be a general function of univariate kernel regressions.
 $$ x^d(t_{new})=f(\frac{k^1 \ast x^1}{k^1 \ast I^1}(t_{new}), \frac{k^2 \ast x^2}{k^2 \ast I^2}(t_{new})\dots ,\frac{k^D \ast x^D}{k^D \ast I^D})(t_{new}))$$
 % 
-This formulation allows us to share the univariate kernels $k^1$,.. $k^D$ between different outputs, and lowers the number of paramameters from $D \times D \times (2M+1)$ to $D \times (2M+1)$ + $D \times P$ where $P$ is the number of parameters encoding the nonlinear multivatiate interactions function $f$. 
+This formulation allows us to share the univariate kernels $k^1$,.. $k^D$ between different outputs, and lowers the number of parameters from $D \times D \times (2M+1)$ to $D \times (2M+1)$ + $D \times P$ where $P$ is the number of parameters encoding the nonlinear multivariate interactions function $f$. 
 
 Figure \ref{fig:deepkr} on the right is an architecture for this model. This model allows us to handle the case where variables are measured anytime between $t-M$ to $t+M$. However, when 
-a variable is never observed in that period, univariate kernel regression is not defined. As we describe, the construction of $f$ should allow inference despite at the occurance of missing values. 
+a variable is never observed in that period, univariate kernel regression is not defined. As we describe, the construction of $f$ should allow inference despite at the occurrence of missing values. 
 
 \begin{figure}[h]
 \begin{center}
 \includegraphics[width=13cm]{img/deeparch-crop.pdf}
 \end{center}
-\caption{Multivariate kernel regression networks. The architecture on the left is the shallow linear kernel regression. The grey node in that network is a mini-network which takes the input and observation mask, convolves it with the kernel, and returns the division of the two values. The architecture in the middle shows how multiple variables with arbitrary dependencies can be approximated in two stages. The architecture on the right is the unraveled version of middle architecture, in which each time series calculates a univariate estimate from the observations, and a feedforward network with D nodes at the first and last layers applies nonparametric multivatiate inference. Minimizing the mean squared error of each output node $D$ at time $t$ will concurrently train multivatiate nonparametric inference network and the univariate kernels for each time series.}\label{fig:deepkr}
+\caption{Multivariate kernel regression networks. The architecture on the left is the shallow linear kernel regression. The gray node in that network is a mini-network which takes the input and observation mask, convolves it with the kernel, and returns the division of the two values. The architecture in the middle shows how multiple variables with arbitrary dependencies can be approximated in two stages. The architecture on the right is the unraveled version of middle architecture, in which each time series calculates a univariate estimate from the observations, and a feed-forward network with D nodes at the first and last layers applies nonparametric multivariate inference. Minimizing the mean squared error of each output node $D$ at time $t$ will concurrently train multivariate nonparametric inference network and the univariate kernels for each time series.}\label{fig:deepkr}
 \end{figure}
 
-We desire the combination funciton $f$ to return the MAP estimate of variable $d$ at time $t_{new}$, given the neighboring observations. If we model each univariate kernel regression as a MAP estimate on the univariate observations using nonparametric density estimation, what we want is the MAP inference over a probabilistic graphical model over the input variables. In this graphical model, node potentials are defined by the univariate kernel density estimator, and depenency structure and forms of the 2-nd(or higher) degree potentials are unknown. 
+We desire the combination function $f$ to return the MAP estimate of variable $d$ at time $t_{new}$, given the neighboring observations. If we model each univariate kernel regression as a MAP estimate on the univariate observations using nonparametric density estimation, what we want is the MAP inference over a probabilistic graphical model over the input variables. In this graphical model, node potentials are defined by the univariate kernel density estimator, and dependency structure and forms of the 2-nd(or higher) degree potentials are unknown. 
 Many successful nonparametric multivariate density estimators for continuous variables already exist, including RNADE\cite{}, DARN\cite{}, MADE\cite{}, Deep Directed Generative Autoencodes\cite{}, Reconstruction Contractive Autoencoder(RCAE)\cite{}http://arxiv.org/pdf/1211.4246v5.pdf and related models \cite{}\cite{}\cite{}.
 
-We are only interested in the models with very fast training and inference and high accuracy. \cite{} has shown that denoising autoencoder with Gaussian noise and squared error loss function, with the penalty term on the norm of the reconstruction with respect to the input can be a nonparametric density estimator for continuous multivariate models. 
+We are only interested in the models with very fast training and inference, and high accuracy, and do not necessarily  \cite{} has shown that denoising autoencoder with Gaussian noise and squared error loss function, with the penalty term on the norm of the reconstruction with respect to the input can be a nonparametric density estimator for continuous multivariate models. 
+In our model, we use the denoising autoencoder with feedforward network as the encoder and decoder components. We optimized the squared error loss, plus a regularization term equal to the $L-2$norm of the gradient of the reconstructed output with respect to the input. During the training we added Gaussian noise to the output of the 
 
-In our model, we use this nonparametric density estimator on top of the univariate kernel estimations to learn a multivariate nonparametric model for our asynchronous timeseries. 
+\section{Temporal Convolutional Models on Sparse Time Series}
+Having 
+
+
 
 \section{Related Work}
-traditional kernel methods, GP, univariat2e and multivariate.
+traditional kernel methods, GP, univariate and multivariate.
 (For GP)
 http://www.cs.toronto.edu/~rgrosse/icml2013-gp.pdf
 code: https://github.com/jamesrobertlloyd/gp-structure-search
 
-\section{Convoutional Neural Netowrks on Graphs with Unknown Structure}
 
 \section{Experiments and Results}
 \subsection{Data}
@@ -144,7 +147,7 @@ We normalize each series to be zero mean, unit variance (each measurement per pe
 Training data is 5K, and validation set is another 5K. There are 100 lab measurements over 109 months. 
 
 \subsection{Synthetic Data}
-Sampling multiple codependent Gaussian processe (I know how to do it)
+Sampling multiple codependent Gaussian processes (I know how to do it)
 How about other forms of dependencies??
 
 \subsection{Data Augmentation for Training}
@@ -152,7 +155,6 @@ In order to successfully train the model with finite training data, we augmented
 
 \subsection{Technical Details of the implementation}
 In order for the back-propagation to remain stable, we limited the derivative of the ratio such that if the magnitude of denominator was smaller than an epsilon, we did not back-propagate its derivative. We also filtered the gradients within range of [-10 +10], as higher values would potentially cause numerical instability. The effect of the limit was that the convergence would be slower, but more stable.
-
 
 % \begin{table}[t]
 % \caption{Sample table title}
@@ -167,7 +169,6 @@ In order for the back-propagation to remain stable, we limited the derivative of
 % \end{tabular}
 % \end{center}
 % \end{table}
-
 
 \section{References}
 
