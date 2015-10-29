@@ -88,7 +88,7 @@ Figure \ref{fig:arch} shows the architecture of this model.
 \begin{center}
 \includegraphics[width=10cm]{img/univar-crop.pdf}
 \end{center}
-\caption{redo- too big - Architecture for kernel regression.}\label{fig:arch}
+\caption{Architecture for end-to-end differentiable univariate kernel regression.}\label{fig:arch}
 \end{figure}
 
 \section{Multivariate kernel regression: Learning the Temporal Kernel and Dependency structure}
@@ -116,19 +116,19 @@ This formulation allows us to share the univariate kernels $k^1$,.. $k^D$ betwee
 Figure \ref{fig:deepkr} on the right is an architecture for this model. This model allows us to handle the case where variables are measured anytime between $t-M$ to $t+M$. However, when 
 a variable is never observed in that period, univariate kernel regression is not defined. As we describe, the construction of $f$ should allow inference despite at the occurance of missing values. 
 
-We desire the combination funciton $f$ to return the MAP estimate of variable $d$ at time $t_{new}$, given the neighboring observations. If we model each univariate kernel regression as a MAP estimate on the univariate observations using nonparametric density estimation, what we want is the MAP inference over a probabilistic graphical model over the input variables. In this graphical model, node potentials are defined by the univariate kernel density estimator, and depenency structure and forms of the 2-nd(or higher) degree potentials are unknown. 
-Many successful nonparametric multivariate density estimators for continuous variables already exist, including RNADE\cite{}, DARN\cite{}, MADE\cite{}, Deep Directed Generative Autoencodes\cite{} and related models \cite{}\cite{}\cite{}
-
-We are only interested in the models with very fast training and inference and high accuracy . Autoregressive models, while acura
-
-In our model, we do 
-
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=15cm]{img/deeparch-crop.pdf}
+\includegraphics[width=13cm]{img/deeparch-crop.pdf}
 \end{center}
 \caption{Multivariate kernel regression networks. The architecture on the left is the shallow linear kernel regression. The grey node in that network is a mini-network which takes the input and observation mask, convolves it with the kernel, and returns the division of the two values. The architecture in the middle shows how multiple variables with arbitrary dependencies can be approximated in two stages. The architecture on the right is the unraveled version of middle architecture, in which each time series calculates a univariate estimate from the observations, and a feedforward network with D nodes at the first and last layers applies nonparametric multivatiate inference. Minimizing the mean squared error of each output node $D$ at time $t$ will concurrently train multivatiate nonparametric inference network and the univariate kernels for each time series.}\label{fig:deepkr}
 \end{figure}
+
+We desire the combination funciton $f$ to return the MAP estimate of variable $d$ at time $t_{new}$, given the neighboring observations. If we model each univariate kernel regression as a MAP estimate on the univariate observations using nonparametric density estimation, what we want is the MAP inference over a probabilistic graphical model over the input variables. In this graphical model, node potentials are defined by the univariate kernel density estimator, and depenency structure and forms of the 2-nd(or higher) degree potentials are unknown. 
+Many successful nonparametric multivariate density estimators for continuous variables already exist, including RNADE\cite{}, DARN\cite{}, MADE\cite{}, Deep Directed Generative Autoencodes\cite{}, Reconstruction Contractive Autoencoder(RCAE)\cite{}http://arxiv.org/pdf/1211.4246v5.pdf and related models \cite{}\cite{}\cite{}.
+
+We are only interested in the models with very fast training and inference and high accuracy. \cite{} has shown that denoising autoencoder with Gaussian noise and squared error loss function, with the penalty term on the norm of the reconstruction with respect to the input can be a nonparametric density estimator for continuous multivariate models. 
+
+In our model, we use this nonparametric density estimator on top of the univariate kernel estimations to learn a multivariate nonparametric model for our asynchronous timeseries. 
 
 \section{Related Work}
 traditional kernel methods, GP, univariat2e and multivariate.
