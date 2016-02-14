@@ -287,6 +287,7 @@ function train(maxEpoch, labix)
 				local input = data[{{},{i},{}}]:clone():view(1,1,labcounts,timecounts):cuda()
 				local target = input[1][1][labix][t]
 				input[{{1},{1},{labix},{t}}]:fill(0)
+				
 				input = augment_input(input,t)
 
 				input, inputnnx, mean, std = normalize(input)

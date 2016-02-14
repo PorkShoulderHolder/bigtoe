@@ -3,6 +3,10 @@ require 'nn'
 require 'torch'
 require 'cutorch'
 require 'gnuplot'
+require 'pl'
+require 'sys'
+require 'kernelutil'
+
 torch.setdefaulttensortype('torch.FloatTensor')
 torch.manualSeed(2)
 local opt = lapp[[
@@ -15,7 +19,6 @@ local opt = lapp[[
 	--save_valid_network_dir (default 'networks_univar_validbest')
 	--log_file (default 'log.txt')
 	--evaluate_separately (default 1)
-
 ]]
 augment_time = opt.augment_time
 flag_limit_gradient = opt.flag_limit_gradient
@@ -26,16 +29,20 @@ cutorch.setDevice(opt.gpuid)
 labix = opt.labix
 log_file = opt.log_file
 evaluate_separately = opt.evaluate_separately
-print(opt)
+
+for k, v in pairs(opt) do print(k,v) end
 
 local args = {...}
 mode = args[1]
 datafilename = args[2]
-labix = args[3]
-save_train_network_dir = args[4]
-save_valid_network_dir = args[5]
-log_file = args[6]
-print(args)
+--labix = args[3]
+--save_train_network_dir = args[4]
+--save_valid_network_dir = args[5]
+--log_file = args[6]
+
+
+for k, v in pairs(args) do print(k,v) end
+print(table.getn(args))
 
 function dump(o)
    if type(o) == 'table' then
@@ -56,13 +63,18 @@ function  init()
 	log_file_open:write(dump(args))
 	log_file_open:write('\n-------- start ------\n')
 
-	learningRate = 0.01
+	learningRate = 0.03
 	sigma2 = 10
-	basis = torch.range(-30,30)
+	range = 30
+	basis = torch.range(-1 * range, range)
+
 	normal_kernel = torch.exp(torch.div(torch.abs(basis), -1*sigma2)):fill(1)
+	kernel_matrix_init = torch.mm(torch.Tensor(3,1),normal_kernel:view(1,normal_kernel:size(1))):fill(1)
+
 	halfkwidth = math.floor(normal_kernel:size(1)/2)
-	max_grad = 10
-	max_bias = 10
+	max_grad = 0.001
+	max_bias = 0.0001
+	geo_range = 10
 	gaussian_noise_var_x = 0.05
 	gaussian_noise_var_t = 1
 	learningRateDecay = 0.01
@@ -72,43 +84,89 @@ function  init()
 	batchSize = 100
 	batchSizeRegress = 1000
 
-	x = assert(loadfile('readbinary.lua'))(datafilename)
+	x = assert(loadfile('readjson.lua'))(datafilename)
 	labcounts = x:size(1)
-	timecounts = x:size(3)
-	peoplecounts = x:size(2)
 	
 	labels_all = {}
-	labelsFile  = io.open('../../../../baseline5mil/config/loinc_file.top1000.withLabels')
-	local line = labelsFile:read("*l")
-	while (line ~= nil) do
-	   table.insert(labels_all,line)
-	   line = labelsFile:read("*l")
-	end
-	labelsFile:close()
+--	labelsFile  = io.open('../../../../baseline5mil/config/loinc_file.top1000.withLabels')
+--	local line = labelsFile:read("*l")
+--	while (line ~= nil) do
+--	   table.insert(labels_all,line)
+--	   line = labelsFile:read("*l")
+--	end
+--	labelsFile:close()
 end
 
 function setup_network(labix, countX)
-	log_file_open:write(labels_all[labix])
-	log_file_open:write('\n')
+	--log_file_open:write(labels_all[labix])
+	--log_file_open:write('\n')
 	
-	print(labels_all[labix])
-	data = x[{{labix},{1,countX},{}}]:cuda()
+	--print(labels_all[labix])
+	data = x:cuda()
 	--x1valid = x[{{labix},{countX+1,peoplecounts},{}}]:cuda()
 	big_model = nn.Sequential()
 
-	conv_ratio = nn.ParallelTable()
-	conv_layer_top = nn.SpatialConvolutionMM(1,1,halfkwidth*2+1,1,1,1,halfkwidth,0)
-	conv_layer_top.weight = normal_kernel:viewAs(conv_layer_top.weight)
+	geo_model = nn.Sequential()
+	act_model = nn.Sequential()
+
+	clust_count = 120
+	act_types = 6
+
+	map_weights = nn.Linear(clust_count , 1) --(2 * range) + 1)
+	act_weights = nn.Linear(act_types , 1)
+	
+
+
+	geo_model:add(map_weights)
+	geo_model:add(nn.View(1,1,1,2*range + 1))
+
+	act_model:add(act_weights)
+	act_model:add(nn.View(1,1,1,2*range + 1))
+
+	--map_avg = nn.SpatialAveragePooling(geo_range - 1, )
+
+	temporal_ratio = nn.ParallelTable()
+	conv_layer_top = nn.SpatialConvolutionMM(1,1,halfkwidth*2+1,3,1,1,halfkwidth,0)
+	conv_layer_top.weight = kernel_matrix_init:viewAs(conv_layer_top.weight)
 	conv_layer_top.bias = torch.Tensor({0}):viewAs(conv_layer_top.bias)
 	conv_layer_clone_bott = conv_layer_top:clone('weight','bias')	
-	conv_ratio:add(conv_layer_top)
-	conv_ratio:add(conv_layer_clone_bott)
 
-	big_model:add(conv_ratio)
+	temporal_ratio:add(conv_layer_top)
+	temporal_ratio:add(conv_layer_clone_bott)
+
+	consolidation_table = nn.ParallelTable()
+	
+
+	values_model = nn.Sequential()
+	values_parallel = nn.ParallelTable()
+	
+	impulse_model = nn.Sequential()
+	impulse_parallel = nn.ParallelTable()
+
+	values_parallel:add(nn.Identity()) -- for bg values (must pass w/ correct view)
+	impulse_parallel:add(nn.Identity()) -- for bg impulses (must pass w/ correct view)
+
+	values_parallel:add(geo_model) -- for geo kern
+	impulse_parallel:add(nn.Identity()) -- for geo impulses (must pass w/ correct view)
+	
+	values_parallel:add(act_model) -- for act kern
+	impulse_parallel:add(nn.Identity()) -- for act impulses (must pass w/ correct view)
+	
+	values_model:add(values_parallel)
+	values_model:add(nn.JoinTable(2))
+
+	impulse_model:add(impulse_parallel)
+	impulse_model:add(nn:JoinTable(2))
+
+	consolidation_table:add(values_model)
+	consolidation_table:add(impulse_model)
+
+	big_model:add(consolidation_table)
+	big_model:add(temporal_ratio)
 	big_model:add(nn.CDivTable())
 
+	print(big_model)
 	big_model = big_model:cuda()
-	conv_layer_clone_bott:share(conv_layer_top,'weight','bias')
 
 	criterion = nn.MSECriterion():cuda()
 	dmsedf_table = {}
@@ -149,7 +207,7 @@ function normalize_target(target, mean, std)
 	if std > 0 then
 		target = target/std
 	end
-	return torch.CudaTensor({target})
+	return target
 end
 
 function regress(data, model)
@@ -159,7 +217,7 @@ function regress(data, model)
 	if (evaluate_separately) then
 		local w = model:get(1):get(1).weight		
 		local kernel_width =  math.floor(w:size(2)/labcounts)
-		w:view(labcounts,kernel_width)[{{labix},{math.floor((kernel_width+1)/2)}}]:fill(0)		
+		w:view(labcounts,kernel_width)[{{labcounts},{math.floor((kernel_width+1)/2)}}]:fill(0)		
 	end
 	
 	batch_input = torch.CudaTensor(batchSizeRegress, 1, 1, timecounts)
@@ -204,24 +262,23 @@ function regress(data, model)
 end
 
 function limit_value(inputx, max_value)
-	if inputx > max_value then
-		inputx = max_value
-	elseif inputx < -1*max_value then
-		inputx = -1*max_value
-	end
+	local pos_mask = inputx:gt(max_value)
+	local neg_mask = inputx:lt(-1*max_value)
+	inputx[pos_mask] = max_value
+	inputx[neg_mask] = -1*max_value
 	return inputx
 end
 
 function augment_input(input, t)
-	local nnx = input:ne(0)
+	local nnx = input:ne(0):cuda()
 	local gaussian_noise_vector = (torch.randn(input:size()):cuda() * gaussian_noise_var_x)
-	local newinput = input + torch.cmul(nnx, gaussian_noise_vector)
+	local newinput = input:cuda() + (torch.cmul(nnx, gaussian_noise_vector))
 	nnx = nnx:squeeze()
 	if augment_time == 1 then
-		for tix = 1, timecounts do
+		for tix = 1, nnx:size(1) do
 			if nnx[tix] == 1 and tix ~= t then
 				local jump = math.floor((torch.randn(1) * gaussian_noise_var_t):squeeze())
-				if jump ~= 0 and tix+jump > 0 and tix+jump < (timecounts + 1) then
+				if jump ~= 0 and tix+jump > 0 and tix+jump < (nnx:size(1) + 1) then
 					local tmp_input = newinput[1][1][1][tix+jump]
 					newinput[{{1},{1},{1},{tix+jump}}] = input[{{},{},{},{tix}}]:squeeze()
 					newinput[{{1},{1},{1},{tix}}]= tmp_input
@@ -229,70 +286,108 @@ function augment_input(input, t)
 			end			
 		end		
 	end
+	--local rand = torch.rand(s)
 	return newinput:clone()
 end
 
 function train(maxEpoch)
 	big_model:training()
+	gnuplot.figure(1)
+
 	for epoch = 1,maxEpoch do		
 		collectgarbage()
 		total_mse = 0
 		total_mse_counter = 0
-		gnuplot.figure(1)
-		gnuplot.plot({'top_convnet',conv_layer_top.weight:float():squeeze(), '-'},{'bottom_convnet',conv_layer_clone_bott.weight:float():squeeze(), '-'})
+		print("kern_size" .. conv_layer_top.weight:float():squeeze():size(1))
+		--gnuplot.plot({'top_convnet',conv_layer_top.weight:float():squeeze(), '-'},{'bottom_convnet',conv_layer_clone_bott.weight:float():squeeze(), '-'})
 		print('bias');print(conv_layer_top.bias);print(conv_layer_clone_bott.bias)
 		print ('epoch'..epoch)
-		shuffled_ix = torch.randperm(data:size(2))
-		shuffled_time = torch.randperm(data:size(3))
+		shuffled_ix = torch.randperm(data:size(1))
+		--shuffled_time = torch.randperm(data:size(3))
 		--regress(data,big_model)		
+		--print(data)
 
-		for ox = 1, data:size(3)*data:size(2) - 1 do
+		for stort = 1, data:size(1) do
+			ox = stort 
 			tx = math.fmod(ox,109); if tx == 0 then; tx = 109; end;
 			ix = math.floor(ox/109) + 1
-			t = shuffled_time[tx]			
-			i = shuffled_ix[ix]			
-			if data[1][i][t] ~= 0 and data[{{1},{i},{}}]:gt(0):sum() > 2 then
+			i = shuffled_ix[ox]			
+			if i + range > data:size(1) or i - range < 1 then
+				goto skip
+			end
+			if data[i] ~= 0 and data[{{i - range, i + range}}]:gt(0):sum() > range / 2 then
 				--create mini-batch
-
-				big_model:zeroGradParameters()	
-
-				local input = data[{{1},{i},{}}]:view(1,1,1,109):clone()	
-				local target = input[1][1][1][t]
-				input[{{1},{1},{1},{t}}]:fill(0)
-				input = augment_input(input,t)
-
-				input, inputnnx, mean, std = normalize(input)
-				target = normalize_target(target, mean, std)					
-				if (std > 10) then
-					print(ix .. ' ' ..tx .. 'std'.. std.. 'mean'..mean)
+				if(stort % 200 == 0) then
+					big_model:updateParameters(current_learning_rate)
+					big_model:zeroGradParameters()	
+					gnuplot.plot({'top_convnet',conv_layer_top.weight:float():squeeze(), '-'},{'bottom_convnet',conv_layer_clone_bott.weight:float():squeeze(), '-'})		
 				end
-								
-				local output = big_model:forward({input, inputnnx})
-				local mseloss = criterion:forward(output[{{1},{1},{1},{t}}], target)
-				local msegd = criterion:backward(output[{{1},{1},{1},{t}}], target):squeeze()
+
+				local bg_data = data[{{i - range, i + range}, 1}]:clone()
+				local bg_input = bg_data:view(1,1,1,2*range + 1):clone()	
+				
+				local loc_data = build_hist(data[{{i - range, i + range}, 2}], clust_count):clone()
+				local loc_input = loc_data:view(1,1, clust_count, 2*range + 1):clone()
+
+				local act_data = build_hist(data[{{i - range, i + range}, 3}], act_types):clone()
+				local act_input = act_data:view(1,1, act_types, 2*range + 1):clone()
+				
+				local bg_target = bg_input:clone()
+
+				-- mask value
+				bg_input[{{1},{1},{1},{range}}]:fill(0)
+				
+				-- perturb inputs				
+				bg_input = augment_input(bg_input,range)
+				loc_input = augment_input(loc_input,range)
+				act_input = augment_input(act_input,range)
+
+
+				bg_input, bg_inputnnx, bg_mean, bg_std = normalize(bg_input)
+				loc_input, loc_inputnnx, loc_mean, loc_std = normalize(loc_input)
+				act_input, act_inputnnx, act_mean, act_std = normalize(act_input)
+				target = normalize_target(bg_target, bg_mean, bg_std)
+
+
+
+				-- if (std > 10) then
+				-- 	print(ix .. ' ' ..tx .. ' std'.. std.. ' mean'..mean)
+				-- end
+			
+
+				local output = big_model:forward({{bg_input, loc_data:cuda(), act_data:cuda()}, 
+												 {bg_inputnnx, loc_data:ne(0), act_data:ne(0)}})
+
+				local mseloss = criterion:forward(output, target)
+
+				local msegd = criterion:backward(output, target):squeeze()
 				if flag_limit_gradient == 1 then
 					msegd = limit_value(msegd, max_grad)					
 				end
-				backward_gradients = output:clone():zero()
-				backward_gradients[{{1},{1},{1},{t}}]:fill(msegd)
+
 				
+				backward_gradients = output:clone():zero()
+				backward_gradients[{{1},{1},{1}}] = msegd
+
 				big_model:backward({input, inputnnx}, backward_gradients)
 				current_learning_rate = learningRate / (1 + epoch * learningRateDecay)
-				big_model:updateParameters(current_learning_rate)
 				if flag_control_bias == 1 then
-					local tmp = limit_value(conv_layer_top.bias:squeeze(), max_bias)
-					conv_layer_top.bias = torch.CudaTensor({tmp}):viewAs(conv_layer_top.bias)
+					
+					local tmp = limit_value(conv_layer_top.bias, max_bias)
+
+					conv_layer_top.bias = tmp
 					conv_layer_clone_bott:share(conv_layer_top,'bias')
 				end
-				-- gnuplot.figure(1)
-				-- gnuplot.plot({'top_convnet',conv_layer_top.weight:float():squeeze(), '-'},{'bottom_convnet',conv_layer_clone_bott.weight:float():squeeze(), '-'})		
+				--gnuplot.figure(1)
 				total_mse = mseloss + total_mse
 				total_mse_counter = 1 + total_mse_counter
-			end		
+			end	
+			::skip::	
 		end
-		print(total_mse/total_mse_counter)
-		log_file_open:write('training epoch mse' .. epoch)
-		log_file_open:write(math.sqrt(total_mse/total_mse_counter))
+
+		print('mse' .. total_mse/total_mse_counter)
+		log_file_open:write('training epoch mse' .. epoch .. ':')
+		log_file_open:write(total_mse/total_mse_counter)
 		log_file_open:write('\n')
 	
 		local filename = paths.concat(save_train_network_dir ..'/lab'.. labix ..'_epoch'..epoch ..'.net')
