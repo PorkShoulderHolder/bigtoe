@@ -1,0 +1,2574 @@
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.822352216971
+training epoch mse20.75412268734065
+training epoch mse30.82306313629772
+training epoch mse40.66230613194504
+training epoch mse50.63517495041169
+training epoch mse60.62240186644453
+training epoch mse71.13308382917
+training epoch mse81.0004427491035
+training epoch mse90.60323546436921
+training epoch mse101.0141075807792
+training epoch mse110.75777993960419
+training epoch mse120.87483575972181
+training epoch mse132.2490147754783
+training epoch mse140.66311313339962
+training epoch mse150.66390930208588
+training epoch mse160.4583477731123
+training epoch mse170.42922147883178
+training epoch mse180.58535693867007
+training epoch mse190.7464920147546
+training epoch mse200.6855881912891
+training epoch mse210.92566645608642
+training epoch mse221.0880053180434
+training epoch mse230.8662561475326
+training epoch mse240.48069020537946
+training epoch mse250.51947284040596
+training epoch mse260.54417085334094
+training epoch mse272.1700597052129
+training epoch mse282.1113434437505
+training epoch mse290.70738792179078
+training epoch mse300.61634929631197
+training epoch mse310.42698806219359
+training epoch mse320.99486880641254
+training epoch mse330.69098087492683
+training epoch mse340.66047095334029
+training epoch mse350.90882767002525
+training epoch mse360.76929277457118
+training epoch mse370.56917414719545
+training epoch mse380.76394264387101
+training epoch mse390.62295569797586
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.0446335602262
+training epoch mse20.63768868388862
+training epoch mse30.81686462087968
+training epoch mse40.7194896565447
+training epoch mse50.68764518171644
+training epoch mse61.1478118986891
+training epoch mse71.2963297654881
+training epoch mse80.99046307559208
+training epoch mse90.93323168888574
+training epoch mse100.79997376797218
+training epoch mse110.96465002046569
+training epoch mse120.92361702856434
+training epoch mse130.98849570949668
+training epoch mse141.7320782683248
+training epoch mse151.488985817644
+training epoch mse161.4547193496565
+training epoch mse171.4827819592044
+training epoch mse181.555059124852
+training epoch mse191.5892447770757
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.0446335602262
+training epoch mse20.63768868388862
+training epoch mse30.81686462087968
+training epoch mse40.7194896565447
+training epoch mse50.68764518171644
+training epoch mse61.1478118986891
+training epoch mse71.2963297654881
+training epoch mse80.99046307559208
+training epoch mse90.93323168888574
+training epoch mse100.79997376797218
+training epoch mse110.96465002046569
+training epoch mse120.92361702856434
+training epoch mse130.98849570949668
+training epoch mse141.7320782683248
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.0097855225222
+training epoch mse20.96776308683307
+training epoch mse31.0969655399021
+training epoch mse40.99445862919924
+training epoch mse51.0305413635845
+training epoch mse61.1880316273989
+training epoch mse71.2116888516281
+training epoch mse81.1108968487657
+training epoch mse91.0070464933984
+training epoch mse100.92831016324555
+training epoch mse111.0357685285515
+training epoch mse126.7868488109225
+training epoch mse130.94607206373862
+training epoch mse141.0925276120105
+training epoch mse151.2659608695674
+training epoch mse160.98221373608899
+training epoch mse170.98195852188204
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.6556942403196
+training epoch mse20.84098992172077
+training epoch mse30.78428728131358
+training epoch mse40.80526136865996
+training epoch mse50.89229324366118
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse10.91648574004767
+training epoch mse20.91195011578416
+training epoch mse30.89827359130531
+training epoch mse41.1239269074621
+training epoch mse50.87668034300725
+training epoch mse60.87268538012357
+training epoch mse70.859507477666
+training epoch mse80.90794394514132
+training epoch mse91.0443452914258
+training epoch mse100.87063838294541
+training epoch mse110.86229314323383
+training epoch mse120.97602157494035
+training epoch mse130.9134328663788
+training epoch mse140.84351032783407
+training epoch mse150.89445508782183
+training epoch mse160.86640644445815
+training epoch mse171.0919252025949
+training epoch mse180.93009208061084
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.1356345612447
+training epoch mse21.2602848440743
+training epoch mse31.1883136189211
+training epoch mse41.4074611761246
+training epoch mse51.0941264828951
+training epoch mse61.0761590255594
+training epoch mse71.0688739070157
+training epoch mse81.1274844372142
+training epoch mse91.2211365896103
+training epoch mse101.0748961745353
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.0452636216519
+training epoch mse21.1681108977125
+training epoch mse31.1187010344151
+training epoch mse41.3535920649672
+training epoch mse51.0344583916726
+training epoch mse61.710880326702
+training epoch mse71.0015985619984
+training epoch mse81.0777992380066
+training epoch mse91.1563225839509
+training epoch mse101.0191987875578
+training epoch mse110.97089537516497
+training epoch mse121.2855862851873
+training epoch mse131.0568989617231
+training epoch mse141.1533222568765
+training epoch mse151.0887336647634
+training epoch mse161.044068035467
+training epoch mse171.3934286029765
+training epoch mse181.0849976295738
+training epoch mse197.1582956063299
+training epoch mse201.3693761186782
+training epoch mse211.065437550246
+training epoch mse221.0332301842198
+training epoch mse231.312073870561
+training epoch mse240.96707128093224
+training epoch mse250.93762173693386
+training epoch mse261.0746859613148
+training epoch mse270.98470021750839
+training epoch mse280.9829554392503
+training epoch mse292.5039766942566
+training epoch mse301.1122722031786
+training epoch mse310.99112765092731
+training epoch mse321.2842477978694
+training epoch mse331.300651824167
+training epoch mse341.4602032739446
+training epoch mse351.0243017992399
+training epoch mse360.98850949113297
+training epoch mse371.883841148213
+training epoch mse381.0620514214988
+training epoch mse391.1387089040136
+training epoch mse404.4374232470818
+training epoch mse411.3419789552834
+training epoch mse421.1804198692455
+training epoch mse431.1871618417802
+training epoch mse441.1330767880195
+training epoch mse451.3001931489844
+training epoch mse461.154322495201
+training epoch mse471.0346538479867
+training epoch mse481.1765955277317
+training epoch mse491.0205013819621
+training epoch mse505.0616012285982
+training epoch mse511.9445025668377
+training epoch mse522.1276760509812
+training epoch mse531.4265812400718
+training epoch mse541.7331380405995
+training epoch mse551.623351611841
+training epoch mse561.4386270101636
+training epoch mse571.3608153444279
+training epoch mse581.5907119950443
+training epoch mse5910.953732284798
+training epoch mse603.6702703314532
+training epoch mse611.2694296744594
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.2116847046811
+training epoch mse21.2721703557085
+training epoch mse31.2658514758131
+training epoch mse41.4174766260443
+training epoch mse51.1958642247306
+training epoch mse61.1798037151337
+training epoch mse71.1721974991721
+training epoch mse81.2078669214966
+training epoch mse91.454258403105
+training epoch mse101.4020689642682
+training epoch mse111.3718812798316
+training epoch mse121.5459469595809
+training epoch mse131.4198322384586
+training epoch mse141.382860975641
+training epoch mse151.4428202355353
+training epoch mse161.3986702998346
+training epoch mse171.5653942285663
+training epoch mse181.4571734875038
+training epoch mse191.4326127733952
+training epoch mse202.6401647046325
+training epoch mse211.4377844346382
+training epoch mse221.3941097991587
+training epoch mse231.5369377741886
+training epoch mse241.3723247607356
+training epoch mse251.3526255342514
+training epoch mse261.4254436952184
+training epoch mse271.3655939735941
+training epoch mse281.3747672978464
+training epoch mse291.4200714637541
+training epoch mse301.4619173230328
+training epoch mse311.3873190013027
+training epoch mse321.4966736234935
+training epoch mse331.9302174966937
+training epoch mse341.4489145929212
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.1689872588783
+training epoch mse21.3072589203164
+training epoch mse31.3191609532498
+training epoch mse41.6556316372044
+training epoch mse51.1988160295468
+training epoch mse61.1545824997079
+training epoch mse71.1492924313036
+training epoch mse81.1868157186979
+training epoch mse91.2833487649636
+training epoch mse101.1631479236798
+training epoch mse111.1277206000497
+training epoch mse121.3298941753516
+training epoch mse131.178460430339
+training epoch mse141.1415835370297
+training epoch mse151.216725566013
+training epoch mse161.1570884379168
+training epoch mse171.3488409987926
+training epoch mse181.2318212642321
+training epoch mse191.2024111752197
+training epoch mse202.5256656379001
+training epoch mse211.2083978285571
+training epoch mse221.1643315462143
+training epoch mse231.3306695868235
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.4647902620077
+training epoch mse21.8021396066099
+training epoch mse31.4193455682132
+training epoch mse41.4830788301175
+training epoch mse5nan
+training epoch mse6nan
+training epoch mse7nan
+training epoch mse8nan
+training epoch mse9nan
+training epoch mse10nan
+training epoch mse11nan
+training epoch mse12nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.4647902620077
+training epoch mse21.8021396066099
+training epoch mse31.4193455682132
+training epoch mse41.4830788301175
+training epoch mse5nan
+training epoch mse6nan
+training epoch mse7nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.4647902620077
+training epoch mse21.8021396066099
+training epoch mse31.4193455682132
+training epoch mse41.4830788301175
+training epoch mse5nan
+training epoch mse6nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.4647902620077
+training epoch mse21.8021396066099
+training epoch mse31.4193455682132
+training epoch mse41.4830788301175
+training epoch mse5nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.4575767970946
+training epoch mse21.7844388695988
+training epoch mse31.3844130908586
+training epoch mse41.4372786342807
+training epoch mse51.3130089613854
+training epoch mse61.6268749574098
+training epoch mse71.4063753378789
+training epoch mse81.662719958634
+training epoch mse91.6802775298679
+training epoch mse101.6714527297668
+training epoch mse111.6789680228719
+training epoch mse123.7973878512152
+training epoch mse132.0545270024557
+training epoch mse141.9895359276111
+training epoch mse152.0437702203235
+training epoch mse162.2002434079175
+training epoch mse171.9725778468761
+training epoch mse182.1857651381771
+training epoch mse192.308067865849
+training epoch mse202.0596668078239
+training epoch mse212.0286178309798
+training epoch mse222.0034332101636
+training epoch mse231.9144489184645
+training epoch mse243.8771422679318
+training epoch mse252.2236900656341
+training epoch mse262.1943771875016
+training epoch mse272.0566571683926
+training epoch mse283.2698538789892
+training epoch mse292.3492932753878
+training epoch mse301.8830878993606
+training epoch mse312.1310783247411
+training epoch mse321.9247301030893
+training epoch mse332.0111032742978
+training epoch mse342.1028349405322
+training epoch mse351.9219122458768
+training epoch mse361.9943536781117
+training epoch mse372.0653569282435
+training epoch mse382.0207039222699
+training epoch mse391.9852367198087
+training epoch mse402.189722898607
+training epoch mse411.850660105298
+training epoch mse422.0897415790896
+training epoch mse431.9202411878846
+training epoch mse441.9867280615408
+training epoch mse451.9491976662118
+training epoch mse462.0694670120552
+training epoch mse471.9207050902817
+training epoch mse481.9615195279297
+training epoch mse491.8222868061046
+training epoch mse502.0265085872333
+training epoch mse512.1786014595737
+training epoch mse522.0708374562603
+training epoch mse532.1943630035551
+training epoch mse542.0233220628807
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.4575767970946
+training epoch mse21.7844388695988
+training epoch mse31.3844130908586
+training epoch mse41.4372786342807
+training epoch mse51.3130089613854
+training epoch mse61.6268749574098
+training epoch mse71.4063753378789
+training epoch mse81.662719958634
+training epoch mse91.6802775298679
+training epoch mse101.6714527297668
+training epoch mse111.6789680228719
+training epoch mse123.7973878512152
+training epoch mse132.0545270024557
+training epoch mse141.9895359276111
+training epoch mse152.0437702203235
+training epoch mse162.2002434079175
+training epoch mse171.9725778468761
+training epoch mse182.1857651381771
+training epoch mse192.308067865849
+training epoch mse202.0596668078239
+training epoch mse212.0286178309798
+training epoch mse222.0034332101636
+training epoch mse231.9144489184645
+training epoch mse243.8771422679318
+training epoch mse252.2236900656341
+training epoch mse262.1943771875016
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.4575767970946
+training epoch mse21.7844388695988
+training epoch mse31.3844130908586
+training epoch mse41.4372786342807
+training epoch mse51.3130089613854
+training epoch mse61.6268749574098
+training epoch mse71.4063753378789
+training epoch mse81.662719958634
+training epoch mse91.6802775298679
+training epoch mse101.6714527297668
+training epoch mse111.6789680228719
+training epoch mse123.7973878512152
+training epoch mse132.0545270024557
+training epoch mse141.9895359276111
+training epoch mse152.0437702203235
+training epoch mse162.2002434079175
+training epoch mse171.9725778468761
+training epoch mse182.1857651381771
+training epoch mse192.308067865849
+training epoch mse202.0596668078239
+training epoch mse212.0286178309798
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.4575767970946
+training epoch mse21.7844388695988
+training epoch mse31.3844130908586
+training epoch mse41.4372786342807
+training epoch mse51.3130089613854
+training epoch mse61.6268749574098
+training epoch mse71.4063753378789
+training epoch mse81.662719958634
+training epoch mse91.6802775298679
+training epoch mse101.6714527297668
+training epoch mse111.6789680228719
+training epoch mse129.9785433607777
+training epoch mse131.5308255425737
+training epoch mse141.5239167775511
+training epoch mse151.5758929613172
+training epoch mse161.8161419999461
+training epoch mse171.5278178640015
+training epoch mse181.7574190777142
+training epoch mse191.9356297235384
+training epoch mse201.6558712774248
+training epoch mse211.5824455409159
+training epoch mse221.5428259381551
+training epoch mse231.4130128902578
+training epoch mse243.6603200242614
+training epoch mse251.839762649905
+training epoch mse261.8256994024124
+training epoch mse271.6053167370692
+training epoch mse283.004112877514
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.4626314735239
+training epoch mse21.7967366423094
+training epoch mse31.4078614794314
+training epoch mse41.4681317666623
+training epoch mse51.3252959709994
+training epoch mse61.6456791301795
+training epoch mse71.4416238609478
+training epoch mse81.6959639615437
+training epoch mse91.7179179446099
+training epoch mse101.7121347179872
+training epoch mse111.7489555919204
+training epoch mse123.4517069496105
+training epoch mse131.4839432424215
+training epoch mse141.4629413458301
+training epoch mse151.520846626302
+training epoch mse161.7619933067651
+training epoch mse171.4528902716202
+training epoch mse181.6922606736435
+training epoch mse191.865747688981
+training epoch mse201.5594272720799
+training epoch mse211.5080692455098
+training epoch mse221.4519148859544
+training epoch mse231.3199656817385
+training epoch mse243.6200841683327
+training epoch mse251.7639205127853
+training epoch mse261.7440174745277
+training epoch mse271.5174767138578
+training epoch mse282.9531643166415
+training epoch mse291.9208227910361
+training epoch mse301.2961414320103
+training epoch mse311.6425517918952
+training epoch mse3212.246314236691
+training epoch mse3313.252063659253
+training epoch mse342.296007181842
+training epoch mse352.4589506292816
+training epoch mse362.3124537639185
+training epoch mse3713.667399841525
+training epoch mse381.63395026449
+training epoch mse391.6247027672005
+training epoch mse408.6673779823966
+training epoch mse412.176456018279
+training epoch mse421.7545120975329
+training epoch mse431.5311928632051
+training epoch mse442.0456397781295
+training epoch mse451.5907125920171
+training epoch mse462.0676759616584
+training epoch mse4716.543886029307
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.4645682915612
+training epoch mse21.801578383833
+training epoch mse31.4181404846948
+training epoch mse41.4814967176069
+training epoch mse51.3443289390601
+training epoch mse61.6649305037319
+training epoch mse71.467924159161
+training epoch mse81.7206617979935
+training epoch mse91.7452882763748
+training epoch mse101.7432113752562
+training epoch mse111.7883943938251
+training epoch mse123.4725627929894
+training epoch mse131.5300806124312
+training epoch mse141.5132144810562
+training epoch mse151.5713711068237
+training epoch mse161.8064951563401
+training epoch mse171.5138067408596
+training epoch mse181.7453327432676
+training epoch mse191.9230724579802
+training epoch mse201.6245629720117
+training epoch mse211.5762212810623
+training epoch mse221.535266816279
+training epoch mse231.4091506359771
+training epoch mse243.6572347872887
+training epoch mse251.831141520531
+training epoch mse261.8148355143857
+training epoch mse271.5986397660701
+training epoch mse283.0039054679516
+training epoch mse291.9859235782008
+training epoch mse301.4017230704574
+training epoch mse311.7358530105849
+training epoch mse321.4525590285551
+training epoch mse331.5632845712848
+training epoch mse341.7098423733709
+training epoch mse351.4703633551123
+training epoch mse361.5864613595994
+training epoch mse371.6489572515627
+training epoch mse381.5921114290336
+training epoch mse391.5691618351885
+training epoch mse401.7779120018051
+training epoch mse411.3686227950002
+training epoch mse421.6977559522227
+training epoch mse431.4626688543337
+training epoch mse441.5445223238488
+training epoch mse451.5079524656939
+training epoch mse461.6518156250981
+training epoch mse471.4844954834082
+training epoch mse481.5349238274306
+training epoch mse491.335507457005
+training epoch mse501.6159747880426
+training epoch mse511.7985569195903
+training epoch mse521.6524514013603
+training epoch mse531.8092839262413
+training epoch mse541.612945695635
+training epoch mse551.4933595338846
+training epoch mse561.4520610905285
+training epoch mse571.6887327314839
+training epoch mse581.639986128301
+training epoch mse591.7856736808382
+training epoch mse601.8244843755737
+training epoch mse611.5376899221381
+training epoch mse621.8659638112417
+training epoch mse631.6083835020437
+training epoch mse641.5194589518857
+training epoch mse651.4063455678155
+training epoch mse661.5902786773977
+training epoch mse671.659685957742
+training epoch mse681.5257274386595
+training epoch mse692.1306448348948
+training epoch mse701.5352593718636
+training epoch mse711.2764166400428
+training epoch mse721.5694999149155
+training epoch mse731.666350958472
+training epoch mse741.7722588016647
+training epoch mse751.5676391496823
+training epoch mse761.5872137259786
+training epoch mse771.4534784424424
+training epoch mse781.6274932096132
+training epoch mse791.4919118779209
+training epoch mse801.5931173945703
+training epoch mse811.8212982560338
+training epoch mse821.7431881147622
+training epoch mse831.5208271024426
+training epoch mse841.3915011662951
+training epoch mse851.5833042749428
+training epoch mse861.9004906231504
+training epoch mse871.3770781256279
+training epoch mse881.533563293312
+training epoch mse891.5448268540362
+training epoch mse901.2660113375563
+training epoch mse911.3059503878736
+training epoch mse921.5629582047889
+training epoch mse931.462316774411
+training epoch mse941.7508840048167
+training epoch mse951.2568681287866
+training epoch mse961.5002304355269
+training epoch mse971.6090170136515
+training epoch mse981.9175612606027
+training epoch mse991.6400635123251
+training epoch mse1001.8005643743717
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse12.0334629667931
+training epoch mse22.0954524809873
+training epoch mse32.4558867562528
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse12.0334629667931
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse12.0334629667931
+training epoch mse22.0954524809873
+training epoch mse32.4558867562528
+training epoch mse41.932161494642
+training epoch mse52.049711232383
+training epoch mse61.7891184655249
+training epoch mse71.6375417565694
+training epoch mse82.0113195177868
+training epoch mse91.698987278353
+training epoch mse102.0076790949055
+training epoch mse111.7419972186169
+training epoch mse121.9551716665164
+training epoch mse131.9965991311224
+training epoch mse141.8424165602966
+training epoch mse151.9053719724066
+training epoch mse161.9213332396251
+training epoch mse171.9537513389748
+training epoch mse181.7775405273054
+training epoch mse191.6499672757809
+training epoch mse201.9430905632477
+training epoch mse212.0921799506883
+training epoch mse221.6824842745188
+training epoch mse232.0546660659835
+training epoch mse242.2594489738065
+training epoch mse251.8910928656734
+training epoch mse261.9853015438245
+training epoch mse271.9666982832784
+training epoch mse281.9761617448367
+training epoch mse292.0612162232543
+training epoch mse301.720296344654
+training epoch mse311.9268148848154
+training epoch mse321.7021928093189
+training epoch mse331.7211321880678
+training epoch mse342.0122666698406
+training epoch mse352.2072995865563
+training epoch mse361.9888612538387
+training epoch mse372.0068154267055
+training epoch mse381.7696300221949
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.7604402567575
+training epoch mse21.7632736941333
+training epoch mse31.8649010912879
+training epoch mse41.6762324889221
+training epoch mse51.8250468606888
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.8627069535289
+training epoch mse25.696529124011
+training epoch mse32.5799152311004
+training epoch mse44.2317371651848
+training epoch mse542.237573844217
+training epoch mse61.6256910489876
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse12.0334629667931
+training epoch mse22.0954524809873
+training epoch mse32.4558867562528
+training epoch mse41.932161494642
+training epoch mse52.049711232383
+training epoch mse61.7891184655249
+training epoch mse71.6375417565694
+training epoch mse82.0113195177868
+training epoch mse91.698987278353
+training epoch mse102.0076790949055
+training epoch mse111.7419972186169
+training epoch mse121.9551716665164
+training epoch mse131.9965991311224
+training epoch mse141.8424165602966
+training epoch mse151.9053719724066
+training epoch mse161.9213332396251
+training epoch mse171.9537513389748
+training epoch mse181.7775405273054
+training epoch mse191.6499672757809
+training epoch mse201.9430905632477
+training epoch mse212.0921799506883
+training epoch mse221.6824842745188
+training epoch mse232.0546660659835
+training epoch mse242.2594489738065
+training epoch mse251.8910928656734
+training epoch mse261.9853015438245
+training epoch mse271.9666982832784
+training epoch mse281.9761617448367
+training epoch mse292.0612162232543
+training epoch mse301.720296344654
+training epoch mse311.9268148848154
+training epoch mse321.7021928093189
+training epoch mse331.7211321880678
+training epoch mse342.0122666698406
+training epoch mse352.2072995865563
+training epoch mse361.9888612538387
+training epoch mse372.0068154267055
+training epoch mse381.7696300221949
+training epoch mse392.054577699432
+training epoch mse401.8525389662552
+training epoch mse411.6924158088855
+training epoch mse422.2818244088336
+training epoch mse431.9306524646204
+training epoch mse441.8715403664706
+training epoch mse451.6647897955142
+training epoch mse461.6442304530749
+training epoch mse471.8917179771631
+training epoch mse481.9211028554218
+training epoch mse491.7753458911812
+training epoch mse501.6935478577185
+training epoch mse512.4681164886544
+training epoch mse521.7956737176524
+training epoch mse531.7856753123111
+training epoch mse541.8811631436673
+training epoch mse552.1400813492217
+training epoch mse561.9120751541929
+training epoch mse571.8178856044242
+training epoch mse581.8663881869537
+training epoch mse591.5901829509896
+training epoch mse601.8637509152778
+training epoch mse611.5808861079795
+training epoch mse622.5018018773055
+training epoch mse632.0934974378952
+training epoch mse641.7587746746522
+training epoch mse651.8859074069249
+training epoch mse661.819127523921
+training epoch mse671.7191155965389
+training epoch mse681.7834833437985
+training epoch mse691.880589776102
+training epoch mse702.044433118711
+training epoch mse712.1906087927952
+training epoch mse721.6349414545676
+training epoch mse731.799644128629
+training epoch mse741.746220384237
+training epoch mse751.8980705436985
+training epoch mse761.7516813934728
+training epoch mse771.7035041644072
+training epoch mse782.1964357632456
+training epoch mse791.6937037387415
+training epoch mse801.5250129002733
+training epoch mse812.0404651048236
+training epoch mse821.9976729923401
+training epoch mse832.0316739380801
+training epoch mse841.776968540901
+training epoch mse851.8497671582776
+training epoch mse861.8497100823908
+training epoch mse871.9237741586709
+training epoch mse881.6192262338221
+training epoch mse891.8631525480634
+training epoch mse901.8318045575906
+training epoch mse911.7394827347157
+training epoch mse921.6723226948085
+training epoch mse931.6869517002166
+training epoch mse942.0521002917898
+training epoch mse951.652931515397
+training epoch mse961.5161365968788
+training epoch mse971.747740677317
+training epoch mse981.5043911200901
+training epoch mse991.8061116491049
+training epoch mse1001.6645115668558
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse12.534650131368
+training epoch mse23.2131581064127
+training epoch mse33.290456673791
+training epoch mse42.4592314322247
+training epoch mse53.0520356795075
+training epoch mse62.7848104791285
+training epoch mse72.6746398836234
+training epoch mse810.519637674019
+training epoch mse93.1010475071435
+training epoch mse102.7370735761487
+training epoch mse112.3046910241618
+training epoch mse122.8261102797238
+training epoch mse133.0966367956191
+training epoch mse1410.136646598394
+training epoch mse159.7393665198494
+training epoch mse162.6540302639432
+training epoch mse1714.218855923674
+training epoch mse182.8495775780983
+training epoch mse193.2911646741175
+training epoch mse202.8729522498068
+training epoch mse213.4566556158993
+training epoch mse222.7084937356988
+training epoch mse2310.535712080641
+training epoch mse2410.230922486936
+training epoch mse252.3527441027597
+training epoch mse262.4480716978616
+training epoch mse274.7450031249792
+training epoch mse282.839423410265
+training epoch mse293.4699710160837
+training epoch mse302.7457178773095
+training epoch mse312.4775008747246
+training epoch mse322.7482929182801
+training epoch mse333.3680651672734
+training epoch mse3410.193495073252
+training epoch mse359.8598976305783
+training epoch mse362.3561196243562
+training epoch mse372.4460636151621
+training epoch mse382.9879859621963
+training epoch mse3910.234935310385
+training epoch mse402.7707329187703
+training epoch mse412.3812582882047
+training epoch mse4230.374875254953
+training epoch mse433.1186636947641
+training epoch mse442.7528257823466
+training epoch mse452.7862580182348
+training epoch mse462.4716284705589
+training epoch mse472.7694266950465
+training epoch mse483.1910296001704
+training epoch mse494.1618488658843
+training epoch mse502.5661181918405
+training epoch mse512.6957111398157
+training epoch mse523.2409653307194
+training epoch mse532.5532488960389
+training epoch mse542.7237953764656
+training epoch mse553.0212951686482
+training epoch mse562.55486241752
+training epoch mse572.5281426092913
+training epoch mse5810.495510821206
+training epoch mse592.4965480504951
+training epoch mse602.730505352011
+training epoch mse613.179343278931
+training epoch mse622.4760941709462
+training epoch mse6310.504284127277
+training epoch mse642.9222975239676
+training epoch mse652.6057900546366
+training epoch mse662.3692551483043
+training epoch mse673.3121908741336
+training epoch mse682.9372319926306
+training epoch mse6910.103895472966
+training epoch mse703.4162139219704
+training epoch mse713.0541080528107
+training epoch mse722.7504633543961
+training epoch mse732.5306084805449
+training epoch mse742.9389393979915
+training epoch mse752.4013804556168
+training epoch mse769.2236162617088
+training epoch mse772.8802865445215
+training epoch mse783.0314421678707
+training epoch mse793.1038522941344
+training epoch mse802.0551669500685
+training epoch mse813.7953732266313
+training epoch mse823.1739931204566
+training epoch mse832.8539233110862
+training epoch mse842.6591700693918
+training epoch mse852.8872540662847
+training epoch mse862.4699467564701
+training epoch mse873.1288378178649
+training epoch mse8810.131713097928
+training epoch mse8969.603846295317
+training epoch mse902.9380048929608
+training epoch mse912.444807457986
+training epoch mse922.5245096631959
+training epoch mse932.1027844356859
+training epoch mse942.6995236617584
+training epoch mse952.4819126826399
+training epoch mse962.7527554666794
+training epoch mse972.684358580539
+training epoch mse983.1704258655742
+training epoch mse992.0005414714087
+training epoch mse1002.5796046777133
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse11.7604402567575
+training epoch mse21.7632736941333
+training epoch mse31.8649010912879
+training epoch mse41.6762324889221
+training epoch mse51.8250468606888
+training epoch mse61.6307400484965
+training epoch mse71.8669460063341
+training epoch mse81.6044860095581
+training epoch mse91.7188510621743
+training epoch mse101.5827537303857
+training epoch mse111.6829149844616
+training epoch mse121.6576140663516
+training epoch mse131.7485723502352
+training epoch mse141.8539798661397
+training epoch mse151.6681663383856
+training epoch mse161.6921082797274
+training epoch mse171.6309503850853
+training epoch mse181.4575183746717
+training epoch mse191.6974190341233
+training epoch mse201.4997762210231
+training epoch mse211.7106170830765
+training epoch mse221.7556669148831
+training epoch mse231.6614398667208
+training epoch mse241.6455563316587
+training epoch mse251.6374678453464
+training epoch mse261.7101561668929
+training epoch mse271.7204859660524
+training epoch mse281.7277310810813
+training epoch mse291.8989203055845
+training epoch mse301.387331728727
+training epoch mse311.8170603982369
+training epoch mse321.8204039918218
+training epoch mse331.6141243083715
+training epoch mse341.8236329463114
+training epoch mse351.6310711854119
+training epoch mse361.8359219232677
+training epoch mse371.5874424815013
+training epoch mse381.7875061472096
+training epoch mse391.7217191199943
+training epoch mse401.90056521144
+training epoch mse411.6591306890955
+training epoch mse421.4820599473805
+training epoch mse431.7672779450714
+training epoch mse441.4729594401012
+training epoch mse451.6262603637243
+training epoch mse461.6019526252028
+training epoch mse471.7683917277985
+training epoch mse481.8081882755206
+training epoch mse491.7408815533768
+training epoch mse501.7744431127088
+training epoch mse511.4187646913191
+training epoch mse521.5073218707524
+training epoch mse531.5788681489284
+training epoch mse541.5699112419763
+training epoch mse551.5811568037265
+training epoch mse561.6513264761279
+training epoch mse571.7649636592232
+training epoch mse581.5140322040554
+training epoch mse591.7560271665379
+training epoch mse601.6713310183365
+training epoch mse611.6239866646258
+training epoch mse621.6473134522685
+training epoch mse631.5866646258561
+training epoch mse641.753016716263
+training epoch mse651.6797803312958
+training epoch mse661.6268155723879
+training epoch mse671.6665458768818
+training epoch mse681.6136893166919
+training epoch mse691.7994723290109
+training epoch mse701.8472380018589
+training epoch mse711.7921600097664
+training epoch mse721.7178910199806
+training epoch mse731.5840092955622
+training epoch mse741.4540751872613
+training epoch mse751.551537881483
+training epoch mse761.7905349837454
+training epoch mse771.4083247863807
+training epoch mse781.3437611930949
+training epoch mse791.614866069486
+training epoch mse801.491250554213
+training epoch mse811.6129013195457
+training epoch mse821.5868637365568
+training epoch mse831.5025125095785
+training epoch mse841.5522870577506
+training epoch mse851.5133817656706
+training epoch mse861.5307309561637
+training epoch mse871.630496495799
+training epoch mse881.8517185100128
+training epoch mse891.5358019754779
+training epoch mse901.493493948324
+training epoch mse911.4995428872309
+training epoch mse921.7574208802082
+training epoch mse931.4222556145925
+training epoch mse941.666259119433
+training epoch mse951.6293849998432
+training epoch mse961.42830610474
+training epoch mse971.4447642473766
+training epoch mse981.318802318728
+training epoch mse991.748279016157
+training epoch mse1001.6512304042193
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5080455343867
+training epoch mse2:3.3222648956274
+training epoch mse3:3.4616950393268
+training epoch mse4:2.4788733740925
+training epoch mse5:3.0659278899236
+training epoch mse6:2.8025132550797
+training epoch mse7:2.6920146156011
+training epoch mse8:10.527227819874
+training epoch mse9:3.1140518086925
+training epoch mse10:2.7535431488973
+training epoch mse11:2.3245630444894
+training epoch mse12:2.8426959916215
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5302234771325
+training epoch mse2:3.2040971041673
+training epoch mse3:3.2755210188048
+training epoch mse4:2.4332248620233
+training epoch mse5:3.0270735938159
+training epoch mse6:2.7500124380335
+training epoch mse7:2.6359068879255
+training epoch mse8:10.509070541851
+training epoch mse9:3.0645001240773
+training epoch mse10:2.7009232435231
+training epoch mse11:2.2462128917932
+training epoch mse12:5.5137295118015
+training epoch mse13:3.131966050612
+training epoch mse14:10.157293511445
+training epoch mse15:9.7759090428205
+training epoch mse16:2.9289232241697
+training epoch mse17:14.235811031016
+training epoch mse18:2.8817496340482
+training epoch mse19:3.3184112620519
+training epoch mse20:2.9105947415926
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.7338706273
+training epoch mse2:3.1014970343695
+training epoch mse3:10.154597505615
+training epoch mse4:3.0390216354591
+training epoch mse5:2.5136561743982
+training epoch mse6:3.1849392445841
+training epoch mse7:2.6435574137494
+training epoch mse8:2.5447813002224
+training epoch mse9:2.7071691101297
+training epoch mse10:4.594962959086
+training epoch mse11:3.1346391568948
+training epoch mse12:2.8151987253646
+training epoch mse13:3.6609033737001
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.7024819970373
+training epoch mse2:3.0017338699446
+training epoch mse3:2.4713719162555
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.9142176315802
+training epoch mse2:2.0061246280245
+training epoch mse3:1.6305123153737
+training epoch mse4:1.8998871741955
+training epoch mse5:1.7460322177144
+training epoch mse6:2.1400842169486
+training epoch mse7:2.0056121542039
+training epoch mse8:1.7101433057341
+training epoch mse9:1.591019816214
+training epoch mse10:1.8685825458001
+training epoch mse11:1.7791844903726
+training epoch mse12:11.118042628448
+training epoch mse13:1.7414670731862
+training epoch mse14:1.8240575110825
+training epoch mse15:1.6330802471992
+training epoch mse16:1.9419049356006
+training epoch mse17:1.8037384845427
+training epoch mse18:2.0939431334887
+training epoch mse19:1.8855717018102
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.8957042286361
+training epoch mse2:1.8027045229415
+training epoch mse3:1.7052230548422
+training epoch mse4:1.986185208606
+training epoch mse5:1.6155847620537
+training epoch mse6:1.7015967972346
+training epoch mse7:1.5044288946389
+training epoch mse8:1.4419480288323
+training epoch mse9:1.5760826751252
+training epoch mse10:1.6762281864809
+training epoch mse11:1.5212820374988
+training epoch mse12:3.972776463234
+training epoch mse13:3.086144050499
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.9029447578244
+training epoch mse2:1.824213456961
+training epoch mse3:1.7394036215757
+training epoch mse4:2.0241711130633
+training epoch mse5:1.6750874423121
+training epoch mse6:1.7676570850825
+training epoch mse7:1.5896637196454
+training epoch mse8:1.5410656873532
+training epoch mse9:1.6781684295668
+training epoch mse10:1.7758430701349
+training epoch mse11:1.6418227176732
+training epoch mse12:1.7156202577643
+training epoch mse13:1.6215204127096
+training epoch mse14:1.7446059222448
+training epoch mse15:1.6146723704518
+training epoch mse16:1.6837239053544
+training epoch mse17:1.9863529753847
+training epoch mse18:1.4880708303374
+training epoch mse19:2.1989747577114
+training epoch mse20:1.9309445676602
+training epoch mse21:1.9083322536752
+training epoch mse22:1.6904279516492
+training epoch mse23:1.9463194425271
+training epoch mse24:1.8073465986337
+training epoch mse25:2.136017720999
+training epoch mse26:2.3241613882467
+training epoch mse27:1.82089565397
+training epoch mse28:1.6677822152073
+training epoch mse29:1.7722548891476
+training epoch mse30:1.7074473245347
+training epoch mse31:2.0544981733929
+training epoch mse32:1.7349824225744
+training epoch mse33:1.7816512756017
+training epoch mse34:1.8810879756697
+training epoch mse35:2.1239159370403
+training epoch mse36:1.9622105986415
+training epoch mse37:1.6985879133125
+training epoch mse38:1.8072500165298
+training epoch mse39:1.5955565859943
+training epoch mse40:1.8472402706597
+training epoch mse41:1.6886343046255
+training epoch mse42:1.9784923070618
+training epoch mse43:1.6682920351186
+training epoch mse44:2.3115062166866
+training epoch mse45:1.8773242179646
+training epoch mse46:1.9101225297404
+training epoch mse47:2.1441734397173
+training epoch mse48:1.7710854184763
+training epoch mse49:1.9235193683783
+training epoch mse50:1.6779790535391
+training epoch mse51:1.584053319899
+training epoch mse52:1.897266154526
+training epoch mse53:1.7988964601298
+training epoch mse54:1.7797717499438
+training epoch mse55:1.6324651965294
+training epoch mse56:2.0905017073065
+training epoch mse57:1.7441150679767
+training epoch mse58:2.0062089259543
+training epoch mse59:1.3579556398689
+training epoch mse60:1.6664902409865
+training epoch mse61:1.7859277724769
+training epoch mse62:1.5119548340385
+training epoch mse63:1.4799094416368
+training epoch mse64:1.7711981267755
+training epoch mse65:1.9965497796992
+training epoch mse66:1.7222959703138
+training epoch mse67:1.8938829053597
+training epoch mse68:1.8525719874349
+training epoch mse69:1.4715476957619
+training epoch mse70:1.7777078608641
+training epoch mse71:1.8203688301649
+training epoch mse72:1.4887168251129
+training epoch mse73:2.2176544231651
+training epoch mse74:1.7039967195613
+training epoch mse75:1.7468514374705
+training epoch mse76:1.8880597014438
+training epoch mse77:1.5957279855411
+training epoch mse78:1.7850193875769
+training epoch mse79:2.0729506621384
+training epoch mse80:1.4213360588015
+training epoch mse81:1.8612832291399
+training epoch mse82:2.2136365589435
+training epoch mse83:1.5103741089638
+training epoch mse84:1.7076244868991
+training epoch mse85:1.580447017634
+training epoch mse86:1.8157259414991
+training epoch mse87:2.0414907293618
+training epoch mse88:1.9494569685315
+training epoch mse89:1.680385967997
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:3.4568527214385
+training epoch mse2:3.2350073808931
+training epoch mse3:3.5436442443249
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:3.4050680875898
+training epoch mse2:3.2752404229206
+training epoch mse3:3.4023657248626
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:3.5343482569865
+training epoch mse2:3.4312706994878
+training epoch mse3:3.340223278223
+training epoch mse4:3.2927526765351
+training epoch mse5:3.2078439870133
+training epoch mse6:3.1778364404341
+training epoch mse7:3.1104679415443
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
