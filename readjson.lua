@@ -1,5 +1,7 @@
 require 'torch' 
 require 'math'
+require 'pl'
+
 local json = require('json')
 
 function loadjsonfile( filename )

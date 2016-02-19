@@ -6,6 +6,7 @@ require 'gnuplot'
 require 'pl'
 require 'sys'
 require 'kernelutil'
+require 'CDivTable_rebust'
 
 torch.setdefaulttensortype('torch.FloatTensor')
 torch.manualSeed(2)
@@ -18,7 +19,7 @@ local opt = lapp[[
 	--save_train_network_dir (default 'networks_univar_train')
 	--save_valid_network_dir (default 'networks_univar_validbest')
 	--log_file (default 'log.txt')
-	--evaluate_separately (default 1)
+	--evaluate_separately (default 0)
 ]]
 augment_time = opt.augment_time
 flag_limit_gradient = opt.flag_limit_gradient
@@ -29,7 +30,8 @@ cutorch.setDevice(opt.gpuid)
 labix = opt.labix
 log_file = opt.log_file
 evaluate_separately = opt.evaluate_separately
-
+mask = 41
+buffer = 5 -- 1hr mins
 for k, v in pairs(opt) do print(k,v) end
 
 local args = {...}
@@ -63,21 +65,24 @@ function  init()
 	log_file_open:write(dump(args))
 	log_file_open:write('\n-------- start ------\n')
 
-	learningRate = 0.03
+	learningRate = 2
 	sigma2 = 10
-	range = 30
+	range = 20
 	basis = torch.range(-1 * range, range)
 
 	normal_kernel = torch.exp(torch.div(torch.abs(basis), -1*sigma2)):fill(1)
-	kernel_matrix_init = torch.mm(torch.Tensor(3,1),normal_kernel:view(1,normal_kernel:size(1))):fill(1)
+	
+	normal_kernel = torch.range(1,2*range +1):mul(0.1)
+
+	kernel_matrix_init = torch.mm(torch.Tensor(1,1),normal_kernel:view(1,normal_kernel:size(1))):fill(1)
 
 	halfkwidth = math.floor(normal_kernel:size(1)/2)
-	max_grad = 0.001
-	max_bias = 0.0001
+	max_grad = 0.002
+	max_bias = 0.0005
 	geo_range = 10
-	gaussian_noise_var_x = 0.05
-	gaussian_noise_var_t = 1
-	learningRateDecay = 0.01
+	gaussian_noise_var_x = 0.005
+	gaussian_noise_var_t = 0.1
+	learningRateDecay = 0.06
 	trainIterations = 100
 	peopleCountForTrain = 10000
 	peopleCountForValidate = 10000
@@ -102,71 +107,27 @@ function setup_network(labix, countX)
 	--log_file_open:write('\n')
 	
 	--print(labels_all[labix])
-	data = x:cuda()
+	data = x[{{1, 100000}}]:cuda()
 	--x1valid = x[{{labix},{countX+1,peoplecounts},{}}]:cuda()
 	big_model = nn.Sequential()
 
-	geo_model = nn.Sequential()
-	act_model = nn.Sequential()
-
-	clust_count = 120
-	act_types = 6
-
-	map_weights = nn.Linear(clust_count , 1) --(2 * range) + 1)
-	act_weights = nn.Linear(act_types , 1)
-	
-
-
-	geo_model:add(map_weights)
-	geo_model:add(nn.View(1,1,1,2*range + 1))
-
-	act_model:add(act_weights)
-	act_model:add(nn.View(1,1,1,2*range + 1))
-
 	--map_avg = nn.SpatialAveragePooling(geo_range - 1, )
 
-	temporal_ratio = nn.ParallelTable()
-	conv_layer_top = nn.SpatialConvolutionMM(1,1,halfkwidth*2+1,3,1,1,halfkwidth,0)
-	conv_layer_top.weight = kernel_matrix_init:viewAs(conv_layer_top.weight)
+	conv_ratio = nn.ParallelTable()
+	conv_layer_top = nn.Linear(2 * halfkwidth + 1, 1)
+	conv_layer_top.weight = normal_kernel:viewAs(conv_layer_top.weight)
 	conv_layer_top.bias = torch.Tensor({0}):viewAs(conv_layer_top.bias)
 	conv_layer_clone_bott = conv_layer_top:clone('weight','bias')	
+	conv_ratio:add(conv_layer_top)
+	conv_ratio:add(conv_layer_clone_bott)
 
-	temporal_ratio:add(conv_layer_top)
-	temporal_ratio:add(conv_layer_clone_bott)
-
-	consolidation_table = nn.ParallelTable()
-	
-
-	values_model = nn.Sequential()
-	values_parallel = nn.ParallelTable()
-	
-	impulse_model = nn.Sequential()
-	impulse_parallel = nn.ParallelTable()
-
-	values_parallel:add(nn.Identity()) -- for bg values (must pass w/ correct view)
-	impulse_parallel:add(nn.Identity()) -- for bg impulses (must pass w/ correct view)
-
-	values_parallel:add(geo_model) -- for geo kern
-	impulse_parallel:add(nn.Identity()) -- for geo impulses (must pass w/ correct view)
-	
-	values_parallel:add(act_model) -- for act kern
-	impulse_parallel:add(nn.Identity()) -- for act impulses (must pass w/ correct view)
-	
-	values_model:add(values_parallel)
-	values_model:add(nn.JoinTable(2))
-
-	impulse_model:add(impulse_parallel)
-	impulse_model:add(nn:JoinTable(2))
-
-	consolidation_table:add(values_model)
-	consolidation_table:add(impulse_model)
-
-	big_model:add(consolidation_table)
-	big_model:add(temporal_ratio)
-	big_model:add(nn.CDivTable())
+	big_model:add(conv_ratio)
+	big_model:add(CDivTable_robust())
 
 	print(big_model)
 	big_model = big_model:cuda()
+	conv_layer_clone_bott:share(conv_layer_top,'weight','bias')
+
 
 	criterion = nn.MSECriterion():cuda()
 	dmsedf_table = {}
@@ -176,14 +137,12 @@ function setup_network(labix, countX)
 end
 
 function load_network(labix, load_network_name, countX)
-	print(labels_all[labix])
 
-	log_file_open:write(labels_all[labix])
+	log_file_open:write('validating')
 	log_file_open:write('\n')
 
-	data = x[{{labix},{1,countX},{}}]:cuda()
+	data = x:cuda()
 	big_model = torch.load(load_network_name)
-	
 	log_file_open:write('finished loading model from ' .. load_network_name)
 	log_file_open:write('\n')
 end
@@ -210,62 +169,65 @@ function normalize_target(target, mean, std)
 	return target
 end
 
-function regress(data, model)
+function regress(d, model)
 	total_mse = 0
 	total_mse_counter = 0
-	
-	if (evaluate_separately) then
+	total_mse_static = 0
+	total_mse_counter_static = 0
+	local timecounts = 61
+	if (not evaluate_separately) then
 		local w = model:get(1):get(1).weight		
 		local kernel_width =  math.floor(w:size(2)/labcounts)
 		w:view(labcounts,kernel_width)[{{labcounts},{math.floor((kernel_width+1)/2)}}]:fill(0)		
 	end
 	
-	batch_input = torch.CudaTensor(batchSizeRegress, 1, 1, timecounts)
-	batch_input_nnx = torch.CudaTensor(batchSizeRegress, 1, 1, timecounts)
-	batch_target = torch.CudaTensor(batchSizeRegress, 1, timecounts)
-	batch_mu_labix = torch.CudaTensor(batchSizeRegress, 1, 1, 1)
-	batch_std_labix = torch.CudaTensor(batchSizeRegress, 1, 1, 1)
-	bix = 0
 
-	for i= 1,data:size(2) do
-		if data[{{1},{i},{}}]:ne(0):sum() > 2 then
+	for i= 31,d:size(1) - 31 do
 
-			local input = data[{{1},{i},{}}]:view(1,1,1,109):clone()
+		if d[i + (mask - range)][1] ~= 0 and d[{{i - range, i + range}, 1}]:ne(0):sum() > 2*range then
+
+			local input = d[{{i - range, i + range}, 1}]:clone():view(1,1,1,2*range + 1)
+			local target = input[1][1][1][mask]
+			local static_guess = input[1][1][1][mask - (buffer + 1)]
+		    --input[{{1},{1},{1},{2*range + 1}}]:fill(0)
+			input[{{1},{1},{1},{mask - buffer, mask}}]:fill(0)
+
 			input, inputnnx, mean, std = normalize(input)
-			local target =  data[{{1},{i},{}}]:cuda()
-
-			bix = bix + 1
-			batch_input[{{bix},{1},{},{}}] = input:clone()
-			batch_input_nnx[{{bix},{1},{},{}}] = inputnnx:clone()
-			batch_target[{{bix},{1},{}}] = target:clone()
-			batch_mu_labix[{{bix},{1},{1},{1}}] =  mean
-			batch_std_labix[{{bix},{1},{1},{1}}] =  std
+			input = input:squeeze():cuda()
+			inputnnx = inputnnx:squeeze():cuda()
 			
-			if (bix == batchSizeRegress) then
-				bix = 0
-				local output = model:forward({batch_input, batch_input_nnx})
-				local results = torch.cmul(output, batch_std_labix:expand(output:size())) + batch_mu_labix:expand(output:size())				
+			local output = model:forward({input, inputnnx})
+			results = (output * std) + mean
 
-				local results_nnz = torch.cmul(results, batch_input_nnx):squeeze()
-				local targets_nnz = batch_target:squeeze()
-				total_mse = total_mse + torch.pow( results_nnz - targets_nnz, 2):sum()
-				total_mse_counter = total_mse_counter + batch_input_nnx:sum()
-			end
+
+			--print(results[1], target)
+			total_mse = total_mse + torch.pow( results - target, 2):sum()
+			total_mse_static = total_mse_static +  (static_guess - target)^2
+			total_mse_counter = total_mse_counter + 1
+			total_mse_counter_static = total_mse_counter_static + 1
 		end
 	end
 	log_file_open:write('regress finished: ')
 	log_file_open:write(math.sqrt(total_mse/total_mse_counter))
 	log_file_open:write('\n')
-	print('regress:')
+	print('regressed on :' .. total_mse_counter .. " samples")
+	print(math.sqrt(total_mse_static/total_mse_counter))
 	print(math.sqrt(total_mse/total_mse_counter))
+	
 	return math.sqrt(total_mse/total_mse_counter)
 end
 
 function limit_value(inputx, max_value)
 	local pos_mask = inputx:gt(max_value)
 	local neg_mask = inputx:lt(-1*max_value)
+--	print(inputx)
 	inputx[pos_mask] = max_value
 	inputx[neg_mask] = -1*max_value
+--	print(pos_mask)
+--			print(inputx)
+
+--	assert(1==2)
+
 	return inputx
 end
 
@@ -299,55 +261,60 @@ function train(maxEpoch)
 		total_mse = 0
 		total_mse_counter = 0
 		print("kern_size" .. conv_layer_top.weight:float():squeeze():size(1))
-		--gnuplot.plot({'top_convnet',conv_layer_top.weight:float():squeeze(), '-'},{'bottom_convnet',conv_layer_clone_bott.weight:float():squeeze(), '-'})
 		print('bias');print(conv_layer_top.bias);print(conv_layer_clone_bott.bias)
 		print ('epoch'..epoch)
-		shuffled_ix = torch.randperm(data:size(1))
+		shuffled_ix = torch.randperm(data:size(1) - 20030)
 		--shuffled_time = torch.randperm(data:size(3))
-		--regress(data,big_model)		
 		--print(data)
+		--regress(data[{{data:size(1) - 20000,data:size(1)}}],big_model)		
 
-		for stort = 1, data:size(1) do
+		for stort = 1, data:size(1) - 20030 do
 			ox = stort 
-			tx = math.fmod(ox,109); if tx == 0 then; tx = 109; end;
-			ix = math.floor(ox/109) + 1
+
+
 			i = shuffled_ix[ox]			
 			if i + range > data:size(1) or i - range < 1 then
 				goto skip
 			end
-			if data[i] ~= 0 and data[{{i - range, i + range}}]:gt(0):sum() > range / 2 then
-				--create mini-batch
-				if(stort % 200 == 0) then
-					big_model:updateParameters(current_learning_rate)
-					big_model:zeroGradParameters()	
-					gnuplot.plot({'top_convnet',conv_layer_top.weight:float():squeeze(), '-'},{'bottom_convnet',conv_layer_clone_bott.weight:float():squeeze(), '-'})		
-				end
 
+			if stort % 500 == 0 then
+				gnuplot.plot({'top_convnet',conv_layer_top.weight:float():squeeze(), '-'},{'bottom_convnet',conv_layer_clone_bott.weight:float():squeeze(), '-'})		
+			end
+	
+			if data[i + (mask - range)][1] ~= 0 and data[{{i - range, i + range}, 1}]:gt(0):sum() > 2*range then
+				--create mini-batch
+		
+				
+				big_model:zeroGradParameters()	
+
+				
 				local bg_data = data[{{i - range, i + range}, 1}]:clone()
 				local bg_input = bg_data:view(1,1,1,2*range + 1):clone()	
-				
-				local loc_data = build_hist(data[{{i - range, i + range}, 2}], clust_count):clone()
-				local loc_input = loc_data:view(1,1, clust_count, 2*range + 1):clone()
+				--local loc_data = build_hist(data[{{i - range, i + range}, 2}], clust_count):clone()
+				--local loc_input = loc_data:view(1,1, clust_count, 2*range + 1):clone()
 
-				local act_data = build_hist(data[{{i - range, i + range}, 3}], act_types):clone()
-				local act_input = act_data:view(1,1, act_types, 2*range + 1):clone()
+				--local act_data = build_hist(data[{{i - range, i + range}, 3}], act_types):clone()
+			    --	local act_input = act_data:view(1,1, act_types, 2*range + 1):clone()
 				
-				local bg_target = bg_input:clone()
+				local bg_target = bg_input[1][1][1][mask]
 
 				-- mask value
-				bg_input[{{1},{1},{1},{range}}]:fill(0)
 				
-				-- perturb inputs				
-				bg_input = augment_input(bg_input,range)
-				loc_input = augment_input(loc_input,range)
-				act_input = augment_input(act_input,range)
-
+				-- print(bg_input)
+				bg_input[{{1},{1},{1},{mask - buffer, mask}}]:fill(0)
+				-- print(bg_input)
+				-- perturb inputs		
+				-- loc_input = augment_input(loc_input,range)
+				-- act_input = augment_input(act_input,range)
 
 				bg_input, bg_inputnnx, bg_mean, bg_std = normalize(bg_input)
-				loc_input, loc_inputnnx, loc_mean, loc_std = normalize(loc_input)
-				act_input, act_inputnnx, act_mean, act_std = normalize(act_input)
-				target = normalize_target(bg_target, bg_mean, bg_std)
+				--bg_input = augment_input(bg_input,range)
 
+				-- loc_input, loc_inputnnx, loc_mean, loc_std = normalize(loc_input)
+				-- act_input, act_inputnnx, act_mean, act_std = normalize(act_input)
+				target = normalize_target(bg_target, bg_mean, bg_std)
+				bg_input = bg_input:squeeze():cuda()
+				bg_inputnnx = bg_inputnnx:squeeze():cuda()
 
 
 				-- if (std > 10) then
@@ -355,30 +322,56 @@ function train(maxEpoch)
 				-- end
 			
 
-				local output = big_model:forward({{bg_input, loc_data:cuda(), act_data:cuda()}, 
-												 {bg_inputnnx, loc_data:ne(0), act_data:ne(0)}})
-
+				--local output = big_model:forward({{bg_input, loc_data:cuda(), act_data:cuda()}, 
+				--								 {bg_inputnnx, loc_data:ne(0), act_data:ne(0)}})
+				local output = big_model:forward({bg_input, bg_inputnnx})
+				
+				-- print("asd")
+				-- print(mseloss)
+				-- print(output)
+				-- print(target)
+				target = torch.Tensor({target}):viewAs(output):cuda()
 				local mseloss = criterion:forward(output, target)
+				
 
 				local msegd = criterion:backward(output, target):squeeze()
+				-- print(msegd)
+				-- assert(1==2)
+				
 				if flag_limit_gradient == 1 then
-					msegd = limit_value(msegd, max_grad)					
+					if msegd > max_grad then
+						msegd = max_grad
+					end
+					if msegd < -1 * max_grad then
+						msegd = -1 * max_grad
+					end
+					--msegd = limit_value(msegd, max_grad)	
 				end
 
-				
-				backward_gradients = output:clone():zero()
-				backward_gradients[{{1},{1},{1}}] = msegd
-
-				big_model:backward({input, inputnnx}, backward_gradients)
-				current_learning_rate = learningRate / (1 + epoch * learningRateDecay)
 				if flag_control_bias == 1 then
 					
 					local tmp = limit_value(conv_layer_top.bias, max_bias)
 
 					conv_layer_top.bias = tmp
 					conv_layer_clone_bott:share(conv_layer_top,'bias')
+
 				end
-				--gnuplot.figure(1)
+				
+				backward_gradients = target:clone():zero()
+
+				backward_gradients[1] = msegd
+				--assert(1 == 2)
+
+				--if (backward_gradients:ne(backward_gradients):sum() == 0) then
+
+					big_model:backward({bg_input, bg_inputnnx}, backward_gradients)
+					current_learning_rate = learningRate / (1 + epoch * learningRateDecay)
+					big_model:updateParameters(current_learning_rate)
+
+				--end
+				
+
+
 				total_mse = mseloss + total_mse
 				total_mse_counter = 1 + total_mse_counter
 			end	
@@ -441,7 +434,8 @@ if mode == 'valid' then
 	for modelix, model_lists_item in ipairs(model_lists) do	
 		print (modelix .. ' ' .. model_lists_item)	
 		load_network(labix, model_lists_item, peopleCountForValidate)
-		rmse_i = regress(data, big_model)
+
+		rmse_i = regress(data[{{data:size(1) - 20030, data:size(1)}}], big_model)
 		if rmse_i < best_rmse then
 			best_rmse = rmse_i
 			best_rmse_ix = modelix			
