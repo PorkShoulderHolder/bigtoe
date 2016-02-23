@@ -30,7 +30,7 @@ cutorch.setDevice(opt.gpuid)
 labix = opt.labix
 log_file = opt.log_file
 evaluate_separately = opt.evaluate_separately
-mask = 41
+mask = 121
 buffer = 5 -- 1hr mins
 for k, v in pairs(opt) do print(k,v) end
 
@@ -65,14 +65,14 @@ function  init()
 	log_file_open:write(dump(args))
 	log_file_open:write('\n-------- start ------\n')
 
-	learningRate = 2
+	learningRate = 2.1
 	sigma2 = 10
-	range = 20
+	range = 60
 	basis = torch.range(-1 * range, range)
 
 	normal_kernel = torch.exp(torch.div(torch.abs(basis), -1*sigma2)):fill(1)
 	
-	normal_kernel = torch.range(1,2*range +1):mul(0.1)
+	normal_kernel = torch.range(1,2*range +1):fill(1)
 
 	kernel_matrix_init = torch.mm(torch.Tensor(1,1),normal_kernel:view(1,normal_kernel:size(1))):fill(1)
 
@@ -82,7 +82,7 @@ function  init()
 	geo_range = 10
 	gaussian_noise_var_x = 0.005
 	gaussian_noise_var_t = 0.1
-	learningRateDecay = 0.06
+	learningRateDecay = 0.01
 	trainIterations = 100
 	peopleCountForTrain = 10000
 	peopleCountForValidate = 10000
@@ -118,6 +118,22 @@ function setup_network(labix, countX)
 	conv_layer_top.weight = normal_kernel:viewAs(conv_layer_top.weight)
 	conv_layer_top.bias = torch.Tensor({0}):viewAs(conv_layer_top.bias)
 	conv_layer_clone_bott = conv_layer_top:clone('weight','bias')	
+	
+
+	-- multer = nn.CMul(2 * halfkwidth + 1)
+	-- multer.weight = conv_layer_top.weight
+	-- multer:share(conv_layer_top,'weight')
+	-- conv_layer_clone_bott:add(multer)
+
+	-- adder = nn.Add(2 * halfkwidth + 1, true)
+	-- adder.bias = conv_layer_top.bias
+	-- adder:share(conv_layer_top,'bias')
+	-- conv_layer_clone_bott:add(adder)
+
+	
+
+	--conv_layer_clone_bott:add(nn.Abs())
+	
 	conv_ratio:add(conv_layer_top)
 	conv_ratio:add(conv_layer_clone_bott)
 
@@ -126,9 +142,8 @@ function setup_network(labix, countX)
 
 	print(big_model)
 	big_model = big_model:cuda()
-	conv_layer_clone_bott:share(conv_layer_top,'weight','bias')
 
-
+	conv_layer_clone_bott:share(conv_layer_top,'bias')
 	criterion = nn.MSECriterion():cuda()
 	dmsedf_table = {}
 	mseloss_table = {}
@@ -174,7 +189,7 @@ function regress(d, model)
 	total_mse_counter = 0
 	total_mse_static = 0
 	total_mse_counter_static = 0
-	local timecounts = 61
+	local timecounts = 2 * range + 1
 	if (not evaluate_separately) then
 		local w = model:get(1):get(1).weight		
 		local kernel_width =  math.floor(w:size(2)/labcounts)
@@ -182,9 +197,9 @@ function regress(d, model)
 	end
 	
 
-	for i= 31,d:size(1) - 31 do
+	for i= range + 1,d:size(1) - (range + 1) do
 
-		if d[i + (mask - range)][1] ~= 0 and d[{{i - range, i + range}, 1}]:ne(0):sum() > 2*range then
+		if d[i + (mask - range)][1] ~= 0 and d[{{i - range, i + range}, 1}]:ne(0):sum() > 2*range  then
 
 			local input = d[{{i - range, i + range}, 1}]:clone():view(1,1,1,2*range + 1)
 			local target = input[1][1][1][mask]
@@ -266,8 +281,10 @@ function train(maxEpoch)
 		shuffled_ix = torch.randperm(data:size(1) - 20030)
 		--shuffled_time = torch.randperm(data:size(3))
 		--print(data)
-		--regress(data[{{data:size(1) - 20000,data:size(1)}}],big_model)		
-
+		if epoch % 2 == 0 then
+			gnuplot.plot({'top_convnet',conv_layer_top.weight:float():squeeze(), '-'},{'bottom_convnet', conv_layer_clone_bott.weight:float():squeeze(), '-'})		
+			regress(data[{{data:size(1) - 20000,data:size(1)}}],big_model)		
+		end
 		for stort = 1, data:size(1) - 20030 do
 			ox = stort 
 
@@ -277,11 +294,11 @@ function train(maxEpoch)
 				goto skip
 			end
 
-			if stort % 500 == 0 then
-				gnuplot.plot({'top_convnet',conv_layer_top.weight:float():squeeze(), '-'},{'bottom_convnet',conv_layer_clone_bott.weight:float():squeeze(), '-'})		
+			if stort % 500 == -30 then
+				gnuplot.plot({'top_convnet',conv_layer_top.weight:float():squeeze(), '-'},{'bottom_convnet', multer.weight:float():squeeze(), '-'})		
 			end
 	
-			if data[i + (mask - range)][1] ~= 0 and data[{{i - range, i + range}, 1}]:gt(0):sum() > 2*range then
+			if data[i + (mask - range)][1] ~= 0 and data[{{i - range, i + range}, 1}]:gt(0):sum() > 5 then
 				--create mini-batch
 		
 				
@@ -333,7 +350,6 @@ function train(maxEpoch)
 				target = torch.Tensor({target}):viewAs(output):cuda()
 				local mseloss = criterion:forward(output, target)
 				
-
 				local msegd = criterion:backward(output, target):squeeze()
 				-- print(msegd)
 				-- assert(1==2)

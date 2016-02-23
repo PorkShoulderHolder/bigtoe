@@ -5712,3 +5712,1518 @@ finished loading model from networks_univar_train/lab1_epoch69.net
 { [1] = train,}
  
 -------- start ------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.9506486522403
+training epoch mse2:1.9494333065538
+training epoch mse3:1.9482809112464
+training epoch mse4:1.9471890604998
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.9444228422005
+training epoch mse2:1.9309992814115
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.9241042274855
+training epoch mse2:1.871079899087
+training epoch mse3:1.820441280636
+training epoch mse4:1.7711206596168
+training epoch mse5:1.7218428381223
+training epoch mse6:1.6719811016467
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.897079000337
+training epoch mse2:1.7892116877972
+training epoch mse3:1.6779555466857
+training epoch mse4:1.5548893668253
+training epoch mse5:1.4078562703192
+training epoch mse6:1.2506245413501
+training epoch mse7:1.1154331900664
+training epoch mse8:1.0164840492992
+training epoch mse9:1.3250617803677
+training epoch mse10:1.2194793142053
+training epoch mse11:0.96874108669014
+training epoch mse12:0.92497959273468
+training epoch mse13:3.7890451269819
+training epoch mse14:3.5748539249529
+training epoch mse15:3.3673518806284
+training epoch mse16:3.2735956917804
+training epoch mse17:3.2180935332755
+training epoch mse18:3.180685282882
+training epoch mse19:3.1537824007913
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.8969663277172
+training epoch mse2:1.7883644924807
+training epoch mse3:1.6788218563905
+training epoch mse4:1.55526062979
+training epoch mse5:1.4084482545529
+training epoch mse6:1.2527646049877
+training epoch mse7:1.1256365744664
+training epoch mse8:1.0355671613964
+training epoch mse9:0.96527067527107
+training epoch mse10:0.91962684861655
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.8969663277172
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.3781419384943
+regress finished: 50.634308345939
+training epoch mse2:798.0621683114
+training epoch mse3:2.1433483327257
+regress finished: 45.757339924274
+training epoch mse4:651.8413763929
+training epoch mse5:1.838823630595
+regress finished: 38.724625212817
+training epoch mse6:467.02918305282
+training epoch mse7:1.5525348382994
+regress finished: 34.135047843833
+training epoch mse8:363.00041405002
+training epoch mse9:1.4042978220084
+regress finished: 31.944061673396
+training epoch mse10:317.95413219616
+training epoch mse11:1.336988863214
+regress finished: 30.804066765255
+training epoch mse12:295.69571945025
+training epoch mse13:1.2920148450332
+regress finished: 30.107782971464
+training epoch mse14:282.49215022214
+training epoch mse15:1.2587615685241
+regress finished: 29.684362114536
+training epoch mse16:274.60920605196
+training epoch mse17:1.2405071215588
+regress finished: 29.178638037144
+training epoch mse18:265.34799099156
+training epoch mse19:1.218783253117
+regress finished: 29.480834401182
+training epoch mse20:270.84641867485
+training epoch mse21:1.2078359414275
+regress finished: 28.660969292912
+training epoch mse22:256.02694077252
+training epoch mse23:1.1964440398817
+regress finished: 28.471254998619
+training epoch mse24:252.65353545817
+training epoch mse25:1.1841858900254
+regress finished: 28.346399879064
+training epoch mse26:250.44175232172
+training epoch mse27:1.1738367682021
+regress finished: 28.089907027045
+training epoch mse28:245.93877057093
+training epoch mse29:1.1701515019525
+regress finished: 28.070805230256
+training epoch mse30:245.60481789888
+training epoch mse31:1.164139892001
+regress finished: 29.565128266792
+training epoch mse32:272.35617997679
+training epoch mse33:1.1597206044595
+regress finished: 28.430578589999
+training epoch mse34:251.91000331868
+training epoch mse35:1.1551461337121
+regress finished: 27.667556652779
+training epoch mse36:238.60914961939
+training epoch mse37:1.1496120679913
+regress finished: 27.807113777111
+training epoch mse38:241.01106056246
+training epoch mse39:1.1452168289161
+regress finished: 27.635312148174
+training epoch mse40:238.04897520945
+training epoch mse41:1.142125228554
+regress finished: 27.492972959114
+training epoch mse42:235.60831338951
+training epoch mse43:1.1366876248847
+regress finished: 27.501601208651
+training epoch mse44:235.75164446627
+training epoch mse45:1.1324005642441
+regress finished: 27.327980672021
+training epoch mse46:232.79182013748
+training epoch mse47:1.1282853522477
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.3782448981003
+regress finished: 50.63284089453
+training epoch mse2:798.01609019559
+training epoch mse3:2.1433885083567
+regress finished: 45.731806132583
+training epoch mse4:651.11828024825
+training epoch mse5:1.8381096451422
+regress finished: 38.771794499598
+training epoch mse6:468.16569402588
+training epoch mse7:1.6044713691209
+regress finished: 33.850869917868
+training epoch mse8:357.03780498391
+training epoch mse9:6.1290299196522
+regress finished: 57.078359902047
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.3396799472098
+regress finished: 46.918194481403
+training epoch mse2:685.08814213862
+training epoch mse3:1.4005390076015
+regress finished: 40.336499737176
+training epoch mse4:506.38297355388
+training epoch mse5:1.2869035786369
+regress finished: 31.159853633505
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5399848650005
+regress finished: 54.613792847709
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5414103291443
+regress finished: 54.661267819574
+training epoch mse2:929.96790578927
+training epoch mse3:2.4929958900892
+regress finished: 53.87891798677
+training epoch mse4:903.55633864985
+training epoch mse5:2.4515379610471
+regress finished: 53.181994119858
+training epoch mse6:880.34961423996
+training epoch mse7:2.4149738148014
+regress finished: 52.547928093252
+training epoch mse8:859.49848987679
+training epoch mse9:2.3818190253542
+regress finished: 51.957324135541
+training epoch mse10:840.30165632415
+training epoch mse11:2.3512741354405
+regress finished: 51.398905721097
+training epoch mse12:822.35073958447
+training epoch mse13:2.3226332868346
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5377687546886
+regress finished: 54.540515897383
+training epoch mse2:925.86364142562
+training epoch mse3:2.47397317079
+regress finished: 53.476612756375
+training epoch mse4:890.11966837229
+training epoch mse5:2.4150272788104
+regress finished: 52.443485100873
+training epoch mse6:856.08397754424
+training epoch mse7:2.3584702693942
+regress finished: 51.411951515315
+training epoch mse8:822.76322062905
+training epoch mse9:2.3024858103608
+regress finished: 50.35262715167
+training epoch mse10:789.23363470759
+training epoch mse11:2.2454677522426
+regress finished: 49.229466391592
+training epoch mse12:754.44614996152
+training epoch mse13:2.1852036432264
+regress finished: 48.004081068197
+training epoch mse14:717.38710948892
+training epoch mse15:2.1197122311321
+regress finished: 46.62955130225
+training epoch mse16:676.92846776979
+training epoch mse17:2.0453716219679
+regress finished: 45.013553087325
+training epoch mse18:630.86478188471
+training epoch mse19:1.9587971510752
+regress finished: 42.985700380975
+training epoch mse20:575.3606125584
+training epoch mse21:1.8524779194784
+regress finished: 40.451286575646
+training epoch mse22:509.58369095222
+training epoch mse23:1.7254118180912
+regress finished: 37.569172287654
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5377687546886
+regress finished: 54.540515897383
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5377687546886
+regress finished: 54.540515897383
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5377687546886
+regress finished: 54.540515897383
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.2421671667966
+regress finished: 26.118450459686
+training epoch mse2:212.64823812807
+training epoch mse3:1.0045126519479
+regress finished: 24.892794194057
+training epoch mse4:193.19140948776
+training epoch mse5:0.9820572175034
+regress finished: 24.43060389024
+training epoch mse6:186.09423403434
+training epoch mse7:0.96842325099911
+regress finished: 23.851537603506
+training epoch mse8:177.40557835589
+training epoch mse9:0.96338674904715
+regress finished: 23.555143098682
+training epoch mse10:173.03797983661
+training epoch mse11:0.96147341289684
+regress finished: 23.40116655979
+training epoch mse12:170.7883416833
+training epoch mse13:0.95654475852516
+regress finished: 23.375341563524
+training epoch mse14:170.41117126311
+training epoch mse15:0.95926306614839
+regress finished: 23.444710549694
+training epoch mse16:171.42084991682
+training epoch mse17:0.95614199372933
+regress finished: 23.44197092022
+training epoch mse18:171.37903444143
+training epoch mse19:0.95748694020612
+regress finished: 23.189120567237
+training epoch mse20:167.72051145266
+training epoch mse21:0.95808372885589
+regress finished: 23.371474253633
+training epoch mse22:170.35633906096
+training epoch mse23:0.95881113406966
+regress finished: 23.327937085457
+training epoch mse24:169.72198041608
+training epoch mse25:0.96123626252759
+regress finished: 23.527775144893
+training epoch mse26:172.63374338127
+training epoch mse27:0.96062094993579
+regress finished: 23.170589124956
+training epoch mse28:167.45069934237
+training epoch mse29:0.95886640331291
+regress finished: 23.347222396838
+training epoch mse30:170.01725116746
+training epoch mse31:0.96107084400596
+regress finished: 23.254475812598
+training epoch mse32:168.66233192032
+training epoch mse33:0.9611559606021
+regress finished: 23.240323678727
+training epoch mse34:168.45775966841
+training epoch mse35:0.96418812771646
+regress finished: 23.306958914179
+training epoch mse36:169.42237685388
+training epoch mse37:0.96102350451805
+regress finished: 23.475841055258
+training epoch mse38:171.88004759466
+training epoch mse39:0.96395651422135
+regress finished: 23.365571512781
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:854.00984651048
+regress finished: 1247.2070360176
+training epoch mse2:483513.73630603
+training epoch mse3:109.75310349177
+regress finished: 300.1686050981
+training epoch mse4:27999.037240382
+training epoch mse5:1.2238151679087
+regress finished: 27.309565772893
+training epoch mse6:232.45683070967
+training epoch mse7:1.0668892296793
+regress finished: 25.696802291093
+training epoch mse8:205.86493516676
+training epoch mse9:1.0332312718781
+regress finished: 25.218257636818
+training epoch mse10:198.2794022911
+training epoch mse11:1.0157407227235
+regress finished: 24.757177807349
+{ [1] = test,}
+ 
+-------- start ------
+-----------------test------------------
+validating
+finished loading model from networks_univar_validbest/lab1_epoch10.net
+{ [1] = test,}
+ 
+-------- start ------
+-----------------test------------------
+validating
+finished loading model from networks_univar_validbest/lab1_epoch21.net
+{ [1] = test,}
+ 
+-------- start ------
+-----------------test------------------
+validating
+finished loading model from networks_univar_validbest/lab1_epoch3.net
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:0.75354286175877
+regress finished: 28.955412018828
+training epoch mse2:327.30482435145
+training epoch mse3:0.47402372233489
+regress finished: 26.441794639309
+training epoch mse4:272.95743635522
+training epoch mse5:0.43778555556067
+regress finished: 26.056943682748
+training epoch mse6:265.06223204928
+training epoch mse7:0.42043411243895
+regress finished: 25.572422898642
+training epoch mse8:255.29856767679
+training epoch mse9:0.40909595848332
+regress finished: 25.12056499306
+training epoch mse10:246.3606139722
+training epoch mse11:0.40278421352348
+regress finished: 24.680402232281
+training epoch mse12:237.80665104837
+training epoch mse13:0.39703273417264
+regress finished: 24.556830975716
+training epoch mse14:235.43090529891
+training epoch mse15:0.39585546800794
+regress finished: 24.80828739763
+training epoch mse16:240.27104077757
+training epoch mse17:0.39199495552851
+regress finished: 24.329290062077
+training epoch mse18:231.088751365
+training epoch mse19:0.39077660077333
+regress finished: 24.348063696076
+training epoch mse20:231.44608839706
+training epoch mse21:0.38789477053201
+regress finished: 24.035934462566
+training epoch mse22:225.55428462092
+training epoch mse23:0.38637674284835
+regress finished: 24.469340936024
+training epoch mse24:233.75229390141
+training epoch mse25:0.38449939589489
+regress finished: 23.957068401561
+training epoch mse26:224.07541365452
+training epoch mse27:0.38399993773385
+regress finished: 23.827987087356
+training epoch mse28:221.66948245658
+training epoch mse29:0.38207183643888
+regress finished: 23.943212121414
+training epoch mse30:223.81651207495
+training epoch mse31:0.3819975794987
+regress finished: 23.988779639599
+training epoch mse32:224.66735867514
+training epoch mse33:0.38154750769874
+regress finished: 23.792226694014
+training epoch mse34:221.00375913124
+training epoch mse35:0.38059870466636
+regress finished: 23.752437329618
+training epoch mse36:220.26642943039
+training epoch mse37:0.37912271880388
+regress finished: 23.803848791893
+training epoch mse38:221.21981911256
+training epoch mse39:0.37872980698731
+regress finished: 23.804496767702
+training epoch mse40:221.23169343559
+training epoch mse41:0.37978735137823
+regress finished: 23.748670238509
+training epoch mse42:220.19572637985
+training epoch mse43:0.37842362691913
+regress finished: 23.915367962551
+training epoch mse44:223.29373473292
+training epoch mse45:0.37658551733475
+regress finished: 23.66816246941
+training epoch mse46:218.70655112748
+training epoch mse47:0.37822190012618
+regress finished: 23.805264698957
+training epoch mse48:221.24457383904
+training epoch mse49:0.3774711063472
+regress finished: 23.882729996074
+training epoch mse50:222.6851974869
+training epoch mse51:0.37815207914907
+regress finished: 23.664600725543
+training epoch mse52:218.64003551577
+training epoch mse53:0.37786779703618
+regress finished: 23.655092402649
+training epoch mse54:218.46424877576
+training epoch mse55:0.37740615550802
+regress finished: 23.692579339072
+training epoch mse56:219.15595339679
+training epoch mse57:0.37614173937464
+regress finished: 23.798372026421
+training epoch mse58:221.11656004179
+training epoch mse59:0.37675918780335
+regress finished: 23.665719049178
+training epoch mse60:218.65978359694
+training epoch mse61:0.37590428525914
+regress finished: 23.660328044984
+training epoch mse62:218.56153423765
+training epoch mse63:0.37644622481193
+regress finished: 23.58514781981
+training epoch mse64:217.1758374647
+training epoch mse65:0.37510356655597
+regress finished: 23.602544601583
+training epoch mse66:217.49554991788
+training epoch mse67:0.37631783637083
+regress finished: 23.65814367732
+training epoch mse68:218.52008715456
+training epoch mse69:0.37724548065982
+regress finished: 23.537155729826
+training epoch mse70:216.29224610789
+training epoch mse71:0.37536687768935
+regress finished: 23.501091903566
+training epoch mse72:215.63090805402
+training epoch mse73:0.37687434744305
+regress finished: 23.52452902346
+training epoch m{ [1] = test,}
+ 
+-------- start ------
+-----------------test------------------
+validating
+finished loading model from networks_univar_validbest/lab1_epoch49.net
+se74:216.0609341664
+training epoch mse75:0.37622313000405
+regress finished: 23.809040241939
+training epoch mse76:221.31407191301
+training epoch mse77:0.37583810752038
+regress finished: 23.574450068372
+training epoch mse78:216.97823117227
+training epoch mse79:0.37573195334528
+regress finished: 23.543434338798
+training epoch mse80:216.4079701973
+training epoch mse81:0.37473892954297
+regress finished: 23.579092305397
+training epoch mse82:217.06429130951
+training epoch mse83:0.37685734342494
+regress finished: 23.579534745273
+training epoch mse84:217.07193289452
+training epoch mse85:0.37435993364591
+regress finished: 23.8592353056
+training epoch mse86:222.24674941536
+training epoch mse87:0.37564911989656
+regress finished: 23.690202707893
+training epoch mse88:219.11270570295
+training epoch mse89:0.37465295853009
+regress finished: 23.451393164683
+training epoch mse90:214.7212010753
+training epoch mse91:0.3754467124542
+regress finished: 23.517835265901
+training epoch mse92:215.93847295568
+training epoch mse93:0.37717000076911
+regress finished: 23.524211242932
+training epoch mse94:216.05438465868
+training epoch mse95:0.37625508020917
+regress finished: 23.632269498988
+training epoch mse96:218.04285136373
+training epoch mse97:0.37609781417486
+regress finished: 23.518046455469
+training epoch mse98:215.94174959308
+training epoch mse99:0.37626264302864
+regress finished: 23.838274287617
+training epoch mse100:221.85686108061
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:1.4951650468151
+regress finished: 28.98559377258
+training epoch mse2:261.81700557093
+training epoch mse3:1.0989393309034
+regress finished: 26.229713973489
+training epoch mse4:214.47452602025
+training epoch mse5:1.0424088404422
+regress finished: 25.385487347781
+training epoch mse6:200.9101755967
+training epoch mse7:1.0161745028645
+regress finished: 25.038622153835
+training epoch mse8:195.46232001974
+training epoch mse9:1.0011568333689
+regress finished: 24.522491902886
+training epoch mse10:187.5068988193
+training epoch mse11:0.99078402659513
+regress finished: 24.236756116859
+training epoch mse12:183.17389713804
+training epoch mse13:0.98000897096034
+regress finished: 24.100087872132
+training epoch mse14:181.11760948495
+training epoch mse15:0.97983387970016
+regress finished: 24.007115163843
+training epoch mse16:179.72253679751
+training epoch mse17:0.97504886592828
+regress finished: 23.883388322616
+training epoch mse18:177.87809755585
+training epoch mse19:0.97214285516603
+regress finished: 23.748406082792
+training epoch mse20:175.88265307358
+training epoch mse21:0.96471277155972
+regress finished: 23.709739821988
+training epoch mse22:175.30684200552
+training epoch mse23:0.96739419242664
+regress finished: 23.695991382003
+training epoch mse24:175.1056002431
+training epoch mse25:0.95897914914528
+regress finished: 23.759927706837
+training epoch mse26:176.04741413333
+training epoch mse27:0.95780059615367
+regress finished: 23.48231267125
+training epoch mse28:171.97156156795
+training epoch mse29:0.9605172575063
+regress finished: 23.54987828721
+training epoch mse30:172.95894260987
+training epoch mse31:0.9608840894649
+regress finished: 23.485613267166
+training epoch mse32:172.01880303583
+training epoch mse33:0.95920398464661
+regress finished: 23.433871941258
+training epoch mse34:171.26140025369
+training epoch mse35:0.95820343741547
+regress finished: 23.352763826807
+training epoch mse36:170.08382414182
+training epoch mse37:0.9579777684543
+regress finished: 23.487408667555
+training epoch mse38:172.04420706484
+training epoch mse39:0.95588704056636
+regress finished: 23.317812514963
+training epoch mse40:169.57615036415
+training epoch mse41:0.95624518213363
+regress finished: 23.312883849577
+training epoch mse42:169.50495901997
+training epoch mse43:0.95501163586206
+regress finished: 23.480285701034
+training epoch mse44:171.93707409371
+training epoch mse45:0.95397264511612
+regress finished: 23.315635945447
+training epoch mse46:169.54319492569
+training epoch mse47:0.94705395257449
+regress finished: 23.276727590411
+training epoch mse48:168.97897936114
+training epoch mse49:0.95043129689688
+regress finished: 23.376061207067
+training epoch mse50:170.41936936249
+training epoch mse51:0.95452537451002
+regress finished: 23.18893097632
+training epoch mse52:167.71114228395
+training epoch mse53:0.95353909545032
+regress finished: 23.211542322533
+training epoch mse54:168.0375864546
+training epoch mse55:0.94918434525554
+regress finished: 23.281072095015
+training epoch mse56:169.04151020112
+training epoch mse57:0.95057959443452
+regress finished: 23.26921564834
+training epoch mse58:168.870482435
+training epoch mse59:0.95209397401597
+regress finished: 23.192277026433
+training epoch mse60:167.7594790132
+training epoch mse61:0.9524729703544
+regress finished: 23.234685116191
+training epoch mse62:168.37126225935
+training epoch mse63:0.95232305316635
+regress finished: 23.14873204737
+training epoch mse64:167.13293471733
+training epoch mse65:0.95252767539983
+regress finished: 23.19891596371
+training epoch mse66:167.85515360556
+training epoch mse67:0.95244441371252
+regress finished: 23.125581787809
+training epoch mse68:166.79954109021
+training epoch mse69:0.95135283370782
+regress finished: 23.1736393841
+training epoch mse70:167.49116808477
+training epoch mse71:0.95254112261276
+regress finished: 23.136603489147
+training epoch mse72:166.95790805191
+training epoch mse73:0.95214623146137
+regress finished: 23.136214927877
+training epoch mse74:166.952{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:nan
+regress finished: nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:nan
+regress finished: nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:nan
+regress finished: nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+44409842
+training epoch mse75:0.95221761343613
+regress finished: 23.190792903653
+training epoch mse76:167.73834925652
+training epoch mse77:0.95089875195287
+regress finished: 23.161146369311
+training epoch mse78:167.31122277827
+training epoch mse79:0.94711573380841
+regress finished: 23.153202725698
+training epoch mse80:167.19430457344
+training epoch mse81:0.95202691760209
+regress finished: 23.168816823494
+training epoch mse82:167.42171634874
+training epoch mse83:0.95255458094094
+regress finished: 23.164538650138
+training epoch mse84:167.36548348527
+training epoch mse85:0.95286061907668
+regress finished: 23.16078298693
+training epoch mse86:167.30625039708
+training epoch mse87:0.95321745116228
+regress finished: 23.193797504891
+training epoch mse88:167.78196120052
+training epoch mse89:0.95314586489373
+regress finished: 23.160551634054
+training epoch mse90:167.30125077691
+training epoch mse91:0.9533749348492
+regress finished: 23.1379442813
+training epoch mse92:166.97851378419
+training epoch mse93:0.95371932544125
+regress finished: 23.141661357029
+training epoch mse94:167.0308782754
+training epoch mse95:0.9531726940571
+regress finished: 23.214187954585
+training epoch mse96:168.07651458649
+training epoch mse97:0.95358882838662
+regress finished: 23.15635309574
+training epoch mse98:167.24296141936
+training epoch mse99:0.95268760611898
+regress finished: 23.221652631374
+training epoch mse100:168.18487847877
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+regress finished: 52.789757319726
+training epoch mse1:nan
+training epoch mse2:nan
+regress finished: nan
+training epoch mse3:nan
+{ [1] = test,}
+ 
+-------- start ------
+-----------------test------------------
+validating
+finished loading model from networks_univar_validbest/lab1_epoch49.net
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+regress finished: 52.789757319726
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+regress finished: 52.789757319726
+training epoch mse1:nan
+training epoch mse2:nan
+regress finished: nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+regress finished: 52.789757319726
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+regress finished: 52.789757319726
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+regress finished: 52.789757319726
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+regress finished: 52.789757319726
+training epoch mse1:nan
+training epoch mse2:nan
+regress finished: nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+regress finished: 55.096536775817
+training epoch mse1:nan
+training epoch mse2:nan
+regress finished: nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+regress finished: 55.096536775817
+training epoch mse1:nan
+training epoch mse2:nan
+regress finished: nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5377687546886
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5377508364957
+regress finished: 54.540214618605
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5377508364957
+regress finished: 54.540214618605
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.4123223629216
+regress finished: 50.098904686182
+training epoch mse2:781.19531228593
+training epoch mse3:1.9094306651391
+regress finished: 48.716066980455
+training epoch mse4:738.76393937921
+training epoch mse5:2.0234349553581
+regress finished: 44.223741130561
+training epoch mse6:608.8874201925
+training epoch mse7:1.6913357322237
+regress finished: 35.329768742743
+training epoch mse8:388.86361391554
+training epoch mse9:1.6981894482364
+regress finished: 35.107460868762
+training epoch mse10:383.9292222071
+training epoch mse11:1.5102487291723
+regress finished: 31.285689471446
+training epoch mse12:312.72990597609
+training epoch mse13:2.6643421085951
+regress finished: 56.346029316198
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.4122276009055
+regress finished: 50.094001334418
+training epoch mse2:781.04235221319
+training epoch mse3:1.7060883149523
+regress finished: 46.040002304143
+training epoch mse4:659.56676755784
+training epoch mse5:1.4434263180201
+regress finished: 30.41563456571
+training epoch mse6:288.37024300729
+training epoch mse7:1.3707702877508
+regress finished: 29.141202427818
+training epoch mse8:264.7488062417
+training epoch mse9:1.3327071789877
+regress finished: 29.22957604238
+training epoch mse10:266.33074335906
+training epoch mse11:1.3665501324735
+regress finished: 28.073844820799
+training epoch mse12:245.72628958875
+training epoch mse13:1.2836950172565
+regress finished: 29.049914857517
+training epoch mse14:263.03338798578
+training epoch mse15:1.2279196066052
+regress finished: 27.387512095688
+training epoch mse16:233.88001137135
+training epoch mse17:1.2232149541923
+regress finished: 28.099509315903
+training epoch mse18:246.14279547312
+training epoch mse19:1.2077037790077
+regress finished: 29.78064395173
+training epoch mse20:276.36025469006
+training epoch mse21:1.2022490749553
+regress finished: 30.017377371039
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5228924575114
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5228924575114
+regress finished: 54.04752381704
+training epoch mse2:909.20325421529
+training epoch mse3:2.4058263143124
+regress finished: 52.026195327025
+training epoch mse4:842.51562535988
+training epoch mse5:2.2949595428244
+regress finished: 49.934129291931
+training epoch mse6:776.16980369633
+training epoch mse7:2.1760266983273
+regress finished: 47.498753120004
+training epoch mse8:702.36352215481
+training epoch mse9:2.0303361896543
+regress finished: 44.195327262621
+training epoch mse10:608.14172571625
+training epoch mse11:1.820310176851
+regress finished: 38.698034914537
+training epoch mse12:466.40150002559
+training epoch mse13:1.5840550702092
+regress finished: 34.50125184769
+training epoch mse14:370.84264206247
+training epoch mse15:1.4487891338587
+regress finished: 32.345440798024
+training epoch mse16:325.99118006146
+training epoch mse17:1.3607928139699
+regress finished: 30.793139059583
+training epoch mse18:295.49510424899
+training epoch mse19:1.304229558174
+regress finished: 30.880234612196
+training epoch mse20:297.14174087892
+training epoch mse21:1.2870215005302
+regress finished: 30.017749626176
+training epoch mse22:280.8004277209
+training epoch mse23:1.2532696976071
+regress finished: 28.367113622601
+training epoch mse24:250.83683245457
+training epoch mse25:1.2634025463945
+regress finished: 28.066349466881
+training epoch mse26:245.56737405387
+training epoch mse27:1.2419506695431
+regress finished: 27.611426710385
+training epoch mse28:237.69279443008
+training epoch mse29:1.2077756394101
+regress finished: 27.352389576302
+training epoch mse30:233.26658965456
+training epoch mse31:1.1984660774354
+regress finished: 34.562190327739
+training epoch mse32:371.94871701389
+training epoch mse33:1.1959152050551
+regress finished: 28.188405093391
+training epoch mse34:247.67127547463
+training epoch mse35:1.1968129549787
+regress finished: 26.648483316266
+training epoch mse36:221.43646665476
+training epoch mse37:1.230977872242
+regress finished: 27.490707124012
+training epoch mse38:235.61284814245
+training epoch mse39:1.143099787987
+regress finished: 26.38421939811
+training epoch mse40:217.0625106905
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5230210771137
+regress finished: 54.042927715117
+training epoch mse2:909.04905482171
+training epoch mse3:2.4057059787245
+regress finished: 52.016004589999
+training epoch mse4:842.18591555422
+training epoch mse5:2.2943150658698
+regress finished: 49.920191442397
+training epoch mse6:775.73694477798
+training epoch mse7:2.1751499264425
+regress finished: 47.479723385564
+training epoch mse8:701.8012193815
+training epoch mse9:2.0289525059529
+regress finished: 44.168042125816
+training epoch mse10:607.39137020962
+training epoch mse11:1.8181284864367
+regress finished: 38.648342392195
+training epoch mse12:465.20398809592
+training epoch mse13:1.5822348466106
+regress finished: 34.492899488004
+training epoch mse14:370.66183981659
+training epoch mse15:1.4463080770217
+regress finished: 32.372047760767
+training epoch mse16:326.52592232195
+training epoch mse17:1.3537509506362
+regress finished: 30.685169979224
+training epoch mse18:293.43118061298
+training epoch mse19:1.3023374997556
+regress finished: 30.837604822471
+training epoch mse20:296.31367755435
+training epoch mse21:1.2701680884029
+regress finished: 30.06330141781
+training epoch mse22:281.64937975832
+training epoch mse23:1.242185222548
+regress finished: 28.303155515964
+training epoch mse24:249.71037863531
+training epoch mse25:1.2250187553259
+regress finished: 28.106265836904
+training epoch mse26:246.25071030049
+training epoch mse27:1.1976700996651
+regress finished: 27.455435503598
+training epoch mse28:235.00478001905
+training epoch mse29:1.2005128389963
+regress finished: 27.205361599491
+training epoch mse30:230.75120289866
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.5229515180497
+regress finished: 54.045587176738
+training epoch mse2:909.13835580388
+training epoch mse3:2.4058146794113
+regress finished: 52.031725894705
+training epoch mse4:842.69473272742
+training epoch mse5:2.2954169371964
+regress finished: 49.940213866289
+training epoch mse6:776.35896474681
+training epoch mse7:2.1767944274191
+regress finished: 47.494341530105
+training epoch mse8:702.23366011893
+training epoch mse9:2.0312691910075
+regress finished: 44.180566559215
+training epoch mse10:607.7372899485
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:nan
+regress finished: nan
+training epoch mse2:nan
+training epoch mse3:nan
+regress finished: nan
+training epoch mse4:nan
+training epoch mse5:nan
+regress finished: nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.2339807179234
+regress finished: 54.040097938488
+training epoch mse2:912.97973499323
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:nan
+regress finished: nan
+training epoch mse2:nan
+training epoch mse3:nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:nan
+regress finished: nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:nan
+regress finished: nan
+training epoch mse2:nan
+training epoch mse3:nan
+regress finished: nan
+training epoch mse4:nan
+training epoch mse5:nan
+regress finished: nan
+training epoch mse6:nan
+training epoch mse7:nan
+regress finished: nan
+training epoch mse8:nan
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:2.033339685243
+regress finished: 54.187264035499
+training epoch mse2:1030.4548153627
+training epoch mse3:1.9343549154038
+regress finished: 52.433063159695
+training epoch mse4:964.83632779197
+training epoch mse5:1.8379458957315
+regress finished: 50.655520141171
+training epoch mse6:900.54511881749
+training epoch mse7:1.7362851649729
+regress finished: 48.693114112585
+training epoch mse8:832.14017069486
+training epoch mse9:1.6198389699931
+regress finished: 46.347665890651
+training epoch mse10:753.92475197613
+training epoch mse11:1.4726055651985
+regress finished: 43.219567357283
+training epoch mse12:655.61085799951
+training epoch mse13:1.269053871416
+regress finished: 38.9510561637
+training epoch mse14:532.53144999194
+training epoch mse15:1.0774264330546
+regress finished: 36.005506872737
+training epoch mse16:455.04729809673
+training epoch mse17:0.9518738480434
+regress finished: 33.859821087639
+training epoch mse18:402.4298335176
+training epoch mse19:0.85137105166648
+regress finished: 32.242063168858
+training epoch mse20:364.8933899062
+training epoch mse21:0.77939176054132
+regress finished: 31.01926514009
+training epoch mse22:337.74069314514
+training epoch mse23:0.72830328746377
+regress finished: 30.403814934098
+training epoch mse24:324.46233022379
+training epoch mse25:0.69053327654623
+regress finished: 30.271465895813
+training epoch mse26:321.62745796167
+training epoch mse27:0.68371154107175
+regress finished: 29.036596894539
+training epoch mse28:295.93805938426
+training epoch mse29:0.63218659582286
+regress finished: 28.61136340417
+training epoch mse30:287.32898418273
+training epoch mse31:0.61647874894887
+regress finished: 28.003433539927
+training epoch mse32:275.26452295119
+training epoch mse33:0.61880890754665
+regress finished: 27.928290649352
+training epoch mse34:273.77490845907
+training epoch mse35:0.59438009259537
+regress finished: 28.309586351279
+training epoch mse36:281.27651024228
+training epoch mse37:0.56018529055597
+regress finished: 27.388871387673
+training epoch mse38:263.28944536386
+training epoch mse39:0.55000662443164
+regress finished: 27.567925798724
+training epoch mse40:266.73541868979
+training epoch mse41:0.53929019018006
+regress finished: 26.957972440389
+training epoch mse42:255.07252258034
+training epoch mse43:0.53475940817997
+regress finished: 26.100975756367
+training epoch mse44:239.12850184233
+training epoch mse45:0.52630012286668
+regress finished: 25.890782654621
+training epoch mse46:235.2924487016
+training epoch mse47:0.52197517911243
+regress finished: 26.037644548836
+training epoch mse48:237.96459281111
+training epoch mse49:0.5157512640204
+regress finished: 25.80680370171
+training epoch mse50:233.76790816441
+training epoch mse51:0.5129255225061
+regress finished: 25.895651785809
+training epoch mse52:235.37362031347
+training epoch mse53:0.51013964067748
+regress finished: 25.500981557452
+training epoch mse54:228.26206169341
+training epoch mse55:0.50568061207211
+regress finished: 25.465615968311
+training epoch mse56:227.62997722961
+training epoch mse57:0.51269822748336
+regress finished: 25.725441531929
+training epoch mse58:232.28332626381
+training epoch mse59:0.50528151594876
+regress finished: 26.119305274194
+training epoch mse60:239.44571973844
+training epoch mse61:0.50269808970185
+regress finished: 25.074037890929
+training epoch mse62:220.68294827898
+training epoch mse63:0.49650794642478
+regress finished: 24.842600049389
+training epoch mse64:216.63108041962
+training epoch mse65:0.48947962695309
+regress finished: 24.962271993687
+training epoch mse66:218.72028785237
+training epoch mse67:0.4817376136515
+regress finished: 25.208581852672
+training epoch mse68:223.0508286245
+training epoch mse69:0.48326073544943
+regress finished: 25.138400188414
+training epoch mse70:221.80760530287
+training epoch mse71:0.48539763775334
+regress finished: 25.641713739273
+training epoch mse72:230.78391670231
+training epoch mse73:0.49354752330984
+regress finished: 26.190369284073
+training epoch mse74:240.74061876247
+training epoch mse75:0.49110863977139
+regress finished: 24.576884645768
+training epoch mse76:212.02947235607
+training epoch mse77:0.48539391200178
+regress finished: 24.265810391654
+training epoch mse78:206.69986842164
+training epoch mse79:0.48016205402238
+regress finished: 24.616421625948
+training epoch mse80:212.70530970612
+training epoch mse81:0.47898819258962
+regress finished: 24.065199005918
+training epoch mse82:203.29649326325
+training epoch mse83:0.47455214006723
+regress finished: 25.04783663984
+training epoch mse84:220.20971574204
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:
+training epoch mse1:4.122038841413
+regress finished: 54.044133150307
+training epoch mse2:907.43490100813
+training epoch mse3:4.0045756814551
+regress finished: 52.03028333556
+training epoch mse4:841.19523800119
+training epoch mse5:3.893261644839
+regress finished: 49.940802031479
+training epoch mse6:775.12497339836
+training epoch mse7:3.7749421580231
+regress finished: 47.498678817019
+training epoch mse8:701.33470003677
+training epoch mse9:3.6298991895967
+regress finished: 44.190170860207
+training epoch mse10:607.26083109355
+training epoch mse11:3.420684731217
+regress finished: 38.858289803709
+training epoch mse12:469.94043414015
+training epoch mse13:3.1792070574962
+regress finished: 34.52092293553
+training epoch mse14:371.23869738636
+training epoch mse15:3.0361417328583
+regress finished: 32.052824282013
+training epoch mse16:320.26212842422
+training epoch mse17:2.9332459832906
+regress finished: 30.397225304887
+training epoch mse18:288.17986989232
+training epoch mse19:2.8595967302643
+regress finished: 29.357168095374
+training epoch mse20:268.88939026806
+training epoch mse21:2.8072090489871
+regress finished: 28.545160109071
+training epoch mse22:254.2947140787
+training epoch mse23:2.7674297714243
+regress finished: 28.074641391127
+training epoch mse24:246.02017745383
+training epoch mse25:2.7359516117056
+regress finished: 28.166129148192
+training epoch mse26:247.59389475287
+training epoch mse27:2.7099143291677
+regress finished: 27.008676725702
+training epoch mse28:227.7957125714
+training epoch mse29:2.6858978663895
+regress finished: 26.340784341471
+training epoch mse30:216.74375892169
+training epoch mse31:2.6659294752322
+regress finished: 25.831358178835
+training epoch mse32:208.50087921176
+training epoch mse33:2.6508169056171
+regress finished: 25.510881888097
+training epoch mse34:203.39483134779
+training epoch mse35:2.6363065688857
+regress finished: 25.665977673839
+training epoch mse36:205.84529687223
+training epoch mse37:2.6240124504193
+regress finished: 25.192795933074
+training epoch mse38:198.38300879674
+training epoch mse39:2.6160544000698
+regress finished: 26.265231826396
+training epoch mse40:215.46974096055
+training epoch mse41:2.6071062169083
+regress finished: 25.401367282928
+training epoch mse42:201.63982462895
+training epoch mse43:2.6004570398845
+regress finished: 24.653131828921
+training epoch mse44:190.03659948055
+training epoch mse45:2.5925780403634
+regress finished: 24.613082863711
+training epoch mse46:189.41822061723
+training epoch mse47:2.5870714139363
+regress finished: 24.270484851461
+training epoch mse48:184.22769037319
+training epoch mse49:2.5832749649656
+regress finished: 24.436984205203
+training epoch mse50:186.73823493552
+training epoch mse51:2.5754650534045
+regress finished: 24.642829390796
+training epoch mse52:189.86183383089
+training epoch mse53:2.5701630083924
+regress finished: 23.976756238352
+training epoch mse54:179.83000169819
+training epoch mse55:2.5674641093506
+regress finished: 24.341495736545
+training epoch mse56:185.28436840236
+training epoch mse57:2.5619058543427
+regress finished: 23.678474295675
+training epoch mse58:175.41877403885
+training epoch mse59:2.5568224879869
+regress finished: 26.426306097925
+training epoch mse60:218.06039659979
+training epoch mse61:2.5533627429869
+regress finished: 23.816054626493
+training epoch mse62:177.43986054699
+training epoch mse63:2.550566776499
+regress finished: 23.47514586963
+training epoch mse64:172.44331376917
+training epoch mse65:2.5483992746718
+regress finished: 23.458505465123
+training epoch mse66:172.1996698508
+training epoch mse67:2.5445825207289
+regress finished: 24.1916368798
+training epoch mse68:183.0181498925
+training epoch mse69:2.5426595456046
+regress finished: 23.826343287379
+training epoch mse70:177.58238168257
+training epoch mse71:2.5388165294458
+regress finished: 23.631956301136
+training epoch mse72:174.72431207044
+training epoch mse73:2.5389173020739
+regress finished: 23.470772049779
+training epoch mse74:172.3720318889
+training epoch mse75:2.5377156918532
+regress finished: 23.215418637693
+training epoch mse76:168.67899977315
+training epoch mse77:2.5374793357698
+regress finished: 23.468999692625
+training epoch mse78:172.34438373812
+training epoch mse79:2.5344202311997
+regress finished: 23.405540687961
+training epoch mse80:171.422702052
+training epoch mse81:2.5330858447797
+regress finished: 23.191202892559
+training epoch mse82:168.32833153575
+training epoch mse83:2.5295205696091
+regress finished: 23.816498271277
+training epoch mse84:177.42874141241
+training epoch mse85:2.530332011089
+regress finished: 23.924805497563
+training epoch mse86:179.03011332673
+training epoch mse87:2.5233039662303
+regress finished: 23.100782163417
+training epoch mse88:167.02465329911
+training epoch mse89:2.5233922696074
+regress finished: 23.262617339238
+training epoch mse90:169.3497627166
+training epoch mse91:2.5230457338102
+regress finished: 23.483815124294
+training epoch mse92:172.55092148833
+training epoch mse93:2.5248561088598
+regress finished: 23.181355914826
+training epoch mse94:168.1808426277
+training epoch mse95:2.5027500123641
+regress finished: 23.003394050236
+training epoch mse96:165.63204838124
+training epoch mse97:2.4987304997036
+regress finished: 23.219002624097
+training epoch mse98:168.70392889474
+training epoch mse99:2.5009861970793
+regress finished: 23.180043097188
+training epoch mse100:168.14133148207
+{ [1] = train,}
+ 
+-------- start ------
+-----------------train------------------
+finished building model:

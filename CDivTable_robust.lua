@@ -9,6 +9,10 @@ function CDivTable_robust:updateOutput(input)
    self.output:resizeAs(input[1]):copy(input[1])   
    self.output:cdiv(input[2])
    self.output[input[2]:abs():le(0.1)] = 0.0
+
+   if(input[2]:abs():le(0.1):sum() > 1) then
+      print(self.output)
+   end
    --print('output '..self.output:norm().. ' '..input[1]:norm()..' '..input[2]:norm())
    return self.output
 end

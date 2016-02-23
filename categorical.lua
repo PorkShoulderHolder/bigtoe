@@ -2,8 +2,11 @@
 require 'torch'
 require 'math'
 require 'nn'
+require 'cunn'
 require 'cutorch'
 require 'kernelutil'
+require 'CDivTable_rebust'
+
 
 local Categorical, parent = torch.class('nn.Categorical', 'nn.DepthConcat')
 
@@ -37,6 +40,7 @@ function Categorical:updateOutput(input)
 end
 
 KernelNet = nn.Sequential()
+
 
 
 function KernelNet:new (o, lookback, cluster_count, act_count, mask, buffer)
@@ -96,12 +100,14 @@ function KernelNet:init(lookback, cluster_count, act_count, mask, buffer)
   consolidation_table:add(all_impulse_holder)
 
   self:add(consolidation_table)
-  
+
   temporal_ratio:add(conv_layer_top)
   temporal_ratio:add(conv_layer_clone_bott)
 
   self:add(temporal_ratio) -- expects {Tensor(1,1,(lookback*2+1,3), Tensor(1,1,(lookback*2+1,3)}
-  self:add(nn.CDivTable())
+  self:add(CDivTable_robust())
+
+  --nn.utils.recursiveType(KernelNet, 'torch.CudaTensor')
 end
 
 function KernelNet:format( sample )
@@ -118,30 +124,67 @@ function KernelNet:format( sample )
 	local impulses = sample:ne(0)
 
  	local out =  {val_input, impulses}
+
+ 	print(val_input[1])
+ 	print(impulses)
+ 	assert(false)
  	return out
 
 end
 
+function normalize( xs, mean, std )
+	local xi = xs:ne(0)
+	mean = mean or mean = xs:sum() / xi:sum()
+	std = std or torch.sqrt( (torch.pow(xs,2):sum() / xi:sum()) - (mean * mean))
+
+	xs = xs - mean
+	xs = torch.cmul(xs, inputnnx)
+
+	if std > 0 then
+		xs = xs/std
+	end
+
+	return xs:clone(), mean, std
+end
+
 function KernelNet:train( data )
 	local shuffle_idxs = torch.randperm(data:size(1) - 2*self.lookback):add(self.lookback)
-
+	local epoch = 1
+	local learningRate = 1
+	local learningRateDecay = 0.01
 	for idx=1, data:size(1) do
 		
+
 		local i = shuffle_idxs[idx] 
 
 		local sample = data[{{i - self.lookback, i + self.lookback}}]
+		
+
 		local input = self:format(sample)
-		local target = input[1][self.mask]
+		local target = input[1][1][self.mask]
+
+		if target ~= 0 and sample:ne(0):sum() > 10 then
+			input[1][1][{{self.mask - self.buffer, self.mask}}]:fill(0)
+			input[1][1] = input[1][1]:cuda()
+			input[1][2] = input[1][2]:cuda()
+			input[1][3] = input[1][3]:cuda()
+			input[2] = input[2]:cuda()
+
+			local output = self:forward(input)
+			
+			target = target:viewAs(output):cuda()
+
+			local mseloss = self.criterion:forward(output:cuda(), target:cuda())
+			local gradient = self.criterion:backward(output:cuda(), target:cuda())
+			local backwards_gd = target:clone():zero()
+			
+			backwards_gd[1] = mseloss 
+			backwards_gd = backwards_gd:cuda()
 	
-		input[1][1][{{self.mask - self.buffer, self.mask}}]:fill(0)
-
-
-		local output = self:forward(input)
-
-		local mseloss = self.criterion:forward(output, target)
-		local gradient = self.criterion:backward(output,target)
-
-
+			self:backward(input, backwards_gd)
+			current_learning_rate = learningRate / (1 + epoch * learningRateDecay)
+			self:updateParameters(current_learning_rate)
+		end
 	end
 end
 
@@ -152,9 +195,11 @@ end
 local args = {...} 
 
 function test()
-	local test_net = KernelNet:new():cuda()
+	local test_net = KernelNet:new()
+	test_net = test_net:cuda()
 	x = assert(loadfile('readjson.lua'))(args[1])
 	print(x:size())
+	print(test_net)
 	test_net:train(x)
 end
 
