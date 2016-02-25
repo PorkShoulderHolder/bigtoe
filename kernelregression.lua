@@ -143,7 +143,7 @@ function setup_network(labix, countX)
 	print(big_model)
 	big_model = big_model:cuda()
 
-	conv_layer_clone_bott:share(conv_layer_top,'bias')
+	conv_layer_clone_bott:share(conv_layer_top,'weight','bias')
 	criterion = nn.MSECriterion():cuda()
 	dmsedf_table = {}
 	mseloss_table = {}
