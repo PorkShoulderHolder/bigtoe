@@ -10,6 +10,7 @@ luac.out
 *.txt
 *.net
 experiments
+networks_univar_train
 
 # Object files
 *.o
