@@ -9,52 +9,49 @@ require 'CDivTable_rebust'
 require 'gnuplot'
 require 'debug'
 require 'os'
+local json = require('json')
 
 
-local Categorical, parent = torch.class('nn.Categorical', 'nn.DepthConcat')
+-- local Categorical, parent = torch.class('nn.Categorical', 'nn.DepthConcat')
 
-KernelNet = {}
-function Categorical:__init (category_count, time_slices)
+-- KernelNet = {}
+-- function Categorical:__init (category_count, time_slices)
   
-  --
-  --	input: tensor of size <time_slices> * <category_count>
-  --	output: tensor of size <time_slices>
-  --
-  --	weights and bias of category_kernel_0 are shared across each time step, and learn
-  -- 	a time independent importance weighting
-  --
-  parent.__init(self,3)
+--   --
+--   --	input: tensor of size <time_slices> * <category_count>
+--   --	output: tensor of size <time_slices>
+--   --
+--   --	weights and bias of category_kernel_0 are shared across each time step, and learn
+--   -- 	a time independent importance weighting
+--   --
+--   parent.__init(self,3)
 
- -- o = nn.DepthConcat(1)
-  self.category_kernel_0 =  nn.Linear(category_count, 1)
-  self:add(category_kernel_0)
+--  -- o = nn.DepthConcat(1)
+--   self.category_kernel_0 =  nn.Linear(category_count, 1)
+--   self:add(category_kernel_0)
 
-  for i=1,time_slices do
-  	local kernel_copy = self.category_kernel_0:clone('weight', 'bias')
-  	self:add(kernel_copy)
-  end
-end
+--   for i=1,time_slices do
+--   	local kernel_copy = self.category_kernel_0:clone('weight', 'bias')
+--   	self:add(kernel_copy)
+--   end
+-- end
 
-function Categorical:updateOutput(input)
-	print(self)
-	print(self.output)
-	print("asdas")
-	return self.output
-end
+-- function Categorical:updateOutput(input)
+-- 	print(self)
+-- 	print(self.output)
+-- 	print("asdas")
+-- 	return self.output
+-- end
 
-KernelNet = nn.Sequential()
+KernelNet, parent = torch.class('nn.KernelNet', 'nn.Sequential')
 
-function KernelNet:new (o, lookback, cluster_count, act_count, mask, buffer, maxgrad)
-      local o = o or {}
-      setmetatable(o, self)
-      self.__index = self
-      self.__tostring = o.__tostring
-      self:init(lookback, cluster_count, act_count, mask)
-      return o
+function KernelNet:__init (lookback, cluster_count, act_count, mask, buffer, maxgrad)
+	parent.__init(self)  
+	self:initq(lookback, cluster_count, act_count, mask, buffer)
 end
 
 
-function KernelNet:init(lookback, cluster_count, act_count, mask, buffer)
+function KernelNet:initq(lookback, cluster_count, act_count, mask, buffer)
   
   self:setupHyperParams(lookback,cluster_count,act_count,mask,buffer)
   self.criterion = nn.MSECriterion():cuda()
@@ -73,8 +70,8 @@ function KernelNet:init(lookback, cluster_count, act_count, mask, buffer)
   cluster_kern = nn.Linear(self.cluster_count, 1)
   act_kern = nn.Linear(self.act_count, 1)
 
-  act_kern.weight = act_kern.weight:fill(1)
-  cluster_kern.weight = cluster_kern.weight:fill(1	)
+  -- act_kern.weight = act_kern.weight:fill(1)
+  -- cluster_kern.weight = cluster_kern.weight:fill(1)
 
   all_vars:add(cluster_kern)           -- latlng clusters
   all_vars:add(act_kern)               -- activity types
@@ -116,14 +113,14 @@ end
 function KernelNet:format( sample )
 
 	--
-	-- takes a sample of the form 31 x 3 and outputs 3 vectors 
+	-- takes a sample of the form {31 x 1 and outputs 3 vectors 
 	-- self.lookback x 1
 	-- self.lookback x 120
 	-- self.lookback x 6
 	--
 	local act_hist = build_hist(sample[{{},3}], self.act_count)
 	local loc_hist = build_hist(sample[{{},2}], self.cluster_count)
-	local impulses = sample:ne(0):t():clone():double()
+	local impulses = sample:ne(0):t():clone():cuda()
 	local val_input = {{sample[{{},1}]:clone():view(2*self.lookback + 1, 1):clone(), loc_hist, act_hist}, impulses}
  	local out = {val_input, impulses:clone()}
  	return out
@@ -170,17 +167,30 @@ function KernelNet:maskArray( t )
 	
 	t[1][2][{{1,3},{self.mask - self.buffer, self.mask}}] = 0
 	t[2][{{1,3},{self.mask - self.buffer, self.mask}}]:fill(0)
+	if self.hide_exogenous then
+		t[1][1][2]:fill(0)
+		---t[1][1][3]:fill(0)
+		t[1][2][{{2,2},{1, self.mask}}] = 0
+		t[2][{{2,2},{1, self.mask}}]:fill(0)
+	end
 end
 
-function KernelNet:clipGrad( gradient )
+function KernelNet:clipGrad( gradient, maxgrad )
+	local maxgrad = maxgrad or self.maxgrad
 	if gradient ~= gradient then
 		gradient = 0
-	elseif gradient < -1 * self.maxgrad  then
-		gradient = -1 * self.maxgrad 
-	elseif gradient > self.maxgrad  then
-		gradient = self.maxgrad 
+	elseif gradient < -1 * maxgrad  then
+		gradient = -1 * maxgrad 
+	elseif gradient > maxgrad  then
+		gradient = maxgrad 
 	end
 	return gradient
+end
+
+function KernelNet:clipBias( )
+	for k,v in pairs({conv_layer_top, act_kern, cluster_kern}) do
+		v.bias[1] = self:clipGrad(v.bias[1], self.maxbias)
+	end
 end
 
 function KernelNet:normalizeInput( input )
@@ -205,7 +215,7 @@ function KernelNet:updateTrainStats( mse )
 end
 
 function KernelNet:updateValidStats( result, target )
-	self.total_mse = self.total_mse + torch.pow(result - target, 2):squeeze()
+	self.total_mse = self.total_mse + ((result - target:squeeze()) * (result - target:squeeze())):squeeze()
 	self.counter = self.counter + 1
 end
 
@@ -214,18 +224,22 @@ function KernelNet:getRMSE()
 end
 
 function KernelNet:setupHyperParams(lookback, cluster_count, act_count, mask, buffer)
-	self.minobs_valid = 100
-	self.minobs_train = 10
-	self.learning_rate = 1
-	self.learning_rate_decay = 0.02
+	self.minobs_valid = 60
+	self.minobs_train = 15
+	self.learning_rate = 2
+	self.hide_exogenous = true
+	self.learning_rate_decay = 0.01
+	self.tv_lambda = 0.05
 	self.lookback = lookback or 30
 	self.cluster_count = cluster_count or 120
   	self.act_count = act_count or 6
   	self.buffer = buffer or 5
 	self.minobs_bg_valid = 2 * self.lookback - (self.buffer + 1)
-
+	self.minobs_bg_train = 0.3 * self.lookback 
   	self.mask = mask or 2 * self.lookback + 1
     self.maxgrad = maxgrad or 2
+    self.maxbias = 0.005
+    self.total_mse = 0
 end
 
 function KernelNet:resetStats()
@@ -234,13 +248,16 @@ function KernelNet:resetStats()
 end
 
 function KernelNet:updateVisuals( epoch )
-	-- body
-	--print("epoch " .. epoch ..  "training error: " .. total_mse/counter)
-	--print(total_mse/counter, mseloss, output, target)	
-	--print(conv_layer_clone_bott.weight)
-	--gnuplot.plot({'bg temporal filter',conv_layer_top.weight[1][{{1,61}}]:float():squeeze(), '-'})
-	gnuplot.plot({'bg temporal filter',conv_layer_top.weight[1][{{1,61}}]:float():squeeze(), '-'},{'location temporal filter',conv_layer_top.weight[1][{{62,122}}]:float():squeeze(), '-'}, {'activity temporal filter',conv_layer_top.weight[1][{{122,183}}]:float():squeeze(), '-'})
-	--gnuplot.plot(self.cluster_kern:float():squeeze())
+
+	local bg_time = {'bg temporal filter',conv_layer_top.weight[1][{{1,61}}]:float():squeeze(), '-'}
+	local act_time = {'location temporal filter',conv_layer_top.weight[1][{{62,122}}]:float():squeeze()*3, '-'}
+	local loc_time = {'activity temporal filter',conv_layer_top.weight[1][{{122,183}}]:float():squeeze()*3, '-'}
+	local clusters = {'cluster weights', torch.linspace(1,30, self.cluster_kern:nElement()), self.cluster_kern:float():squeeze() + 6, '-'}
+	
+	local stretched = self.act_kern:float():squeeze()
+	local act_s = {'activity weights', torch.linspace(1,20, stretched:nElement()), stretched + 12, '-'}
+
+	gnuplot.plot(bg_time, act_time, loc_time, act_s, clusters)
 	--gnuplot.plot({'location weights', self.cluster_kern:float():squeeze(), '-'})	
 end
 
@@ -252,26 +269,37 @@ function KernelNet:checkConditions( sample, input )
 	return has_target and has_recent and has_enough_bgs 
 end
 
+function KernelNet:totalVariation()
+	-- body
+	local w_bg = conv_layer_top.weight[1][{{1,2*self.lookback + 1}}]:squeeze()
+	local offset = torch.Tensor(2*self.lookback + 2):fill(0)
+	offset[{{2,2*self.lookback + 2}}] = w_bg
+	return (w_bg - offset):abs():sum()
+end
+
 function KernelNet:train( data, epoch )
 	collectgarbage()
 	local shuffle_idxs = torch.randperm(data:size(1) - 2*self.lookback):add(self.lookback)
 	self:resetStats()
+	local output = nil
+	local zeroes = 0
 	for idx=1, data:size(1) - 2*self.lookback do
 		
-	--	if(idx % 1000 == 1) then self:updateVisuals() end
+	  --  if(idx % 500 == 1) then self:updateVisuals() end
 		local i = shuffle_idxs[idx] 
 		local sample = data[{{i - self.lookback, i + self.lookback}}]
 		local input = self:format(sample)
 		local target = input[1][1][1][self.mask]:clone()
-		if target[1] ~= 0 and sample:ne(0):sum() > self.minobs_train then
+		if target[1] ~= 0 and sample:ne(0):sum() > self.minobs_train and input[1][1][1]:ne(0):sum() > self.minobs_bg_train  then
 			self:zeroGradParameters()	
 			self:maskArray(input)
 			cudafyTable(input)
 			mean, std = KernelNet:normalizeInput(input)
 			target = (target - mean) / std
 
-			local output = self:forward(input)
+			output = self:forward(input)
 			
+			if output:squeeze() == 0 then zeroes = zeroes + 1 end
 			target = target:viewAs(output):cuda()
 		
 			local mseloss = self.criterion:forward(output:cuda(), target:cuda())
@@ -280,68 +308,53 @@ function KernelNet:train( data, epoch )
 			self:updateTrainStats(mseloss)
 			gradient[1][1] = self:clipGrad(gradient[1][1])
 			self:backward(input, gradient)
-			local current_learning_rate = self.learning_rate * self.learning_rate_decay
+			local current_learning_rate = self.learning_rate  * self.learning_rate_decay
 			self:updateParameters(current_learning_rate)
+			self:clipBias()
 
 		end
 	end
-	print("epoch " .. epoch .. " got " .. self.total_mse / self.counter .. " MSE on " .. self.counter .." training samples")
+	print("epoch " .. epoch .. " got " .. self.total_mse / self.counter .. " MSE on " .. self.counter .." training samples: percent 0s: " .. zeroes/self.counter)
 end
 
 function KernelNet:predict( data )
 	-- method used for testing and validation
-	
+	local total_mse_static = 0
 	self:resetStats()
-
 	for i=self.lookback + 1, data:size(1) - self.lookback do
 		local sample = data[{{i - self.lookback, i + self.lookback}}]
 		local input = self:format(sample)
 		local target = input[1][1][1][self.mask]:clone()
+		local static_guess = input[1][1][1][self.mask - (self.buffer + 1)]
 		if self:checkConditions(sample,input) then
 
 			self:maskArray(input)
 			cudafyTable(input)
 			mean, std = KernelNet:normalizeInput(input)
-
 			local output = self:forward(input)
 			local result = (output * std) + mean		
 			self:updateValidStats(result, target)
+			total_mse_static = total_mse_static + (static_guess[1] - target[1])^2
 		end
 	end
-	print("got -|" .. self:getRMSE() .. "|- RMSE on -|" .. self.counter .."|- validation samples")
+	print("got -|" .. self:getRMSE() .. "|- RMSE on -|" .. self.counter .."|- validation samples vs " .. math.sqrt(total_mse_static/self.counter))
 	return self:getRMSE()
 end
 
-local args = {...} 
+local args = { ... } 
 
 
-function test()
-	local filename = os.date("%c", os.time()):gsub(' ','-') .. ".net" 
-	local test_net = KernelNet:new()
-	test_net = test_net:cuda()
-	x = assert(loadfile('readjson.lua'))(args[1])
-	print(x:size())
-	print(test_net)
-	local t_split = 5.0 / 6.0
-	local tv_split = 4.0 / 5.0
-
-	x = x[{{1, x:size(1) * t_split}}]:clone()
-	local training_data = x[{{1,x:size(1) * tv_split}}]:clone()
-	local validation_data = x[{{x:size(1) * tv_split, x:size(1)}}]:clone()
-	--test_net:predict(validation_data)
-	local valid_score = 10000000
-	for i=1,10 do
-		test_net:train(training_data, i)
-		local vs = test_net:predict(validation_data)
-		if vs < valid_score then
-			valid_score = vs 
-			torch.save("experiments/" .. filename , test_net)
-		end
-		test_net:updateVisuals()
-	end
+function KernelNet:saveWeights(filename)
+	local json_data = {location_weights=self.cluster_kern:clone():double():totable(), 
+					   act_weights=self.act_kern:clone():double():totable(), 
+					   temporal_weights=conv_layer_top.weight:clone():double():totable()}
+	json.save("experiments/weights" .. filename .. ".json", json_data)
 end
 
-test()
-
+function KernelNet:save( filename, tn )
+	-- body
+	torch.save("experiments/" .. filename .. ".t7", tn:clone('weight','bias'))
+	self:saveWeights( filename )
+end
 
 

@@ -6,15 +6,13 @@ local json = require('json')
 
 function loadjsonfile( filename )
 	datatable = json.load(filename)
-
 	return datatable
 end
 
-
 function build_tables(bgs, acts, locs)
 	
-	act_keys = {stationary=1, stationaryautomotive=2, automotive=3, 
-				walking=4, running=5, cycling=6}
+	act_keys = {stationary=1, stationaryautomotive=2, automotive=2, 
+				walking=3, running=4, cycling=5}
 
 	local bg_tensor = {}
 	local act_tensor = {}
@@ -59,17 +57,13 @@ function build_tables(bgs, acts, locs)
 		act_tensor_copy[k] = act_tensor[j[k]]
 	end	
 
-	print(bg_tensor_copy:size(2))
-	print(loc_tensor_copy:size(2))
-	print("punani")
-
 	return bg_tensor_copy, act_tensor_copy, loc_tensor_copy
 end	
 
 
-function form_impulse_tensor(t, start, range)
+function form_impulse_tensor(t, start, range, freq)
 	local t_diff = range
-	local freq = 300
+	local freq = freq or 300
 	local count = t_diff / freq
 	local out_impulse = torch.zeros(count)
 	local out = torch.zeros(count, t:size(2) - 1)
@@ -88,27 +82,29 @@ function form_impulse_tensor(t, start, range)
 	return out
 end
 
-function load_data()
+local args = { ... }
+
+function load_data(identifier)
+
 	local bgs = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/bgs.json")
 	print("loaded bgs")
 	local activities = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/activities.json")
 	print("loaded activities")
-	local locations = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/clustered_locs.json")
+	local locations = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/clustered_locs" .. identifier .. ".json")
 	print("loaded locations")
 	--local transactions = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/transactions.json")
 	--print("loaded transactions")
 	return build_tables(bgs, activities, locations)
 end
 
-if(path.exists('bgdata') == false or path.exists('actdata') == false or path.exists('locdata') == false) then
-	bgs, acts, locs = load_data()
+if(path.exists('bgdata') == false or path.exists('actdata') == false or path.exists('locdata' .. args[1]) == false) then
+	bgs, acts, locs = load_data(args[1])
 	torch.save('bgdata',bgs)
-	torch.save('locdata',locs)
+	torch.save('locdata' .. args[1],locs)
 	torch.save('actdata',acts)
 else
-	print('loading from file')
 	bgs = torch.load('bgdata')
-	locs = torch.load('locdata')
+	locs = torch.load('locdata' .. args[1])
 	acts = torch.load('actdata')
 end
 
@@ -119,14 +115,13 @@ function find_timeline(bgs, acts, locs)
 	local starts = {bgs[1][1], acts[1][1], locs[1][1]}
 	local finish = math.max(unpack(fins))
 	local start = math.min(unpack(starts))
-	print(start, finish - start)
 	return start, finish - start
 end
 
 local start, range = find_timeline(bgs, acts, locs)
 
 
-return form_impulse_tensor(bgs, start, range):cat(form_impulse_tensor(locs, start, range)):cat(form_impulse_tensor(acts, start, range))
+return form_impulse_tensor(bgs, start, range, 300):cat(form_impulse_tensor(locs, start, range, 300)):cat(form_impulse_tensor(acts, start, range, 300))
 
 
 
