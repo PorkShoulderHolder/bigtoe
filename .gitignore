@@ -6,6 +6,11 @@ luac.out
 *.zip
 *.tar.gz
 
+# saved data
+*.txt
+*.net
+experiments
+
 # Object files
 *.o
 *.os
