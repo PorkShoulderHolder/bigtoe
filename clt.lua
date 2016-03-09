@@ -1,6 +1,6 @@
 require 'torch'
 require 'nn'
-require 'cunn'
+require('fakecuda').init(true)
 require 'lfs'
 require 'categorical'
 
@@ -37,7 +37,7 @@ function test(identifier)
 	--test_net:save(filename,test_net)
 	--test_net:predict(validation_data)
 
-	for i=1,150 do
+	for i=1,500 do
 		test_net:train(training_data, i)
 		local vs = test_net:predict(validation_data)
 		if vs < valid_score then

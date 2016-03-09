@@ -2,7 +2,7 @@ require 'torch'
 require 'math'
 require 'pl'
 
-local json = require('json')
+local json = require('cjson')
 
 function loadjsonfile( filename )
 	print(filename)

@@ -2,15 +2,13 @@
 require 'torch'
 require 'math'
 require 'nn'
-require 'cunn'
-require 'cutorch'
 require 'kernelutil'
 require 'CDivTable_rebust'
 require 'MSETVCriterion'
 require 'gnuplot'
 require 'debug'
 require 'os'
-local json = require('json')
+local json = require('cjson')
 
 
 -- local Categorical, parent = torch.class('nn.Categorical', 'nn.DepthConcat')
@@ -143,7 +141,8 @@ function KernelNet:format( sample )
 	--
 	local act_hist = build_hist(sample[{{},3}], self.act_count)
 	local loc_hist = build_hist(sample[{{},2}], self.cluster_count)
-	local impulses = sample:ne(0):t():double()
+
+	local impulses = sample:ne(0):t():clone():double()
 	local val_input = {{sample[{{},1}]:clone():view(2*self.lookback + 1, 1):clone(), loc_hist, act_hist}, impulses}
  	local out = {val_input, impulses:clone()}
  	return out
@@ -414,8 +413,11 @@ local args = { ... }
 function KernelNet:saveWeights(filename)
 	local json_data = {location_weights=self.cluster_kern:clone():double():totable(), 
 					   act_weights=self.act_kern:clone():double():totable(), 
-					   temporal_weights=self.conv_layer_top.weight:clone():double():totable()}
-	json.save("experiments/weights" .. filename .. ".json", json_data)
+					   temporal_weights=conv_layer_top.weight:clone():double():totable()}
+	local json_str = json.encode(json_data)
+	local f = assert(io.open("experiments/weights" .. filename .. ".json", "w+"))
+    	local t = f:write(json_str)
+	f:close()
 end
 
 function KernelNet:save( filename )
