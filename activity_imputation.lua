@@ -1,4 +1,3 @@
-require 'cunn'
 require 'torch'
 require 'nn'
 require 'gnuplot'

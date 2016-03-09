@@ -1,12 +1,14 @@
 require 'torch' 
 require 'math'
 require 'pl'
+require 'lfs'
 
 local json = require('cjson')
+local prefix = lfs.currentdir() .. "/data/"
 
 function loadjsonfile( filename )
-	print(filename)
-	datatable = json.load(filename)
+	print(prefix .. filename)
+	datatable = json.load(prefix .. filename)
 	return datatable
 end
 
@@ -89,27 +91,28 @@ end
 local args = { ... }
 
 function load_data(identifier)
-	local locations = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/clustered_locs" .. identifier .. ".json")
+
+	local locations = loadjsonfile("clustered_locs" .. identifier .. ".json")
 	print("loaded locations")
 	--local transactions = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/transactions.json")
 	--print("loaded transactions")
-	local bgs = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/bgs.json")
+	local bgs = loadjsonfile("bgs.json")
 	print("loaded bgs")
-	local activities = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/activities.json")
+	local activities = loadjsonfile("activities.json")
 	print("loaded activities")
 	
 	return build_tables(bgs, activities, locations)
 end
 
-if(path.exists('bgdata') == false or path.exists('actdata') == false or path.exists('locdata' .. args[1]) == false) then
+if(path.exists(prefix .. 'bgdata') == false or path.exists(prefix .. 'actdata') == false or path.exists(prefix .. 'locdata' .. args[1]) == false) then
 	bgs, acts, locs = load_data(args[1])
-	torch.save('bgdata',bgs)
-	torch.save('locdata' .. args[1],locs)
-	torch.save('actdata',acts)
+	torch.save(prefix .. 'bgdata',bgs)
+	torch.save(prefix .. 'locdata' .. args[1],locs)
+	torch.save(prefix .. 'actdata',acts)
 else
-	bgs = torch.load('bgdata')
-	locs = torch.load('locdata' .. args[1])
-	acts = torch.load('actdata')
+	bgs = torch.load(prefix .. 'bgdata')
+	locs = torch.load(prefix .. 'locdata' .. args[1])
+	acts = torch.load(prefix .. 'actdata')
 end
 
 function get_range(t) return t[t:size(1)][1] - t[1][1] end
