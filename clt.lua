@@ -1,6 +1,6 @@
 require 'torch'
 require 'nn'
-require 'cunn'
+require('fakecuda').init(true)
 require 'lfs'
 require 'categorical'
 
@@ -40,7 +40,7 @@ function test(identifier)
 	print("saved!")
 	test_net:predict(validation_data)
 
-	for i=1,150 do
+	for i=1,500 do
 		test_net:train(training_data, i)
 		local vs = test_net:predict(validation_data)
 		if vs < valid_score then
@@ -71,7 +71,7 @@ function valid_network(net_file)
 end
 
 if args[1] == 'train' then
-	test()
+	test(args[2])
 elseif args[1] == "get_weights" then
 	local net_file = args[2]
 	local model = torch.load(net_file)

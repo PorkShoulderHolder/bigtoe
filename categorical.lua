@@ -2,14 +2,12 @@
 require 'torch'
 require 'math'
 require 'nn'
-require 'cunn'
-require 'cutorch'
 require 'kernelutil'
 require 'CDivTable_rebust'
 require 'gnuplot'
 require 'debug'
 require 'os'
-local json = require('json')
+local json = require('cjson')
 
 
 -- local Categorical, parent = torch.class('nn.Categorical', 'nn.DepthConcat')
@@ -120,14 +118,14 @@ function KernelNet:format( sample )
 	--
 	local act_hist = build_hist(sample[{{},3}], self.act_count)
 	local loc_hist = build_hist(sample[{{},2}], self.cluster_count)
-	local impulses = sample:ne(0):t():clone():cuda()
+	local impulses = sample:ne(0):t():clone():double()
 	local val_input = {{sample[{{},1}]:clone():view(2*self.lookback + 1, 1):clone(), loc_hist, act_hist}, impulses}
  	local out = {val_input, impulses:clone()}
  	return out
 end
 
 function normalize( xs, mean, std )
-	local xi = xs:ne(0)
+	local xi = xs:ne(0):double()
 	if xi:sum() == 0 then
 		return xs, 0, 0
 	end
@@ -145,7 +143,7 @@ function normalize( xs, mean, std )
 	if xs:size(2) == 1 then
 		xs = torch.cmul(xs, xi)
 	else
-		xs = torch.cmul(xs, mean:ne(0))
+		xs = torch.cmul(xs, mean:ne(0):double())
 	end
 	if xs:size(2) == 1 and std > 0 then
 		xs = xs/std
@@ -227,7 +225,7 @@ function KernelNet:setupHyperParams(lookback, cluster_count, act_count, mask, bu
 	self.minobs_valid = 60
 	self.minobs_train = 15
 	self.learning_rate = 2
-	self.hide_exogenous = true
+	self.hide_exogenous = false
 	self.learning_rate_decay = 0.01
 	self.tv_lambda = 0.05
 	self.lookback = lookback or 30
@@ -348,12 +346,15 @@ function KernelNet:saveWeights(filename)
 	local json_data = {location_weights=self.cluster_kern:clone():double():totable(), 
 					   act_weights=self.act_kern:clone():double():totable(), 
 					   temporal_weights=conv_layer_top.weight:clone():double():totable()}
-	json.save("experiments/weights" .. filename .. ".json", json_data)
+	local json_str = json.encode(json_data)
+	local f = assert(io.open("experiments/" .. filename .. "weights.json", "w+"))
+    	local t = f:write(json_str)
+	f:close()
 end
 
 function KernelNet:save( filename, tn )
 	-- body
-	torch.save("experiments/" .. filename .. ".t7", tn:clone('weight','bias'))
+	torch.save("experiments/" .. filename .. ".t7", self:clone('weight','bias'))
 	self:saveWeights( filename )
 end
 
