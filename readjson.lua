@@ -5,20 +5,26 @@ require 'pl'
 local json = require('json')
 
 function loadjsonfile( filename )
+	print(filename)
 	datatable = json.load(filename)
 	return datatable
 end
 
 function build_tables(bgs, acts, locs)
 	
-	act_keys = {stationary=1, stationaryautomotive=2, automotive=2, 
-				walking=3, running=4, cycling=5}
+	act_keys = {stationary=1, stationaryautomotive=2, automotive=3, 
+				walking=4, running=5, cycling=6}
 
 	local bg_tensor = {}
 	local act_tensor = {}
 	local loc_tensor = {}
 	local testor = {}
 	
+	for i,t in pairs(locs) do 
+		local o= json.decode(t)
+		loc_tensor[i] = {o["unix_date"], o["cluster"]}
+	end
+
 	for i,t in pairs(bgs) do 
 		bg_tensor[i] = {t["unix_date"], t["reading"]}
 	end
@@ -28,15 +34,13 @@ function build_tables(bgs, acts, locs)
 		testor[t["activity"]] = 0
 	end
 
-	for i,t in pairs(locs) do 
-		loc_tensor[i] = {t["unix_date"], t["cluster"]}
-	end
 
 
 	local a,i = torch.sort(torch.Tensor(bg_tensor):select(2,1))
 	local b,j = torch.sort(torch.Tensor(act_tensor):select(2,1))
 	local c,l = torch.sort(torch.Tensor(loc_tensor):select(2,1))
 	
+
 	bg_tensor = torch.Tensor(bg_tensor)
 	loc_tensor = torch.DoubleTensor(loc_tensor)
 	act_tensor = torch.Tensor(act_tensor)
@@ -85,15 +89,15 @@ end
 local args = { ... }
 
 function load_data(identifier)
-
-	local bgs = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/bgs.json")
-	print("loaded bgs")
-	local activities = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/activities.json")
-	print("loaded activities")
 	local locations = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/clustered_locs" .. identifier .. ".json")
 	print("loaded locations")
 	--local transactions = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/transactions.json")
 	--print("loaded transactions")
+	local bgs = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/bgs.json")
+	print("loaded bgs")
+	local activities = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/activities.json")
+	print("loaded activities")
+	
 	return build_tables(bgs, activities, locations)
 end
 
@@ -121,7 +125,7 @@ end
 local start, range = find_timeline(bgs, acts, locs)
 
 
-return form_impulse_tensor(bgs, start, range, 300):cat(form_impulse_tensor(locs, start, range, 300)):cat(form_impulse_tensor(acts, start, range, 300))
+return form_impulse_tensor(bgs, start, range, 30):cat(form_impulse_tensor(locs, start, range, 30)):cat(form_impulse_tensor(acts, start, range, 30))
 
 
 

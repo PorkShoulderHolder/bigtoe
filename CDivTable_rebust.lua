@@ -40,6 +40,5 @@ function CDivTable_robust:updateGradInput(input, gradOutput)
    -- self.gradInput[1][self.gradInput[1]:ne(self.gradInput[1])] = 0.0
    -- self.gradInput[2][self.gradInput[2]:ne(self.gradInput[2])] = 0.0
 
-
    return self.gradInput
 end
