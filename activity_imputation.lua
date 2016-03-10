@@ -39,7 +39,17 @@ end
 function ActivityImputer:updateVisuals( )
 	-- body
 	gnuplot.figure(1)
-	gnuplot.splot(self.kernel.weight[{2,{}}]:view(self.act_types,2*self.range + 1))
+
+
+	--gnuplot.imagesc(self.kernel.weight[{1,{}}]:view(self.act_types,2*self.range + 1),'color')
+	gnuplot.raw('set multiplot layout 6,1')
+	gnuplot.imagesc(self.kernel.weight[{1,{}}]:view(self.act_types,2*self.range + 1):clone(),'color')
+	gnuplot.imagesc(self.kernel.weight[{2,{}}]:view(self.act_types,2*self.range + 1):clone(),'color')
+	gnuplot.imagesc(self.kernel.weight[{3,{}}]:view(self.act_types,2*self.range + 1):clone(),'color')
+	gnuplot.imagesc(self.kernel.weight[{4,{}}]:view(self.act_types,2*self.range + 1):clone(),'color')
+	gnuplot.imagesc(self.kernel.weight[{5,{}}]:view(self.act_types,2*self.range + 1):clone(),'color')
+	gnuplot.imagesc(self.kernel.weight[{6,{}}]:view(self.act_types,2*self.range + 1):clone(),'color')
+	gnuplot.raw('unset multiplot')
 end
 
 function ActivityImputer:updateTrainStats( mse )
