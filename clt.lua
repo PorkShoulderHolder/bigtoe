@@ -3,24 +3,9 @@ require 'nn'
 require('fakecuda').init(true)
 require 'lfs'
 require 'categorical'
-
+require 'kernelutil'
 args = { ... }
 
-
-function train_test_split(identifier)
-	-- body
-	x,y,z = assert(loadfile('readjson.lua'))(identifier) -- include cluster partition identifier to specify which
-	local t_split = 5.0 / 6.0
-	local tv_split = 9.0 / 10.0
-
-	x = x[{{1, x:size(1) * t_split}}]:clone()
---	y = y[{{1, y:size(1) * t_split}}]:clone()
---	z = z[{{1, z:size(1) * t_split}}]:clone()
-	local training_data = x[{{1,x:size(1) * tv_split}}]:clone() --, y[{{1, y:size(1) * tv_split}}]:clone(), z[{{1, z:size(1) * tv_split}}]:clone()}
-	local validation_data = x[{{x:size(1) * tv_split, x:size(1)}}]:clone() -- y[{{y:size(1) * tv_split, y:size(1)}}]:clone()	, z[{{z:size(1) * tv_split, z:size(1)}}]:clone()}
-
-	return training_data, validation_data
-end
 
 function test(identifier)
 	identifier = identifier or ''
