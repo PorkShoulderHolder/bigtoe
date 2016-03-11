@@ -12,6 +12,11 @@ function loadjsonfile( filename )
 	return datatable
 end
 
+function pad( data, padding )
+	local out = torch.Tensor(data:size(1) + 2 * padding, data:size(2))
+	out[{{padding, data:size(1) + padding}}] = data:clone()
+end
+
 function build_tables(bgs, acts, locs)
 	
 	act_keys = {stationary=1, stationaryautomotive=2, automotive=3, 

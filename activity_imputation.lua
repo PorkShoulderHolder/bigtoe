@@ -3,6 +3,7 @@ require 'torch'
 require 'nn'
 require 'gnuplot'
 require 'kernelutil'
+local viz = require('visualizer') 
 
 local ActivityImputer, parent = torch.class('nn.ActivityImputer', 'nn.Sequential')
 
@@ -34,6 +35,15 @@ function ActivityImputer:format(sample)
 	local out = torch.Tensor(self.act_types,2*self.range + 1)
 	for i=1,self.act_types do
 		out[{i,{}}] = sample:eq(i)
+	end
+	return out
+end
+
+function ActivityImputer:batchFormat( data )
+	local padded_data = pad(data)
+	local out = torch.Tensor(data:size(1), self.act_types)
+	for i=1,data:size(1) do
+		out[i] = self:format(padded_data[{{i, i + (2 * padding + 1)}])
 	end
 	return out
 end
@@ -149,18 +159,15 @@ function ActivityImputer:valid( data )
 end
 
 
-function ActivityImputer:batchLogProb( data )
+function ActivityImputer:batchProb( data )
 	
 	-- returns a tensor of log probabilities for each class for each sample 
 
 	local out = torch.Tensor(data:size(1), self.act_types):fill(0)
 	for i=self.range + 1, data:size(1) - self.range do
 		local sample = data[{{i - self.range, i + self.range}}]:clone()
-		local target = sample:clone()[self.range + 1]
 		local input = self:format(sample)
-		if sample:ne(0):sum() > self.min_obs + 1 then
-			out[i] = torch.exp(self:forward(input))
-		end
+		out[i] = torch.exp(self:forward(input))
 	end
 	return out
 end
@@ -218,9 +225,17 @@ function test()
 			min_loss = loss
 			torch.save("activity_kernel.t7", net)
 			print("network saved")
+			-- look at one week
+			gnuplot.raw('set multiplot layout 2,1')
+			viz.draw_onehot(valid_data[{{1, 30250}}], net)
+			viz.draw_onehot_nll(valid_data[{{1, 30250}}], net)
+			gnuplot.raw('unset multiplot')
 		end
 	end
+
 end
+
+
 
 test()
 

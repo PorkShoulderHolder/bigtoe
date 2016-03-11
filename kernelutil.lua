@@ -20,7 +20,7 @@ function augment_time(data)
 	
 	for i=6,data:size(1) - 6 do
 		if data[i] ~= 0 then
-			local perturb = math.floor((torch.randn(1)[1]) + 0.5)
+			local perturb = math.floor((torch.randn(1)[1] / 2) + 0.5)
 			--print(perturb)
 			if i + perturb >= 1 and i + perturb <= out:size(1) then
 				out[i + perturb] = data[i]
