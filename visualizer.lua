@@ -6,20 +6,26 @@ function draw_onehot( data, network )
 	-- draws one hot encoding
 	--
 	local onehot = network:batchFormat(data)
-	gnuplot.imshow(data)
+	 -- gnuplot.imshow(data)
+end
+
+function pad( data, padding )
+	local out = torch.Tensor(data:size(1) + 2 * padding):fill(0)
+	out[{{padding, data:size(1) + padding - 1}}] = data:clone()
+	return out
 end
 
 function draw_onehot_nll( data, network )
-	local input = torch.Tensor(data:size(1) + 2* network.range, data:size(2)):fill(0)
-	local to_draw = network:batchProb(input)
-	gnuplot.plot(input)
+	local input = pad(data, network.range)
+	local to_draw = torch.log(network:batchProb(input))
 
-	local stationary = {'stationary',input[{1,{}}], '-'}
-	local  stat_auto = {'stationary-automotive', input[{2,{}}], '-'}
-	local auto = {'automotive', input[{3,{}}], '-'}
-	local walking = {'walking', input[{4,{}}], '-'}
-	local running = {'running', input[{5,{}}], '-'}
-	local cycling = {'cycling', input[{6,{}}], '-'}
 
-	gnuplot.plot(stationary, stat_auto, auto, walking, running, cycling)
+	
+	local stationary = {'stationary',to_draw[{{},1}], '-'}
+	local  stat_auto = {'transport', to_draw[{{},2}], '-'}
+	local walking = {'walking', to_draw[{{},3}], '-'}
+	local running = {'running', to_draw[{{},4}], '-'}
+	local cycling = {'cycling', to_draw[{{},5}], '-'}
+
+	gnuplot.plot(stationary, stat_auto, walking, running, cycling)
 end

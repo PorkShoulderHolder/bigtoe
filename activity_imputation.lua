@@ -3,7 +3,7 @@ require 'torch'
 require 'nn'
 require 'gnuplot'
 require 'kernelutil'
-local viz = require('visualizer') 
+require 'visualizer' 
 
 local ActivityImputer, parent = torch.class('nn.ActivityImputer', 'nn.Sequential')
 
@@ -12,7 +12,7 @@ function ActivityImputer:__init(act_types)
    parent.__init(self)
 
 	self.act_types = act_types or 6
-	self.range = range or 30
+	self.range = range or 120
 	self.min_obs = 2
 	self.maxgrad = 1
 	self.learning_rate = 1
@@ -21,9 +21,11 @@ function ActivityImputer:__init(act_types)
 	
 	self:zeroStats()
 
+	self.averaging_pd = 11
 	self.criterion = nn.ClassNLLCriterion()
-	self.kernel = nn.Linear(self.act_types* (2*self.range + 1),self.act_types)
-	self:add(nn.Reshape(self.act_types* (2*self.range + 1)))
+	self.kernel = nn.Linear(self.act_types* ((2*self.range + 1) - self.averaging_pd),self.act_types)
+	self:add(nn.SpatialAveragePooling((2*self.range + 1) - self.averaging_pd, self.act_types, 1, 1))
+	self:add(nn.Reshape(self.act_types* ((2*self.range + 1) - self.averaging_pd)))
 	self:add(self.kernel)
 	self:add(nn.LogSoftMax())
 end
@@ -40,21 +42,22 @@ function ActivityImputer:format(sample)
 end
 
 function ActivityImputer:batchFormat( data )
-	local padded_data = pad(data)
-	local out = torch.Tensor(data:size(1), self.act_types)
+	local padding = self.range
+	local padded_data = pad(data, padding)
+	local out = torch.Tensor(data:size(1), 2* padding + 1, self.act_types)
 	for i=1,data:size(1) do
-		out[i] = self:format(padded_data[{{i, i + (2 * padding + 1)}])
+		out[i] = self:format(padded_data[{{i, i + (2 * padding)}}])
 	end
 	return out
 end
 
-function ActivityImputer:updateVisuals( )
+function ActivityImputer:updateVisuals( data )
 	-- body
-	2gnuplot.figure(1)
+	gnuplot.figure(1)
 	gnuplot.splot(self.kernel.weight[{2,{}}]:view(self.act_types,2*self.range + 1))
 	gnuplot.raw('set multiplot layout 2,1')
-	viz.draw_onehot(valid_data[{{1, 30250}}], net)
-	viz.draw_onehot_nll(valid_data[{{1, 30250}}], net)
+	draw_onehot(data[{{2500, 3111}}], self)
+	draw_onehot_nll(data[{{2500, 3111}}], self)
 	gnuplot.raw('unset multiplot')
 end
 
@@ -180,7 +183,7 @@ function ActivityImputer:train( data, n, epoch_size )
 
 	-- performs one epoch of training 
 
-	batch_size = epoch_size or 0.4
+	batch_size = epoch_size or 1
 	collectgarbage()
 	self.total_mse = 0
 	self.counter = 0
@@ -206,7 +209,6 @@ function ActivityImputer:train( data, n, epoch_size )
 			self:updateParameters(current_learning_rate)
 		end
 	end
-	self:updateVisuals()
 	print("epoch " .. n .. " got " .. self.total_mse / self.counter .. " MSE on " .. self.counter .." training samples")
 end
 args = { ... }
@@ -215,7 +217,7 @@ function test()
 	local net = nn.ActivityImputer()
 	print(net)
 	local min_loss = 1000
-	local training_data, valid_data = train_test_split('')
+	local training_data, valid_data = train_test_split(args[1])
 	training_data = training_data[{{},3}]
 	valid_data = valid_data[{{},3}]
 	print(training_data:size(1), valid_data:size(1))
@@ -224,6 +226,8 @@ function test()
 		local loss = net:valid(valid_data)
 		net:nearestGuessEval(valid_data)
 		net:modeEval(valid_data)
+		net:updateVisuals(valid_data)
+
 		print(net.actual_totals)
 		if loss < min_loss then
 			min_loss = loss

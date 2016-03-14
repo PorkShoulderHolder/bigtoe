@@ -8,13 +8,17 @@ local prefix = lfs.currentdir() .. "/data/"
 
 function loadjsonfile( filename )
 	print(prefix .. filename)
-	datatable = json.load(prefix .. filename)
+	local f = assert(io.open(prefix .. filename))
+	local json_str = f:read("*all")
+	f:close()
+	datatable = json.decode(json_str)
 	return datatable
 end
 
 function pad( data, padding )
-	local out = torch.Tensor(data:size(1) + 2 * padding, data:size(2))
-	out[{{padding, data:size(1) + padding}}] = data:clone()
+	local out = torch.Tensor(data:size(1) + 2 * padding):fill(0)
+	out[{{padding, data:size(1) + padding - 1}}] = data:clone()
+	return out
 end
 
 function build_tables(bgs, acts, locs)
@@ -28,7 +32,8 @@ function build_tables(bgs, acts, locs)
 	local testor = {}
 	
 	for i,t in pairs(locs) do 
-		local o= json.decode(t)
+		t = t:gsub("'",'"')
+		local o = json.decode(t)
 		loc_tensor[i] = {o["unix_date"], o["cluster"]}
 	end
 
@@ -41,12 +46,9 @@ function build_tables(bgs, acts, locs)
 		testor[t["activity"]] = 0
 	end
 
-
-
 	local a,i = torch.sort(torch.Tensor(bg_tensor):select(2,1))
 	local b,j = torch.sort(torch.Tensor(act_tensor):select(2,1))
-	local c,l = torch.sort(torch.Tensor(loc_tensor):select(2,1))
-	
+	local c,l = torch.sort(torch.Tensor(loc_tensor):select(2,1))	
 
 	bg_tensor = torch.Tensor(bg_tensor)
 	loc_tensor = torch.DoubleTensor(loc_tensor)
@@ -133,7 +135,7 @@ end
 local start, range = find_timeline(bgs, acts, locs)
 
 
-return form_impulse_tensor(bgs, start, range, 30):cat(form_impulse_tensor(locs, start, range, 30)):cat(form_impulse_tensor(acts, start, range, 30))
+return form_impulse_tensor(bgs, start, range, 15):cat(form_impulse_tensor(locs, start, range, 15)):cat(form_impulse_tensor(acts, start, range, 15))
 
 
 
