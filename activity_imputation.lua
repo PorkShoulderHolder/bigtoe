@@ -50,8 +50,12 @@ end
 
 function ActivityImputer:updateVisuals( )
 	-- body
-	gnuplot.figure(1)
+	2gnuplot.figure(1)
 	gnuplot.splot(self.kernel.weight[{2,{}}]:view(self.act_types,2*self.range + 1))
+	gnuplot.raw('set multiplot layout 2,1')
+	viz.draw_onehot(valid_data[{{1, 30250}}], net)
+	viz.draw_onehot_nll(valid_data[{{1, 30250}}], net)
+	gnuplot.raw('unset multiplot')
 end
 
 function ActivityImputer:updateTrainStats( mse )
@@ -226,10 +230,6 @@ function test()
 			torch.save("activity_kernel.t7", net)
 			print("network saved")
 			-- look at one week
-			gnuplot.raw('set multiplot layout 2,1')
-			viz.draw_onehot(valid_data[{{1, 30250}}], net)
-			viz.draw_onehot_nll(valid_data[{{1, 30250}}], net)
-			gnuplot.raw('unset multiplot')
 		end
 	end
 
