@@ -34,7 +34,7 @@ function build_tables(bgs, acts, locs)
 	for i,t in pairs(locs) do 
 		t = t:gsub("'",'"')
 		local o = json.decode(t)
-		loc_tensor[i] = {o["unix_date"], o["cluster"]}
+		loc_tensor[i] = {o["unix_date"], o["latitude"], o["longitude"]}
 	end
 
 	for i,t in pairs(bgs) do 

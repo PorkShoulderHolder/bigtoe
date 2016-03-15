@@ -7,25 +7,24 @@ require 'visualizer'
 
 local ActivityImputer, parent = torch.class('nn.ActivityImputer', 'nn.Sequential')
 
-function ActivityImputer:__init(act_types)
+function ActivityImputer:__init(act_types, weights)
 	-- body
-   parent.__init(self)
-
+    parent.__init(self)
+   	weights = weights or nil
 	self.act_types = act_types or 6
-	self.range = range or 120
+	self.range = range or 24
 	self.min_obs = 2
-	self.maxgrad = 1
-	self.learning_rate = 1
+	self.maxgrad = 500000
+	self.learning_rate = 0.6
 	self.hide_exogenous = false
 	self.learning_rate_decay = 0.01
 	
 	self:zeroStats()
 
 	self.averaging_pd = 11
-	self.criterion = nn.ClassNLLCriterion()
-	self.kernel = nn.Linear(self.act_types* ((2*self.range + 1) - self.averaging_pd),self.act_types)
-	self:add(nn.SpatialAveragePooling((2*self.range + 1) - self.averaging_pd, self.act_types, 1, 1))
-	self:add(nn.Reshape(self.act_types* ((2*self.range + 1) - self.averaging_pd)))
+	self.criterion = nn.ClassNLLCriterion(weights)
+	self.kernel = nn.Linear(self.act_types* (2*self.range + 1),self.act_types)
+	self:add(nn.Reshape(self.act_types* (2*self.range + 1)))
 	self:add(self.kernel)
 	self:add(nn.LogSoftMax())
 end
@@ -55,10 +54,10 @@ function ActivityImputer:updateVisuals( data )
 	-- body
 	gnuplot.figure(1)
 	gnuplot.splot(self.kernel.weight[{2,{}}]:view(self.act_types,2*self.range + 1))
-	gnuplot.raw('set multiplot layout 2,1')
-	draw_onehot(data[{{2500, 3111}}], self)
-	draw_onehot_nll(data[{{2500, 3111}}], self)
-	gnuplot.raw('unset multiplot')
+	--gnuplot.raw('set multiplot layout 2,1')
+	--draw_onehot(data[{{2500, 12000}}], self)
+	--draw_onehot_nll(data[{{2500, 12000}}], self)
+	--gnuplot.raw('unset multiplot')
 end
 
 function ActivityImputer:updateTrainStats( mse )
@@ -94,7 +93,9 @@ end
 function ActivityImputer:statsToString( )
 	local out = "total accuracy: " .. self.total_correct/self.counter .. " per class accuracy: "
 	for k,v in pairs(self.accuracy_stats:totable()) do
-		out = out .. k .. " - " .. v/self.actual_totals[k] .. ", " 
+		local precision = v / self.predicted_totals[k]
+		local recall = v / self.actual_totals[k]
+		out = out .. "\n" .. k .. " - " .. v/self.actual_totals[k] .. " f1: " .. 2 * precision * recall / (precision + recall)
 	end
 	return out:sub(1,-3)
 end
@@ -176,7 +177,17 @@ function ActivityImputer:batchProb( data )
 		local input = self:format(sample)
 		out[i] = torch.exp(self:forward(input))
 	end
-	return out
+
+	local period = 5;
+	local avg = out:clone():fill(0)
+
+	for i=1,out:size(1) do
+		local left = math.max(1, i - period/2)
+		local right = math.min(out:size(1), i + period/2)
+		avg[i] = out[{{left,right}}]:mean(1)
+	end
+
+	return avg
 end
 
 function ActivityImputer:train( data, n, epoch_size )
@@ -194,7 +205,7 @@ function ActivityImputer:train( data, n, epoch_size )
 		local sample = data[{{i - self.range, i + self.range}}]:clone()
 		local target = sample:clone()[self.range + 1]
 		sample[self.range + 1] = 0
-		--sample = augment_time(sample)
+		sample = augment_time(sample)
 
 		local input = self:format(sample)
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
@@ -214,19 +225,33 @@ end
 args = { ... }
 
 function test()
-	local net = nn.ActivityImputer()
-	print(net)
 	local min_loss = 1000
 	local training_data, valid_data = train_test_split(args[1])
+
 	training_data = training_data[{{},3}]
 	valid_data = valid_data[{{},3}]
+
+	local s = training_data:ne(0):sum()
+	print(s)
+	local num_acts = 6
+	local weights = torch.Tensor(num_acts)
+
+	for i=1,weights:size(1) do
+		weights[i] = (1 - (training_data:eq(i):sum() / s)) * (1 - (training_data:eq(i):sum() / s))
+	end
+	weights = weights * 4
+	print(weights)
+	local net = nn.ActivityImputer(num_acts,weights)
+	print(net)
+
 	print(training_data:size(1), valid_data:size(1))
 	for i=1,100 do
 		net:train(training_data,i)
+		net:updateVisuals(valid_data)
+
 		local loss = net:valid(valid_data)
 		net:nearestGuessEval(valid_data)
 		net:modeEval(valid_data)
-		net:updateVisuals(valid_data)
 
 		print(net.actual_totals)
 		if loss < min_loss then
@@ -236,12 +261,20 @@ function test()
 			-- look at one week
 		end
 	end
-
 end
 
+function load_model( filename )
+	local net = torch.load(filename)
+	local training_data, valid_data = train_test_split(args[1])
+	local data = training_data:cat(valid_data, 1)
+	local out = net:batchProb(data)
+	return out
+end
 
+if args[1] == 'apply' then
+	load_model(args[2] or 'data/activity_kernel_aug_49_15sec.t7')
 
-test()
-
-
+else
+	test()
+end
 

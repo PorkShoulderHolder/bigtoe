@@ -1,5 +1,5 @@
 require 'gnuplot'
-
+require 'nn'
 
 function draw_onehot( data, network )
 	-- 
@@ -23,9 +23,9 @@ function draw_onehot_nll( data, network )
 	
 	local stationary = {'stationary',to_draw[{{},1}], '-'}
 	local  stat_auto = {'transport', to_draw[{{},2}], '-'}
-	local walking = {'walking', to_draw[{{},3}], '-'}
-	local running = {'running', to_draw[{{},4}], '-'}
-	local cycling = {'cycling', to_draw[{{},5}], '-'}
+	local walking = {'motile', to_draw[{{},3}], '-'}
+--	local running = {'running', to_draw[{{},4}], '-'}
+	local cycling = {'cycling', to_draw[{{},4}], '-'}
 
-	gnuplot.plot(stationary, stat_auto, walking, running, cycling)
+	gnuplot.plot(stationary, stat_auto, walking, cycling)
 end
