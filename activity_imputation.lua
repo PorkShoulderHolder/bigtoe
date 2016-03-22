@@ -267,7 +267,11 @@ function load_model( filename )
 	local net = torch.load(filename)
 	local training_data, valid_data = train_test_split(args[1])
 	local data = training_data:cat(valid_data, 1)
-	local out = net:batchProb(data)
+	local out = net:batchProb(data[{{},3}])
+
+	local data_0 = torch.Tensor(data:size(1),3):fill(0)
+	data_0[{{},1}] = data[{{},1}]
+	local out = net:batchProb(data[{{},3}])
 	return out
 end
 
