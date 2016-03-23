@@ -6,7 +6,7 @@ function draw_onehot( data, network )
 	-- draws one hot encoding
 	--
 	local onehot = network:batchFormat(data)
-	 -- gnuplot.imshow(data)
+	 gnuplot.imshow(data)
 end
 
 function pad( data, padding )

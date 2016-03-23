@@ -32,9 +32,8 @@ function build_tables(bgs, acts, locs)
 	local testor = {}
 	
 	for i,t in pairs(locs) do 
-		t = t:gsub("'",'"')
-		local o = json.decode(t)
-		loc_tensor[i] = {o["unix_date"], o["latitude"], o["longitude"]}
+		--local o = json.decode(t)
+		loc_tensor[i] = {t["unix_date"], t["latitude"], t["longitude"]}
 	end
 
 	for i,t in pairs(bgs) do 
@@ -99,7 +98,7 @@ local args = { ... }
 
 function load_data(identifier)
 
-	local locations = loadjsonfile("clustered_locs" .. identifier .. ".json")
+	local locations = loadjsonfile("locations.json")
 	print("loaded locations")
 	--local transactions = loadjsonfile("/Users/sam.royston/PycharmProjects/PankyV0/data/backup/dump/diabetes/transactions.json")
 	--print("loaded transactions")
@@ -114,7 +113,7 @@ end
 if(path.exists(prefix .. 'bgdata') == false or path.exists(prefix .. 'actdata') == false or path.exists(prefix .. 'locdata' .. args[1]) == false) then
 	bgs, acts, locs = load_data(args[1])
 	torch.save(prefix .. 'bgdata',bgs)
-	torch.save(prefix .. 'locdata' .. args[1],locs)
+	torch.save(prefix .. 'locdata',locs)
 	torch.save(prefix .. 'actdata',acts)
 else
 	bgs = torch.load(prefix .. 'bgdata')

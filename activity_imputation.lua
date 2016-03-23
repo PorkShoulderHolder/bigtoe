@@ -277,7 +277,6 @@ end
 
 if args[1] == 'apply' then
 	load_model(args[2] or 'data/activity_kernel_aug_49_15sec.t7')
-
 else
 	test()
 end
