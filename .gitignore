@@ -14,6 +14,7 @@ networks_univar_train
 locdata*
 bgdata
 actdata
+data
 
 # Object files
 *.o
