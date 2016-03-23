@@ -9,6 +9,7 @@ luac.out
 # saved data
 *.txt
 *.net
+*.t7
 experiments
 networks_univar_train
 locdata*
