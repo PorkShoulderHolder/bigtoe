@@ -10,24 +10,28 @@ function build_hist(labels, res)
 	return out
 end
 
-function augment_time(data)
-	local time_std_dev = 2
+function augment_time(data, proportion)
+	if math.random() < proportion then
+		local time_std_dev = 2
 
-	local out = data:clone():fill(0)
+		local out = data:clone():fill(0)
 
-	out[{{1,5}}] = data[{{1,5}}]
-	out[{{data:size(1) - 5,data:size(1)}}] = data[{{data:size(1) - 5,data:size(1)}}]
-	
-	for i=6,data:size(1) - 6 do
-		if data[i] ~= 0 then
-			local perturb = math.floor((torch.randn(1)[1] / 2) + 0.5)
-			--print(perturb)
-			if i + perturb >= 1 and i + perturb <= out:size(1) then
-				out[i + perturb] = data[i]
+		out[{{1,5}}] = data[{{1,5}}]
+		out[{{data:size(1) - 5,data:size(1)}}] = data[{{data:size(1) - 5,data:size(1)}}]
+		
+		for i=6,data:size(1) - 6 do
+			if data[i] ~= 0 then
+				local perturb = math.floor((torch.randn(1)[1] / 2) + 0.5)
+				--print(perturb)
+				if i + perturb >= 1 and i + perturb <= out:size(1) then
+					out[i + perturb] = data[i]
+				end
 			end
 		end
+		return out
+	else
+		return data
 	end
-	return out
 end
 
 function argmax( a )

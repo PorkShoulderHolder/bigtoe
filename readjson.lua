@@ -5,6 +5,7 @@ require 'lfs'
 
 local json = require('cjson')
 local prefix = lfs.currentdir() .. "/data/"
+local spacing = 20 -- seconds
 
 function loadjsonfile( filename )
 	print(prefix .. filename)
@@ -23,8 +24,8 @@ end
 
 function build_tables(bgs, acts, locs)
 	
-	act_keys = {stationary=1, stationaryautomotive=2, automotive=3, 
-				walking=4, running=5, cycling=6}
+	act_keys = {stationary=1, stationaryautomotive=2, automotive=2, 
+				walking=3, running=4, cycling=4}
 
 	local bg_tensor = {}
 	local act_tensor = {}
@@ -68,16 +69,16 @@ function build_tables(bgs, acts, locs)
 	for k=1,act_tensor_copy:size(1) do
 		act_tensor_copy[k] = act_tensor[j[k]]
 	end	
-
 	return bg_tensor_copy, act_tensor_copy, loc_tensor_copy
 end	
+
 
 
 function form_impulse_tensor(t, start, range, freq)
 	local t_diff = range
 	local freq = freq or 300
 	local count = t_diff / freq
-	local out_impulse = torch.zeros(count)
+	local times = torch.zeros(count)
 	local out = torch.zeros(count, t:size(2) - 1)
 	local ind_s = 1
 	for i = 1, count do
@@ -85,13 +86,13 @@ function form_impulse_tensor(t, start, range, freq)
 			goto exit
 		end
 		if i * freq > t[ind_s][1] - start then
-			out[i] = t[ind_s][2]
-			out_impulse[i] = 1
+			out[i] = t[ind_s][{{2, t:size(2)}}]
 			ind_s = ind_s + 1
 		end
+		times[i] = (i * freq) + start
 	end
 	::exit::
-	return out
+	return out, times
 end
 
 local args = { ... }
@@ -110,14 +111,14 @@ function load_data(identifier)
 	return build_tables(bgs, activities, locations)
 end
 
-if(path.exists(prefix .. 'bgdata') == false or path.exists(prefix .. 'actdata') == false or path.exists(prefix .. 'locdata' .. args[1]) == false) then
+if(path.exists(prefix .. 'bgdata') == false or path.exists(prefix .. 'actdata') == false or path.exists(prefix .. 'locdata') == false) then
 	bgs, acts, locs = load_data(args[1])
-	torch.save(prefix .. 'bgdata',bgs)
+	torch.save(prefix .. 'bgdata', bgs)
 	torch.save(prefix .. 'locdata',locs)
-	torch.save(prefix .. 'actdata',acts)
+	torch.save(prefix .. 'actdata', acts)
 else
 	bgs = torch.load(prefix .. 'bgdata')
-	locs = torch.load(prefix .. 'locdata' .. args[1])
+	locs = torch.load(prefix .. 'locdata')
 	acts = torch.load(prefix .. 'actdata')
 end
 
@@ -133,8 +134,23 @@ end
 
 local start, range = find_timeline(bgs, acts, locs)
 
+local blood_glucose, times = form_impulse_tensor(bgs, start, range, spacing)
+local locations, times = form_impulse_tensor(locs, start, range, spacing)
+local activities, times = form_impulse_tensor(acts, start, range, spacing)
 
-return form_impulse_tensor(bgs, start, range, 15):cat(form_impulse_tensor(locs, start, range, 15)):cat(form_impulse_tensor(acts, start, range, 15))
+print(activities:size())
+print(locations:size())
+print(blood_glucose:size())
+print(times:size())
+
+local dim2 = 1 + blood_glucose:size(2) + locations:size(2) + activities:size(2)
+local output = torch.Tensor(times:size(1), dim2)
+
+output[{{},1}] = times
+output[{{},2}] = blood_glucose
+output[{{},{3,4}}] = locations
+output[{{},5}] = activities
+return output 
 
 
 

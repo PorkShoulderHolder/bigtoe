@@ -1,4 +1,3 @@
-require 'cunn'
 require 'torch'
 require 'nn'
 require 'gnuplot'
@@ -11,9 +10,9 @@ function ActivityImputer:__init(act_types, weights)
 	-- body
     parent.__init(self)
    	weights = weights or nil
-	self.act_types = act_types or 6
-	self.range = range or 24
-	self.min_obs = 2
+	self.act_types = act_types or 4
+	self.range = range or 40
+	self.min_obs = 0
 	self.maxgrad = 500000
 	self.learning_rate = 0.6
 	self.hide_exogenous = false
@@ -22,7 +21,7 @@ function ActivityImputer:__init(act_types, weights)
 	self:zeroStats()
 
 	self.averaging_pd = 11
-	self.criterion = nn.ClassNLLCriterion(weights)
+	self.criterion = nn.ClassNLLCriterion()
 	self.kernel = nn.Linear(self.act_types* (2*self.range + 1),self.act_types)
 	self:add(nn.Reshape(self.act_types* (2*self.range + 1)))
 	self:add(self.kernel)
@@ -53,7 +52,7 @@ end
 function ActivityImputer:updateVisuals( data )
 	-- body
 	gnuplot.figure(1)
-	gnuplot.splot(self.kernel.weight[{2,{}}]:view(self.act_types,2*self.range + 1))
+	gnuplot.splot(self.kernel.weight[{1,{}}]:view(self.act_types,2*self.range + 1))
 	--gnuplot.raw('set multiplot layout 2,1')
 	--draw_onehot(data[{{2500, 12000}}], self)
 	--draw_onehot_nll(data[{{2500, 12000}}], self)
@@ -175,19 +174,23 @@ function ActivityImputer:batchProb( data )
 	for i=self.range + 1, data:size(1) - self.range do
 		local sample = data[{{i - self.range, i + self.range}}]:clone()
 		local input = self:format(sample)
-		out[i] = torch.exp(self:forward(input))
+		if input:sum() > 0 then
+			out[i] = torch.exp(self:forward(input))
+		else
+			out[i] = torch.exp(self:forward(input)):fill(0)
+		end
 	end
 
-	local period = 5;
-	local avg = out:clone():fill(0)
+	-- local period = 5;
+	-- local avg = out:clone():fill(0)
 
-	for i=1,out:size(1) do
-		local left = math.max(1, i - period/2)
-		local right = math.min(out:size(1), i + period/2)
-		avg[i] = out[{{left,right}}]:mean(1)
-	end
+	-- for i=1,out:size(1) do
+	-- 	local left = math.max(1, i - period/2)
+	-- 	local right = math.min(out:size(1), i + period/2)
+	-- 	avg[i] = out[{{left,right}}]:mean(1)
+	-- end
 
-	return avg
+	return out
 end
 
 function ActivityImputer:train( data, n, epoch_size )
@@ -205,8 +208,7 @@ function ActivityImputer:train( data, n, epoch_size )
 		local sample = data[{{i - self.range, i + self.range}}]:clone()
 		local target = sample:clone()[self.range + 1]
 		sample[self.range + 1] = 0
-		sample = augment_time(sample)
-
+		sample = augment_time(sample, 0.1)
 		local input = self:format(sample)
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
 			output = self:forward(input)
@@ -222,15 +224,15 @@ function ActivityImputer:train( data, n, epoch_size )
 	end
 	print("epoch " .. n .. " got " .. self.total_mse / self.counter .. " MSE on " .. self.counter .." training samples")
 end
-args = { ... }
 
 function test()
 	local min_loss = 1000
-	local training_data, valid_data = train_test_split(args[1])
+	local training_data, valid_data = train_test_split(arg[1])
 
-	training_data = training_data[{{},3}]
-	valid_data = valid_data[{{},3}]
-
+	print(training_data:size())
+	print(valid_data:size())
+	training_data = training_data[{{},training_data:size(2)}]
+	valid_data = valid_data[{{},valid_data:size(2)}]
 	local s = training_data:ne(0):sum()
 	print(s)
 	local num_acts = 6
@@ -263,20 +265,22 @@ function test()
 	end
 end
 
-function load_model( filename )
-	local net = torch.load(filename)
-	local training_data, valid_data = train_test_split(args[1])
+function apply_model( model_fn, data_fn )
+	local net = torch.load(model_fn)
+	local training_data, valid_data = train_test_split()
 	local data = training_data:cat(valid_data, 1)
-	local out = net:batchProb(data[{{},3}])
+	local out = net:batchProb(data[{{},data:size(2)}])
+	print("got here")
 
-	local data_0 = torch.Tensor(data:size(1),3):fill(0)
-	data_0[{{},1}] = data[{{},1}]
-	local out = net:batchProb(data[{{},3}])
-	return out
+	local new_data = data:cat(out)
+	return new_data
 end
 
-if args[1] == 'apply' then
-	load_model(args[2] or 'data/activity_kernel_aug_49_15sec.t7')
+
+if arg[1] == 'apply' then
+	local new_data = apply_model(arg[2] or 'data/activity_kernel_aug_49_15sec.t7', '')
+
+	print(new_data[{{},6}]:ne(0):sum())
 else
 	test()
 end
