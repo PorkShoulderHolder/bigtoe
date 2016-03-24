@@ -10,19 +10,19 @@ function ActivityImputer:__init(act_types, weights)
 	-- body
     parent.__init(self)
    	weights = weights or nil
-	self.act_types = act_types or 4
+	self.act_types = act_types or 6
+	self.target_types = 6
 	self.range = range or 40
 	self.min_obs = 0
 	self.maxgrad = 500000
 	self.learning_rate = 0.6
-	self.hide_exogenous = false
 	self.learning_rate_decay = 0.01
-	
+	self.see_future = false
 	self:zeroStats()
 
 	self.averaging_pd = 11
 	self.criterion = nn.ClassNLLCriterion()
-	self.kernel = nn.Linear(self.act_types* (2*self.range + 1),self.act_types)
+	self.kernel = nn.Linear(self.act_types* (2*self.range + 1),self.target_types)
 	self:add(nn.Reshape(self.act_types* (2*self.range + 1)))
 	self:add(self.kernel)
 	self:add(nn.LogSoftMax())
@@ -104,13 +104,16 @@ function ActivityImputer:nearestGuessEval( data )
 	-- method used for benchmarking
 
 	self:zeroStats()
-	for i=self.range + 1, data:size(1) - self.range do
+	local obs = self.see_future and 1 or 2
+
+	for i= self.range + 1, data:size(1) - self.range do
 		local sample = data[{{i - self.range, i + self.range}}]:clone()
-		local target = sample:clone()[self.range + 1]
-		sample[self.range + 1] = 0
+		local target = sample:clone()[obs * self.range + 1]
+		sample[obs * self.range + 1] = 0
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
-			local nid = nearestIndex(sample, self.range + 1)
-			local guess = sample[nid]
+			target = target_keys[target]
+			local nid = nearestIndex(sample, obs * self.range + 1)
+			local guess = target_keys[sample[nid]]
 			self:updateAccuracy(guess, target)
 		end
 	end
@@ -126,12 +129,15 @@ function ActivityImputer:modeEval( data )
 	self:zeroStats()
 	for i=self.range + 1, data:size(1) - self.range do
 		local sample = data[{{i - self.range, i + self.range}}]:clone()
-		local target = sample:clone()[self.range + 1]
-		sample[self.range + 1] = 0
+		local obs = self.see_future and 1 or 2
+
+		local target = sample:clone()[obs * self.range + 1]
+		sample[obs * self.range + 1] = 0
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
+			target = target_keys[target]
 			local counts = torch.Tensor({sample:eq(1):sum(),sample:eq(2):sum(),sample:eq(3):sum(),
 										sample:eq(4):sum(),sample:eq(5):sum(),sample:eq(6):sum()})
-			self:updateAccuracy(argmax(counts)[1], target)
+			self:updateAccuracy(target_keys[argmax(counts)[1]], target)
 		end
 	end
 	print("mode imputer on validation samples: ")
@@ -147,16 +153,19 @@ function ActivityImputer:valid( data )
 
 	local total_loss = 0
 	self:zeroStats()
+	local obs = self.see_future and 1 or 2
+
 	for i=self.range + 1, data:size(1) - self.range do
 		local sample = data[{{i - self.range, i + self.range}}]:clone()
-		local target = sample:clone()[self.range + 1]
-		sample[self.range + 1] = 0
+		local target = sample:clone()[obs * self.range + 1]
+		sample[obs * self.range + 1] = 0
 		local input = self:format(sample)
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
+			target = target_keys[target]
 			local output = self:forward(input)
 			total_loss = total_loss + self.criterion:forward(output, target)
 			local softmax = torch.exp(output)
-			idx = argmax(softmax)[1]
+			idx = target_keys[argmax(softmax)[1]]
 			self:updateAccuracy(idx, target)
 		end
 	end
@@ -201,16 +210,20 @@ function ActivityImputer:train( data, n, epoch_size )
 	collectgarbage()
 	self.total_mse = 0
 	self.counter = 0
+	local obs = self.see_future and 1 or 2
+
 	local shuffle_idxs = torch.randperm(data:size(1) - 2*self.range):add(self.range)
 	for idx=1, math.floor(shuffle_idxs:size(1) * batch_size) do
 
 		local i = shuffle_idxs[idx] 
 		local sample = data[{{i - self.range, i + self.range}}]:clone()
-		local target = sample:clone()[self.range + 1]
-		sample[self.range + 1] = 0
+		local target = sample:clone()[obs * self.range + 1]
+		sample[obs * self.range + 1] = 0
 		sample = augment_time(sample, 0.1)
 		local input = self:format(sample)
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
+			target = target_keys[target]
+
 			output = self:forward(input)
 			local mseloss = self.criterion:forward(output, target)
 			self:updateTrainStats(mseloss)

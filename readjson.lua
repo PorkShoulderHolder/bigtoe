@@ -6,7 +6,9 @@ require 'lfs'
 local json = require('cjson')
 local prefix = lfs.currentdir() .. "/data/"
 local spacing = 20 -- seconds
-
+act_keys = {stationary=1, stationaryautomotive=2, automotive=3, 
+				walking=4, running=5, cycling=6}
+target_keys = {1, 2, 3, 4, 5, 6}
 function loadjsonfile( filename )
 	print(prefix .. filename)
 	local f = assert(io.open(prefix .. filename))
@@ -24,8 +26,7 @@ end
 
 function build_tables(bgs, acts, locs)
 	
-	act_keys = {stationary=1, stationaryautomotive=2, automotive=2, 
-				walking=3, running=4, cycling=4}
+	
 
 	local bg_tensor = {}
 	local act_tensor = {}

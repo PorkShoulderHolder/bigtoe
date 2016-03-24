@@ -61,11 +61,11 @@ function nearestIndex( input,i )
 	local indices = torch.range(1,input:size(1))[input:ne(0)]
 	local right = 1
 	local left = -1
-	while(i + right <= input:size(1) and input[i + right] == 0) do
+	while(i + right < input:size(1) and input[i + right] == 0) do
 		right = right + 1
 	end
 	while(i + left > 0 and input[i + left] == 0) do
 		left = left - 1
 	end
-	return math.abs(left) > right and (i + right) or (i + left);
+	return (math.abs(left) > right and i < input:size(1)) and (i + right) or (i + left);
 end
