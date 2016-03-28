@@ -5,7 +5,7 @@ require 'lfs'
 
 local json = require('cjson')
 local prefix = lfs.currentdir() .. "/data/"
-local spacing = 20 -- seconds
+local spacing = 15	 -- seconds
 act_keys = {stationary=1, stationaryautomotive=2, automotive=3, 
 				walking=4, running=5, cycling=6}
 target_keys = {1, 2, 3, 4, 5, 6}

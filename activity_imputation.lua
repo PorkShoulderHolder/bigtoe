@@ -3,8 +3,21 @@ require 'nn'
 require 'gnuplot'
 require 'kernelutil'
 require 'visualizer' 
+local json = require('cjson')
+
 
 local ActivityImputer, parent = torch.class('nn.ActivityImputer', 'nn.Sequential')
+
+function savejsonfile( data, filename )
+	print("saving to " .. filename)
+	local json_str = json.encode(data)
+	print("garbage collection")
+	collectgarbage()
+	local f = assert(io.open( filename , "w+"))
+	f:write(json_str)
+	f:close()
+end
+
 
 function ActivityImputer:__init(act_types, weights)
 	-- body
@@ -12,12 +25,12 @@ function ActivityImputer:__init(act_types, weights)
    	weights = weights or nil
 	self.act_types = act_types or 6
 	self.target_types = 6
-	self.range = range or 40
+	self.range = range or 20
 	self.min_obs = 0
 	self.maxgrad = 500000
 	self.learning_rate = 0.6
 	self.learning_rate_decay = 0.01
-	self.see_future = false
+	self.see_future = true
 	self:zeroStats()
 
 	self.averaging_pd = 11
@@ -33,6 +46,7 @@ function ActivityImputer:format(sample)
 	-- expects a tensor [range] x 1 of labels
 	--
 	local out = torch.Tensor(self.act_types,2*self.range + 1)
+
 	for i=1,self.act_types do
 		out[{i,{}}] = sample:eq(i)
 	end
@@ -174,11 +188,34 @@ function ActivityImputer:valid( data )
 	return total_loss / self.counter
 end
 
+function ActivityImputer:validateConfidence( data )
+local total_loss = 0
+	self:zeroStats()
+	local obs = self.see_future and 1 or 2
+
+	for i=self.range + 1, data:size(1) - self.range do
+		local sample = data[{{i - self.range, i + self.range}}]:clone()
+		local target = sample:clone()[obs * self.range + 1]
+		sample[obs * self.range + 1] = 0
+		local input = self:format(sample)
+		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
+			target = target_keys[target]
+			local output = self:forward(input)
+			total_loss = total_loss + self.criterion:forward(output, target)
+			local softmax = torch.exp(output)
+			idx = target_keys[argmax(softmax)[1]]
+			self:updateAccuracy(idx, target)
+		end
+	end
+	print("got -|" .. total_loss / self.counter .. "|- RMSE on -|" .. self.counter .."|- validation samples")
+	print(self:statsToString())
+	return total_loss / self.counter
+end
 
 function ActivityImputer:batchProb( data )
 	
 	-- returns a tensor of log probabilities for each class for each sample 
-
+	assert(self.see_future == true)
 	local out = torch.Tensor(data:size(1), self.act_types):fill(0)
 	for i=self.range + 1, data:size(1) - self.range do
 		local sample = data[{{i - self.range, i + self.range}}]:clone()
@@ -219,8 +256,9 @@ function ActivityImputer:train( data, n, epoch_size )
 		local sample = data[{{i - self.range, i + self.range}}]:clone()
 		local target = sample:clone()[obs * self.range + 1]
 		sample[obs * self.range + 1] = 0
-		sample = augment_time(sample, 0.1)
+		sample = augment_time(sample, 1)
 		local input = self:format(sample)
+		print(input)
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
 			target = target_keys[target]
 
@@ -292,8 +330,8 @@ end
 
 if arg[1] == 'apply' then
 	local new_data = apply_model(arg[2] or 'data/activity_kernel_aug_49_15sec.t7', '')
-
-	print(new_data[{{},6}]:ne(0):sum())
+	local data_table = new_data:totable()
+	savejsonfile(data_table, 'data/fulldata_w_likelyhoods.json')
 else
 	test()
 end

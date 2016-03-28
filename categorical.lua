@@ -271,7 +271,7 @@ function KernelNet:setupHyperParams(lookback, cluster_count, act_count, mask, bu
 	self.minobs_valid = 60
 	self.minobs_train = 12
 	self.learning_rate = 2
-	self.hide_exogenous = false
+	self.hide_exogenous = true
 	self.learning_rate_decay = 0.01
 	self.tv_lambda = 0.05
 	self.lookback = lookback or 30

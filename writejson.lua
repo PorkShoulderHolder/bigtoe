@@ -5,7 +5,7 @@ require 'lfs'
 
 local json = require('cjson')
 local prefix = lfs.currentdir() .. "/data/"
-local spacing = 15 -- seconds
+local spacing = 25 -- seconds
 
 function loadjsonfile( filename )
 	print("loading from " .. prefix .. filename)
@@ -18,7 +18,7 @@ end
 
 function savejsonfile( data, filename )
 	print("saving to " .. prefix .. filename)
-	local f = assert(io.open(prefix .. filename))
+	local f = assert(io.open(prefix .. filename, "w+"))
 	local json_str = json.encode(data)
 	f:write(json_str)
 	f:close()
