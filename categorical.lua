@@ -275,7 +275,7 @@ function KernelNet:setupHyperParams(lookback, cluster_count, act_count, mask, bu
 	self.learning_rate_decay = 0.01
 	self.tv_lambda = 0.05
 	self.lookback = lookback or 30
-	self.cluster_count = cluster_count or 120
+	self.cluster_count = cluster_count or 180
 	self.cluster_redundancy = 8 
   	self.act_count = act_count or 6
   	self.buffer = buffer or 5
