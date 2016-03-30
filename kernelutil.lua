@@ -10,9 +10,9 @@ function build_hist(labels, res)
 	return out
 end
 
-function augment_time(data, proportion)
+function augment_time(data, proportion, time_std_dev)
 	if math.random() < proportion then
-		local time_std_dev = 1
+		local time_std_dev = time_std_dev or 10
 
 		local out = data:clone():fill(0)
 
@@ -21,7 +21,7 @@ function augment_time(data, proportion)
 		
 		for i=6,data:size(1) - 6 do
 			if data[i] ~= 0 then
-				local perturb = math.floor((torch.randn(1)[1] / 2) + 0.5)
+				local perturb = math.floor(time_std_dev * ((torch.randn(1)[1] / 2) + 0.5))
 				--print(perturb)
 				if i + perturb >= 1 and i + perturb <= out:size(1) then
 					out[i + perturb] = data[i]
@@ -41,16 +41,18 @@ end
 function train_test_split(identifier)
 	-- body
 	local x,y,z = assert(loadfile('readjson.lua'))(identifier) -- include cluster partition identifier to specify which
-	local t_split = 5.0 / 6.0
-	local tv_split = 9.0 / 10.0
-
-	x = x[{{1, x:size(1) * t_split}}]:clone()
---	y = y[{{1, y:size(1) * t_split}}]:clone()
---	z = z[{{1, z:size(1) * t_split}}]:clone()
-	local training_data = x[{{1,x:size(1) * tv_split}}]:clone() --, y[{{1, y:size(1) * tv_split}}]:clone(), z[{{1, z:size(1) * tv_split}}]:clone()}
-	local validation_data = x[{{x:size(1) * tv_split, x:size(1)}}]:clone() -- y[{{y:size(1) * tv_split, y:size(1)}}]:clone()	, z[{{z:size(1) * tv_split, z:size(1)}}]:clone()}
-
+	local training_data, validation_data = tts(x, 5.0/6.0, 9.0/10.0)
 	return training_data, validation_data
+end
+
+function tts(data, t_split, tv_split)
+	tv_split = tv_split or 0.85
+	t_split = t_split or 0.85
+	local fair_game = data[{{1, data:size(1) * t_split}}]:clone()
+	local training_data = fair_game[{{1,fair_game:size(1) * tv_split}}]:clone()
+	local validation_data = fair_game[{{fair_game:size(1) * tv_split, fair_game:size(1)}}]:clone() 
+	local testing_data = data[{{data:size(1) * t_split, data:size(1)}}]
+	return training_data, validation_data, testing_data
 end
 
 function nearestIndex( input,i )

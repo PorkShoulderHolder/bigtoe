@@ -25,18 +25,18 @@ function ActivityImputer:__init(act_types, weights)
    	weights = weights or nil
 	self.act_types = act_types or 6
 	self.target_types = 6
-	self.range = range or 20
+	self.range = range or 80
 	self.min_obs = 0
 	self.maxgrad = 500000
 	self.learning_rate = 0.6
 	self.learning_rate_decay = 0.01
-	self.see_future = true
+	self.see_future = false
 	self:zeroStats()
 
 	self.averaging_pd = 11
-	self.criterion = nn.ClassNLLCriterion()
-	self.kernel = nn.Linear(self.act_types* (2*self.range + 1),self.target_types)
-	self:add(nn.Reshape(self.act_types* (2*self.range + 1)))
+	self.criterion = nn.ClassNLLCriterion(weights)
+	self.kernel = nn.Linear(self.act_types * (2 * self.range + 1),self.target_types)
+	self:add(nn.Reshape(self.act_types * (2 * self.range + 1)))
 	self:add(self.kernel)
 	self:add(nn.LogSoftMax())
 end
@@ -66,11 +66,11 @@ end
 function ActivityImputer:updateVisuals( data )
 	-- body
 	gnuplot.figure(1)
-	gnuplot.splot(self.kernel.weight[{1,{}}]:view(self.act_types,2*self.range + 1))
-	--gnuplot.raw('set multiplot layout 2,1')
-	--draw_onehot(data[{{2500, 12000}}], self)
-	--draw_onehot_nll(data[{{2500, 12000}}], self)
-	--gnuplot.raw('unset multiplot')
+	--gnuplot.splot(self.kernel.weight[{1,{}}]:view(self.act_types,2*self.range + 1))
+	gnuplot.raw('set multiplot layout 2,1')
+	draw_onehot(data[{{6600, 6600+3500}}], self)
+	draw_onehot_nll(data[{{6600, 6600+3500}}], self)
+	gnuplot.raw('unset multiplot')
 end
 
 function ActivityImputer:updateTrainStats( mse )
@@ -179,7 +179,7 @@ function ActivityImputer:valid( data )
 			local output = self:forward(input)
 			total_loss = total_loss + self.criterion:forward(output, target)
 			local softmax = torch.exp(output)
-			idx = target_keys[argmax(softmax)[1]]
+			idx = target_keys[argmax(softmax:cmul(self.criterion.weights))[1]]
 			self:updateAccuracy(idx, target)
 		end
 	end
@@ -201,9 +201,9 @@ local total_loss = 0
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
 			target = target_keys[target]
 			local output = self:forward(input)
-			total_loss = total_loss + self.criterion:forward(output, target)
 			local softmax = torch.exp(output)
-			idx = target_keys[argmax(softmax)[1]]
+			total_loss = total_loss + self.criterion:forward(output, target)
+			idx = target_keys[argmax(softmax:cmul(self.criterion.weights))[1]]
 			self:updateAccuracy(idx, target)
 		end
 	end
@@ -215,15 +215,23 @@ end
 function ActivityImputer:batchProb( data )
 	
 	-- returns a tensor of log probabilities for each class for each sample 
-	assert(self.see_future == true)
 	local out = torch.Tensor(data:size(1), self.act_types):fill(0)
-	for i=self.range + 1, data:size(1) - self.range do
-		local sample = data[{{i - self.range, i + self.range}}]:clone()
+	local start_buf = self.see_future and self.range + 1 or 2 * self.range + 1
+	local end_buf = self.see_future and self.range or 0
+
+	for i=start_buf, data:size(1) - end_buf do
+		local sample = nil
+		if self.see_future == true then
+			sample = data[{{i - self.range, i + self.range}}]:clone()
+		else
+			sample = data[{{i - 2 * self.range, i}}]
+		end
 		local input = self:format(sample)
 		if input:sum() > 0 then
-			out[i] = torch.exp(self:forward(input))
+			local weighted = torch.exp(self:forward(input)):cmul(self.criterion.weights)
+			out[i] =  weighted / weighted:sum()
 		else
-			out[i] = torch.exp(self:forward(input)):fill(0)
+			out[i] = self:forward(input):fill(0)
 		end
 	end
 
@@ -258,11 +266,10 @@ function ActivityImputer:train( data, n, epoch_size )
 		sample[obs * self.range + 1] = 0
 		sample = augment_time(sample, 1)
 		local input = self:format(sample)
-		print(input)
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
 			target = target_keys[target]
 
-			output = self:forward(input)
+			output = self:forward(input)			
 			local mseloss = self.criterion:forward(output, target)
 			self:updateTrainStats(mseloss)
 			self:zeroGradParameters()
@@ -278,7 +285,7 @@ end
 
 function test()
 	local min_loss = 1000
-	local training_data, valid_data = train_test_split(arg[1])
+	local training_data, valid_data, test_data = train_test_split(arg[1])
 
 	print(training_data:size())
 	print(valid_data:size())
@@ -290,9 +297,9 @@ function test()
 	local weights = torch.Tensor(num_acts)
 
 	for i=1,weights:size(1) do
-		weights[i] = (1 - (training_data:eq(i):sum() / s)) * (1 - (training_data:eq(i):sum() / s))
+		weights[i] = (1 - (training_data:eq(i):sum() / s))
 	end
-	weights = weights * 4
+	weights = weights / weights:sum()
 	print(weights)
 	local net = nn.ActivityImputer(num_acts,weights)
 	print(net)
@@ -318,8 +325,8 @@ end
 
 function apply_model( model_fn, data_fn )
 	local net = torch.load(model_fn)
-	local training_data, valid_data = train_test_split()
-	local data = training_data:cat(valid_data, 1)
+	local training_data, valid_data, test_data = train_test_split()
+	local data = training_data:cat(valid_data, 1):cat(test_data, 1)
 	local out = net:batchProb(data[{{},data:size(2)}])
 	print("got here")
 

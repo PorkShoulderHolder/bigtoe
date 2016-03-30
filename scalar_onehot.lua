@@ -20,19 +20,34 @@ function savejsonfile( data, filename )
 end
 
 
+function loadjson_asarray( filename )
+	print(filename)
+	local f = assert(io.open(filename))
+	local json_str = f:read("*all")
+	f:close()
+	local datatable = json.decode(json_str)
+
+	local out = torch.Tensor(datatable)
+	return out
+end
+
+
+
+
 function ScalarOneHot:__init(scalar_count, onehot_count, weights)
 	-- body
     parent.__init(self)
    	weights = weights or nil
-	self.onehot_count = onehot_count or 6
+	self.onehot_count = onehot_count or 50
 	self.target_types = 6
 	self.scalar_count = scalar_count or 1
-	self.range = range or 20
-	self.min_obs = 0
-	self.maxgrad = 500000
-	self.learning_rate = 0.6
-	self.learning_rate_decay = 0.01
-	self.see_future = true
+	self.range = range or (42)  -- 3.5 hrs
+	self.min_obs = (210 / 5) - 1
+	self.maxgrad = 1
+	self.bg_spacing = 20
+	self.learning_rate = 50
+	self.learning_rate_decay = 0.001
+	self.see_future = false
 	self:zeroStats()
 
 	self.averaging_pd = 11
@@ -52,8 +67,14 @@ function ScalarOneHot:__init(scalar_count, onehot_count, weights)
 	-- each one must be split into the numerator and denominator
 	self.numerator = nn.Sequential()
 	self.numer_table = nn.ParallelTable()
-	self.top_scalar = nn.Linear(self.scalar_count * (2 * self.range + 1), 1)
-	self.top_onehot = nn.Linear(self.onehot_count * (2 * self.range + 1), 1)
+
+	local sckern_sz = self.scalar_count * (2 * self.range + 1);
+	local ohkern_sz = self.onehot_count * (2 * self.range + 1)
+	self.top_scalar = nn.Linear(self.scalar_count * (2 * self.range), 1)
+	self.top_scalar.weight:fill(1)
+	self.top_onehot = nn.SparseLinear(self.onehot_count * (2 * self.bg_spacing * self.range + 1), 1)
+	
+
 	self.numer_table:add(self.top_scalar)
 	self.numer_table:add(self.top_onehot)
 	self.numerator:add(self.numer_table)
@@ -65,6 +86,7 @@ function ScalarOneHot:__init(scalar_count, onehot_count, weights)
 	self.bottom_scalar = self.top_scalar:clone('weight','bias')
 	self.bottom_scalar:share(self.top_scalar,'weight', 'bias')
 	self.denom_table:add(self.bottom_scalar)
+
 	self.denom_table:add(nn.Identity())
 	self.denominator:add(self.denom_table)
 	self.denominator:add(nn.CAddTable())
@@ -82,14 +104,44 @@ function ScalarOneHot:format(sample)
 	-- cols 5 - 11 are activity scalars
 	--
 
-	local out = torch.Tensor(self.onehot_count + self.scalar_count,2*self.range + 1)
-
-	-- bg vals
-	out[{1,{}}] = sample[{1,{}}]
-
+	local count = sample:ne(0):sum()
+	local out = torch.Tensor(math.max(count,1) , 2)
+	local i = 1
 	-- the rest
-	for i=self.scalar_count,self.onehot_count + self.scalar_count do
-		out[{i,{}}] = sample:eq(i)
+	out[1] = torch.Tensor({1,0})
+	for j=1, sample:size(1) do
+		local cluster = sample[j]
+		if( cluster ~= 0 ) then
+			--print(cluster)
+			out[i] = torch.Tensor({cluster * j + j, 1})
+			i = i + 1
+		end
+	end
+	return out
+end
+
+function ScalarOneHot:normalize( sample, mean, std )
+	-- body
+	local out = sample
+	local neq0 = out:ne(0)  
+	mean = mean or torch.mean(out[neq0])
+	std = std or torch.std(out[neq0])
+	if ( std == 0 or std ~= std ) then
+		std = 1
+	end
+
+	local output = out:clone():fill(0)
+
+	local nnzs = out[neq0]:clone()
+	out[neq0] = (nnzs - mean) / std
+
+	return out, mean, std
+end
+
+function ScalarOneHot:format_scalar( sample, mean, std )
+	local out = torch.zeros(self.range * 2)
+	for i=0, out:size(1) - 1 do
+		out[i + 1] = sample[(i * 20) + 1]
 	end
 	return out
 end
@@ -104,10 +156,22 @@ function ScalarOneHot:batchFormat( data )
 	return out
 end
 
-function ScalarOneHot:updateVisuals( data )
+function ScalarOneHot:updateVisuals(  )
 	-- body
 	gnuplot.figure(1)
-	gnuplot.splot(self.kernel.weight[{1,{}}]:view(self.onehot_count,2*self.range + 1))
+	local top = self.top_scalar.weight[{1,{}}]:view(2*self.range):squeeze()
+
+	
+
+	local bottom = self.bottom_scalar.weight[{1,{}}]:view(2*self.range)
+	
+	local sparse_data = self.top_onehot.weight[{1,{}}]:view(2*self.range * self.bg_spacing + 1,self.onehot_count)
+
+	local avgs1 = torch.mean(torch.abs(sparse_data),1)
+	local avgs2 = torch.mean(sparse_data,2)
+	gnuplot.plot({'thai', sparse_data[{{},43}], '-'}) --, {'15',sparse_data[{{},15}], '-'})
+	--gnuplot.plot( {'1',sparse_data[{{},1}], '-'}, {'12',sparse_data[{{},12}], '-'}, {'10', sparse_data[{{},10}], '-'}, {'44',sparse_data[{{},44}], '-'} )
+	--
 	--gnuplot.raw('set multiplot layout 2,1')
 	--draw_onehot(data[{{2500, 12000}}], self)
 	--draw_onehot_nll(data[{{2500, 12000}}], self)
@@ -216,8 +280,8 @@ function ScalarOneHot:valid( data )
 		sample[obs * self.range + 1] = 0
 		local input = self:format(sample)
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
-			target = target_keys[target]
 			local output = self:forward(input)
+
 			total_loss = total_loss + self.criterion:forward(output, target)
 			local softmax = torch.exp(output)
 			idx = target_keys[argmax(softmax)[1]]
@@ -239,6 +303,7 @@ local total_loss = 0
 		local target = sample:clone()[obs * self.range + 1]
 		sample[obs * self.range + 1] = 0
 		local input = self:format(sample)
+
 		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
 			target = target_keys[target]
 			local output = self:forward(input)
@@ -280,7 +345,11 @@ function ScalarOneHot:batchProb( data )
 	return out
 end
 
-function ScalarOneHot:train( data, n, epoch_size )
+function ScalarOneHot:group_fmt( data , i )
+	-- body
+end
+
+function ScalarOneHot:train( data_scalar, data_onehot, n, epoch_size )
 
 	-- performs one epoch of training 
 
@@ -289,72 +358,91 @@ function ScalarOneHot:train( data, n, epoch_size )
 	self.total_mse = 0
 	self.counter = 0
 	local obs = self.see_future and 1 or 2
+	local locscnt = 0
+	local nonzeros = data_scalar:nonzero()
 
-	local shuffle_idxs = torch.randperm(data:size(1) - 2*self.range):add(self.range)
+	nonzeros = nonzeros[nonzeros:gt(2 * self.range * 20)]
+
+	local shuffle_idxs = torch.randperm(nonzeros:size(1))
+	print(math.floor(shuffle_idxs:size(1) * batch_size))
 	for idx=1, math.floor(shuffle_idxs:size(1) * batch_size) do
+		local i = nonzeros[shuffle_idxs[idx]] - (self.range * 20)
 
-		local i = shuffle_idxs[idx] 
-		local sample = data[{{i - self.range, i + self.range}}]:clone()
-		local target = sample:clone()[obs * self.range + 1]
-		sample[obs * self.range + 1] = 0
-		sample = augment_time(sample, 1)
-		local input = self:format(sample)
-		print(input)
-		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
-			target = target_keys[target]
+		local onehot_sample = data_onehot[{{i - 20 * self.range, i + 20 *self.range}}]:clone()
+		local scalar_sample = data_scalar[{{i - 20 * self.range, i + 20 *self.range}}]:clone()
+		local target = scalar_sample:clone()[20 * obs * self.range + 1]
+		scalar_sample[obs * self.range + 1] = 0
+		--scalar_sample = augment_time(scalar_sample, 1)
+		onehot_sample = augment_time(onehot_sample, 1)
 
-			output = self:forward(input)
+		-- print(scalar_sample)
+
+		scalar_sample = self:format_scalar(scalar_sample)
+		-- print(scalar_sample)
+		if target ~= 0 and scalar_sample:ne(0):sum() > self.min_obs then
+			local scalar_input, mean, std = self:normalize(scalar_sample)
+			target = (target - mean) / std
+
+
+			--onehot_sample:fill(0)
+			local onehot_input = self:format(onehot_sample)
+			local input_table = {
+									{scalar_input:double(), onehot_input:double()}, 
+									{scalar_sample:clone():ne(0):double(), torch.Tensor({onehot_sample:clone():ne(0):sum()})}
+								}
+			
+			locscnt = (onehot_sample:sum() > 0) and locscnt + 1 or locscnt
+			local output = self:forward(input_table)
+			target = torch.Tensor({target})
 			local mseloss = self.criterion:forward(output, target)
-			self:updateTrainStats(mseloss)
+			self:updateTrainStats(mseloss * std)
 			self:zeroGradParameters()
 			local gradient = self.criterion:backward(output, target)
 			gradient = self:clipGradTensor(gradient, self.maxgrad)
-			self:backward(input, gradient)
+			self:backward(input_table, gradient)
 			local current_learning_rate = self.learning_rate  * self.learning_rate_decay
 			self:updateParameters(current_learning_rate)
 		end
 	end
-	print("epoch " .. n .. " got " .. self.total_mse / self.counter .. " MSE on " .. self.counter .." training samples")
+	self:updateVisuals()
+	print("epoch " .. n .. " got " .. self.total_mse / self.counter .. " MSE on " .. self.counter .." training samples and " .. locscnt)
 end
 
 function test()
-	local net = nn.ScalarOneHot(1,20)
+	local net = nn.ScalarOneHot(1,80)
 	print(net)
-	local min_loss = 1000
-	local training_data, valid_data = train_test_split(arg[1])
 
-	print(training_data:size())
-	print(valid_data:size())
-	training_data = training_data[{{},training_data:size(2)}]
-	valid_data = valid_data[{{},valid_data:size(2)}]
-	local s = training_data:ne(0):sum()
-	print(s)
+	local data = loadjson_asarray( arg[1] )
+	print(data:size())
+	local td, vv, vd = tts(data) 
+	
+	td = td:cat(vv, 1):cat(vd, 1)
+
+	print("training_data size " .. td:size(1))
+	print("validation_data size " ..  vd:size(1))
+
+	training_data_onehot = td[{{},td:size(2)}]
+	valid_data_onehot = vd[{{},vd:size(2)}]
+
+	training_data_scalar_bgs = td[{{},2}]
+	valid_data_scalar_bgs = vd[{{},2}]
+
 	local num_acts = 6
-	local weights = torch.Tensor(num_acts)
-
-	for i=1,weights:size(1) do
-		weights[i] = (1 - (training_data:eq(i):sum() / s)) * (1 - (training_data:eq(i):sum() / s))
-	end
-	weights = weights * 4
-	print(weights)
-
-
-	print(training_data:size(1), valid_data:size(1))
 	for i=1,100 do
-		net:train(training_data,i)
-		net:updateVisuals(valid_data)
+		net:train(training_data_scalar_bgs, training_data_onehot, i)
+		--net:updateVisuals(valid_data_scalar_bgs, valid_data_onehot)
 
-		local loss = net:valid(valid_data)
-		net:nearestGuessEval(valid_data)
-		net:modeEval(valid_data)
+	--	local loss = net:valid(valid_data_scalar_bgs, valid_data_onehot)
+		--net:nearestGuessEval(valid_data)
+		--net:modeEval(valid_data)
 
-		print(net.actual_totals)
-		if loss < min_loss then
-			min_loss = loss
-			torch.save("activity_kernel.t7", net)
-			print("network saved")
-			-- look at one week
-		end
+		-- print(net.actual_totals)
+		-- if loss < min_loss then
+		-- 	min_loss = loss
+		-- 	torch.save("activity_kernel.t7", net)
+		-- 	print("network saved")
+		-- 	-- look at one week
+		-- end
 	end
 end
 
