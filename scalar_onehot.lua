@@ -42,14 +42,16 @@ function ScalarOneHot:__init(scalar_count, onehot_count, weights)
 	self.target_types = 6
 	self.scalar_count = scalar_count or 1
 	self.range = range or (42)  -- 3.5 hrs
-	self.min_obs = (210 / 5) - 1
+	self.min_obs = (210 / 15) - 1
 	self.maxgrad = 1
 	self.bg_spacing = 20
-	self.learning_rate = 50
+	self.learning_rate = 1
 	self.learning_rate_decay = 0.001
 	self.see_future = false
+	self.include_exog = true
 	self:zeroStats()
-
+	self.prediction_horizon_bg = 5 -- # of bg measurements to mask; 5 = 30 mins, 11 = 1 hr 
+	self.prediction_horizon_onehot = self.prediction_horizon_bg * self.bg_spacing
 	self.averaging_pd = 11
 	self.criterion = nn.MSECriterion()
 
@@ -72,9 +74,8 @@ function ScalarOneHot:__init(scalar_count, onehot_count, weights)
 	local ohkern_sz = self.onehot_count * (2 * self.range + 1)
 	self.top_scalar = nn.Linear(self.scalar_count * (2 * self.range), 1)
 	self.top_scalar.weight:fill(1)
-	self.top_onehot = nn.SparseLinear(self.onehot_count * (2 * self.bg_spacing * self.range + 1), 1)
-	
 
+	self.top_onehot = nn.SparseLinear(self.onehot_count * (2 * self.bg_spacing * self.range + 2), 1)
 	self.numer_table:add(self.top_scalar)
 	self.numer_table:add(self.top_onehot)
 	self.numerator:add(self.numer_table)
@@ -113,7 +114,7 @@ function ScalarOneHot:format(sample)
 		local cluster = sample[j]
 		if( cluster ~= 0 ) then
 			--print(cluster)
-			out[i] = torch.Tensor({cluster * j + j, 1})
+			out[i] = torch.Tensor({self.onehot_count * j + cluster, 1})
 			i = i + 1
 		end
 	end
@@ -160,22 +161,25 @@ function ScalarOneHot:updateVisuals(  )
 	-- body
 	gnuplot.figure(1)
 	local top = self.top_scalar.weight[{1,{}}]:view(2*self.range):squeeze()
-
-	
-
 	local bottom = self.bottom_scalar.weight[{1,{}}]:view(2*self.range)
+	local ws = self.top_onehot.weight:squeeze()
+	local avgs = torch.Tensor(2 * self.range * self.bg_spacing + 1):fill(0)
 	
-	local sparse_data = self.top_onehot.weight[{1,{}}]:view(2*self.range * self.bg_spacing + 1,self.onehot_count)
+	local sparse_data = ws:view(2*self.range * self.bg_spacing + 2, self.onehot_count)
 
-	local avgs1 = torch.mean(torch.abs(sparse_data),1)
+	local avgs1 = torch.mean(sparse_data,1)
 	local avgs2 = torch.mean(sparse_data,2)
-	gnuplot.plot({'thai', sparse_data[{{},43}], '-'}) --, {'15',sparse_data[{{},15}], '-'})
+
+	--gnuplot.plot({'thai', sparse_data[{{},43}], '-'}) --, {'15',sparse_data[{{},15}], '-'})
 	--gnuplot.plot( {'1',sparse_data[{{},1}], '-'}, {'12',sparse_data[{{},12}], '-'}, {'10', sparse_data[{{},10}], '-'}, {'44',sparse_data[{{},44}], '-'} )
 	--
-	--gnuplot.raw('set multiplot layout 2,1')
+	gnuplot.raw('set multiplot layout 2,1')
+	gnuplot.plot({'avg loc importance', avgs2, '-'}) --, {'15',sparse_data[{{},15}], '-'})
+	gnuplot.plot({'bg_weights', top, '-'}) --, {'15',sparse_data[{{},15}], '-'})
+
 	--draw_onehot(data[{{2500, 12000}}], self)
 	--draw_onehot_nll(data[{{2500, 12000}}], self)
-	--gnuplot.raw('unset multiplot')
+	gnuplot.raw('unset multiplot')
 end
 
 function ScalarOneHot:updateTrainStats( mse )
@@ -218,80 +222,6 @@ function ScalarOneHot:statsToString( )
 	return out:sub(1,-3)
 end
 
-function ScalarOneHot:nearestGuessEval( data )
-
-	-- method used for benchmarking
-
-	self:zeroStats()
-	local obs = self.see_future and 1 or 2
-
-	for i= self.range + 1, data:size(1) - self.range do
-		local sample = data[{{i - self.range, i + self.range}}]:clone()
-		local target = sample:clone()[obs * self.range + 1]
-		sample[obs * self.range + 1] = 0
-		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
-			target = target_keys[target]
-			local nid = nearestIndex(sample, obs * self.range + 1)
-			local guess = target_keys[sample[nid]]
-			self:updateAccuracy(guess, target)
-		end
-	end
-	print("nearest neighbor imputer on validation samples: ")
-	print(self:statsToString())
-	return self.total_correct / self.counter
-end
-
-function ScalarOneHot:modeEval( data )
-
-	-- method used for benchmarking
-
-	self:zeroStats()
-	for i=self.range + 1, data:size(1) - self.range do
-		local sample = data[{{i - self.range, i + self.range}}]:clone()
-		local obs = self.see_future and 1 or 2
-
-		local target = sample:clone()[obs * self.range + 1]
-		sample[obs * self.range + 1] = 0
-		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
-			target = target_keys[target]
-			local counts = torch.Tensor({sample:eq(1):sum(),sample:eq(2):sum(),sample:eq(3):sum(),
-										sample:eq(4):sum(),sample:eq(5):sum(),sample:eq(6):sum()})
-			self:updateAccuracy(target_keys[argmax(counts)[1]], target)
-		end
-	end
-	print("mode imputer on validation samples: ")
-	print(self:statsToString())
-	return self.total_correct / self.counter
-end
-
-
-
-function ScalarOneHot:valid( data )
-	
-	-- method used for validation
-
-	local total_loss = 0
-	self:zeroStats()
-	local obs = self.see_future and 1 or 2
-
-	for i=self.range + 1, data:size(1) - self.range do
-		local sample = data[{{i - self.range, i + self.range}}]:clone()
-		local target = sample:clone()[obs * self.range + 1]
-		sample[obs * self.range + 1] = 0
-		local input = self:format(sample)
-		if target ~= 0 and sample:ne(0):sum() > self.min_obs then
-			local output = self:forward(input)
-
-			total_loss = total_loss + self.criterion:forward(output, target)
-			local softmax = torch.exp(output)
-			idx = target_keys[argmax(softmax)[1]]
-			self:updateAccuracy(idx, target)
-		end
-	end
-	print("got -|" .. total_loss / self.counter .. "|- RMSE on -|" .. self.counter .."|- validation samples")
-	print(self:statsToString())
-	return total_loss / self.counter
-end
 
 function ScalarOneHot:validateConfidence( data )
 local total_loss = 0
@@ -349,6 +279,21 @@ function ScalarOneHot:group_fmt( data , i )
 	-- body
 end
 
+function ScalarOneHot:prepare_input( data_scalar, data_onehot, i )
+	local obs = self.see_future and 1 or 2
+	local onehot_sample = data_onehot[{{i - 20 * self.range, i + 20 *self.range}}]:clone()
+	local scalar_sample = data_scalar[{{i - 20 * self.range, i + 20 *self.range}}]:clone()
+	local target = scalar_sample:clone()[20 * obs * self.range + 1]
+	
+	--scalar_sample = augment_time(scalar_sample, 1)
+	scalar_sample = self:format_scalar(scalar_sample)
+
+	scalar_sample[{{obs * self.range - self.prediction_horizon_bg, obs * self.range}}] = 0
+	onehot_sample[{{obs * self.range * self.bg_spacing + (1 - self.prediction_horizon_onehot), obs * self.range * self.bg_spacing + 1}}] = 0
+	--onehot_sample[{{1, self.prediction_horizon_onehot}}] = 0
+	return scalar_sample, onehot_sample, target
+end
+
 function ScalarOneHot:train( data_scalar, data_onehot, n, epoch_size )
 
 	-- performs one epoch of training 
@@ -367,35 +312,29 @@ function ScalarOneHot:train( data_scalar, data_onehot, n, epoch_size )
 	print(math.floor(shuffle_idxs:size(1) * batch_size))
 	for idx=1, math.floor(shuffle_idxs:size(1) * batch_size) do
 		local i = nonzeros[shuffle_idxs[idx]] - (self.range * 20)
-
-		local onehot_sample = data_onehot[{{i - 20 * self.range, i + 20 *self.range}}]:clone()
-		local scalar_sample = data_scalar[{{i - 20 * self.range, i + 20 *self.range}}]:clone()
-		local target = scalar_sample:clone()[20 * obs * self.range + 1]
-		scalar_sample[obs * self.range + 1] = 0
-		--scalar_sample = augment_time(scalar_sample, 1)
-		onehot_sample = augment_time(onehot_sample, 1)
-
-		-- print(scalar_sample)
-
-		scalar_sample = self:format_scalar(scalar_sample)
-		-- print(scalar_sample)
+		
+		local scalar_sample, onehot_sample, target = self:prepare_input( data_scalar, data_onehot , i)
 		if target ~= 0 and scalar_sample:ne(0):sum() > self.min_obs then
 			local scalar_input, mean, std = self:normalize(scalar_sample)
 			target = (target - mean) / std
 
 
-			--onehot_sample:fill(0)
+			if(self.include_exog ~= true) then
+				onehot_sample:fill(0)
+			end
+			onehot_sample = augment_time(onehot_sample, self.bg_spacing)
+
 			local onehot_input = self:format(onehot_sample)
 			local input_table = {
 									{scalar_input:double(), onehot_input:double()}, 
 									{scalar_sample:clone():ne(0):double(), torch.Tensor({onehot_sample:clone():ne(0):sum()})}
 								}
-			
+
 			locscnt = (onehot_sample:sum() > 0) and locscnt + 1 or locscnt
 			local output = self:forward(input_table)
 			target = torch.Tensor({target})
 			local mseloss = self.criterion:forward(output, target)
-			self:updateTrainStats(mseloss * std)
+			self:updateTrainStats(math.sqrt(mseloss) * std)
 			self:zeroGradParameters()
 			local gradient = self.criterion:backward(output, target)
 			gradient = self:clipGradTensor(gradient, self.maxgrad)
@@ -408,18 +347,68 @@ function ScalarOneHot:train( data_scalar, data_onehot, n, epoch_size )
 	print("epoch " .. n .. " got " .. self.total_mse / self.counter .. " MSE on " .. self.counter .." training samples and " .. locscnt)
 end
 
+function ScalarOneHot:valid( data_scalar, data_onehot )
+	
+	-- method used for validation
+
+	lbatch_size = epoch_size or 1
+	collectgarbage()
+	self.total_mse = 0
+	self.counter = 0
+	local obs = self.see_future and 1 or 2
+	local locscnt = 0
+	local nonzeros = data_scalar:nonzero()
+
+	nonzeros = nonzeros[nonzeros:gt(2 * self.range * 20)]
+
+	for idx=1, nonzeros:size(1) do
+		local i = nonzeros[idx] - (self.range * 20)
+
+		local scalar_sample, onehot_sample, target = self:prepare_input( data_scalar, data_onehot , i)
+
+		if target ~= 0 and scalar_sample:ne(0):sum() > self.min_obs then
+			local scalar_input, mean, std = self:normalize(scalar_sample)
+			target = (target - mean) / std
+
+			if(self.include_exog ~= true) then
+				onehot_sample:fill(0)
+			end
+
+
+
+			local onehot_input = self:format(onehot_sample)
+			local input_table = {
+									{scalar_input:double(), onehot_input:double()}, 
+									{scalar_sample:clone():ne(0):double(), torch.Tensor({onehot_sample:clone():ne(0):sum()})}
+								}
+			locscnt = (onehot_sample:sum() > 0) and locscnt + 1 or locscnt
+			local output = self:forward(input_table)
+			target = torch.Tensor({target})
+			local mseloss = self.criterion:forward(output, target)
+			self:updateTrainStats(math.sqrt(mseloss) * std)
+		end
+	end
+	print("got -|" .. self.total_mse / self.counter .. "|- MSE on -|" .. self.counter .."|- validation samples")
+	--print(self:statsToString())
+	return self.total_mse / self.counter
+end
+
+
 function test()
-	local net = nn.ScalarOneHot(1,80)
+	
+	local net = nn.ScalarOneHot(1,58)
+	print("horizon: " .. (net.prediction_horizon_bg + 1) * 5 .. " minutes")
+	if net.include_exog then print("with exog") else print("without exog") end
 	print(net)
 
 	local data = loadjson_asarray( arg[1] )
 	print(data:size())
 	local td, vv, vd = tts(data) 
 	
-	td = td:cat(vv, 1):cat(vd, 1)
-
 	print("training_data size " .. td:size(1))
-	print("validation_data size " ..  vd:size(1))
+	print("validation_data size " ..  vv:size(1))
+
+	td = td:cat(vv,1)
 
 	training_data_onehot = td[{{},td:size(2)}]
 	valid_data_onehot = vd[{{},vd:size(2)}]
@@ -428,8 +417,9 @@ function test()
 	valid_data_scalar_bgs = vd[{{},2}]
 
 	local num_acts = 6
-	for i=1,100 do
+	for i=1,1000 do
 		net:train(training_data_scalar_bgs, training_data_onehot, i)
+		net:valid(valid_data_scalar_bgs, valid_data_onehot)
 		--net:updateVisuals(valid_data_scalar_bgs, valid_data_onehot)
 
 	--	local loss = net:valid(valid_data_scalar_bgs, valid_data_onehot)
