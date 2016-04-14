@@ -139,6 +139,7 @@ function KernelNet:format( sample )
 	-- self.lookback x 120
 	-- self.lookback x 6
 	--
+	print(sample)
 	local act_hist = build_hist(sample[{{},3}], self.act_count)
 	local loc_hist = build_hist(sample[{{},2}], self.cluster_count)
 

@@ -35,7 +35,7 @@ function build_tables(bgs, acts, locs)
 	
 	for i,t in pairs(locs) do 
 		--local o = json.decode(t)
-		loc_tensor[i] = {t["unix_date"], t["latitude"], t["longitude"]}
+		loc_tensor[i] = {t["unix_date"], t["latitude"], t["longitude"], t["speed"] + 1}
 	end
 
 	for i,t in pairs(bgs) do 
@@ -149,8 +149,8 @@ local output = torch.Tensor(times:size(1), dim2)
 
 output[{{},1}] = times
 output[{{},2}] = blood_glucose
-output[{{},{3,4}}] = locations
-output[{{},5}] = activities
+output[{{},{3,5}}] = locations
+output[{{},6}] = activities
 return output 
 
 

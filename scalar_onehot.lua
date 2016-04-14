@@ -42,14 +42,15 @@ function ScalarOneHot:__init(scalar_count, onehot_count, weights)
 	self.target_types = 6
 	self.scalar_count = scalar_count or 1
 	self.range = range or (42)  -- 3.5 hrs
-	self.min_obs = (210 / 15) - 1
+	self.min_obs = 6
 	self.maxgrad = 1
 	self.bg_spacing = 20
-	self.learning_rate = 1
+	self.learning_rate = 2
 	self.learning_rate_decay = 0.001
 	self.see_future = false
-	self.include_exog = true
+	self.include_exog = false
 	self:zeroStats()
+	self.denom = false
 	self.prediction_horizon_bg = 5 -- # of bg measurements to mask; 5 = 30 mins, 11 = 1 hr 
 	self.prediction_horizon_onehot = self.prediction_horizon_bg * self.bg_spacing
 	self.averaging_pd = 11
@@ -75,27 +76,31 @@ function ScalarOneHot:__init(scalar_count, onehot_count, weights)
 	self.top_scalar = nn.Linear(self.scalar_count * (2 * self.range), 1)
 	self.top_scalar.weight:fill(1)
 
+	self.bottom_scalar = self.top_scalar:clone('weight','bias')
+	self.bottom_scalar:share(self.top_scalar,'weight', 'bias')
+
 	self.top_onehot = nn.SparseLinear(self.onehot_count * (2 * self.bg_spacing * self.range + 2), 1)
+	self.top_onehot.weight:fill(0.001)
 	self.numer_table:add(self.top_scalar)
-	self.numer_table:add(self.top_onehot)
+	self.numer_table:add(self.bottom_scalar)
+
 	self.numerator:add(self.numer_table)
-	self.numerator:add(nn.CAddTable())
+	self.numerator:add(CDivTable_robust())
 	self.container:add(self.numerator)
 
 	self.denominator = nn.Sequential()
-	self.denom_table = nn.ParallelTable()
-	self.bottom_scalar = self.top_scalar:clone('weight','bias')
-	self.bottom_scalar:share(self.top_scalar,'weight', 'bias')
-	self.denom_table:add(self.bottom_scalar)
-
-	self.denom_table:add(nn.Identity())
-	self.denominator:add(self.denom_table)
-	self.denominator:add(nn.CAddTable())
+	--self.denom_table = nn.ParallelTable()
+	
+	--self.denom_table:add(self.top_onehot)
+	--self.denom_table:add(nn.Identity())
+	self.denominator:add(self.top_onehot)
+	--self.denominator:add(CDivTable_robust())
 	self.container:add(self.denominator)
 
 	self:add(self.container)
-	self:add(CDivTable_robust())
+	self:add(nn.CAddTable())
 end
+
 
 function ScalarOneHot:format(sample)
 	--
@@ -157,7 +162,8 @@ function ScalarOneHot:batchFormat( data )
 	return out
 end
 
-function ScalarOneHot:updateVisuals(  )
+function ScalarOneHot:updateVisuals( slices_of_interest  )
+
 	-- body
 	gnuplot.figure(1)
 	local top = self.top_scalar.weight[{1,{}}]:view(2*self.range):squeeze()
@@ -173,10 +179,19 @@ function ScalarOneHot:updateVisuals(  )
 	--gnuplot.plot({'thai', sparse_data[{{},43}], '-'}) --, {'15',sparse_data[{{},15}], '-'})
 	--gnuplot.plot( {'1',sparse_data[{{},1}], '-'}, {'12',sparse_data[{{},12}], '-'}, {'10', sparse_data[{{},10}], '-'}, {'44',sparse_data[{{},44}], '-'} )
 	--
-	gnuplot.raw('set multiplot layout 2,1')
+
+	local slices = 0
+   if slices_of_interest then
+      slices = table.getn(slices_of_interest)
+   end
+   gnuplot.raw('set multiplot layout ' .. 2 + slices ..  ',1')
 	gnuplot.plot({'avg loc importance', avgs2, '-'}) --, {'15',sparse_data[{{},15}], '-'})
 	gnuplot.plot({'bg_weights', top, '-'}) --, {'15',sparse_data[{{},15}], '-'})
-
+   if slices > 0 then
+      for i,j in pairs(slices_of_interest) do
+         gnuplot.plot({'individual cluster importance', sparse_data[{{},j}], '-'})
+      end
+   end
 	--draw_onehot(data[{{2500, 12000}}], self)
 	--draw_onehot_nll(data[{{2500, 12000}}], self)
 	gnuplot.raw('unset multiplot')
@@ -294,9 +309,21 @@ function ScalarOneHot:prepare_input( data_scalar, data_onehot, i )
 	return scalar_sample, onehot_sample, target
 end
 
+function ScalarOneHot:getClusterWeights( n )
+	local ws = self.top_onehot.weight:squeeze()
+	local sparse_data = ws:view(2*self.range * self.bg_spacing + 2, self.onehot_count)
+	return sparse_data[{{}, n}]
+end
+
+function ScalarOneHot:setClusterWeights( n , scalar_val )
+	self.top_onehot.weight:view(2*self.range * self.bg_spacing + 2, self.onehot_count)[{{}, n}]:fill(scalar_val)
+end
+
 function ScalarOneHot:train( data_scalar, data_onehot, n, epoch_size )
 
 	-- performs one epoch of training 
+	
+	-- we set params that will never be touched to zero (as opposed to rondom) to improve generalization
 
 	batch_size = epoch_size or 1
 	collectgarbage()
@@ -305,7 +332,10 @@ function ScalarOneHot:train( data_scalar, data_onehot, n, epoch_size )
 	local obs = self.see_future and 1 or 2
 	local locscnt = 0
 	local nonzeros = data_scalar:nonzero()
-
+	local obs_counts = {}
+	for i=1,self.onehot_count do
+		obs_counts[i] = 0
+	end
 	nonzeros = nonzeros[nonzeros:gt(2 * self.range * 20)]
 
 	local shuffle_idxs = torch.randperm(nonzeros:size(1))
@@ -322,20 +352,31 @@ function ScalarOneHot:train( data_scalar, data_onehot, n, epoch_size )
 			if(self.include_exog ~= true) then
 				onehot_sample:fill(0)
 			end
-			onehot_sample = augment_time(onehot_sample, self.bg_spacing)
+			for ig=1, self.onehot_count do
+				obs_counts[ig] = obs_counts[ig] + onehot_sample:eq(ig):sum() 
+			end
 
+
+			onehot_sample = augment_time(onehot_sample, self.bg_spacing)
+		
 			local onehot_input = self:format(onehot_sample)
+
+			local onehot_denom = torch.Tensor({1})
+			if onehot_sample:clone():ne(0):sum() > 0 and self.denom == true then 
+				onehot_denom = torch.Tensor({onehot_sample:clone():ne(0):sum()})
+			end
+
 			local input_table = {
-									{scalar_input:double(), onehot_input:double()}, 
-									{scalar_sample:clone():ne(0):double(), torch.Tensor({onehot_sample:clone():ne(0):sum()})}
+									{scalar_input:double(), scalar_sample:clone():ne(0):double()}, 
+									onehot_input:double()
 								}
 
-			locscnt = (onehot_sample:sum() > 0) and locscnt + 1 or locscnt
 			local output = self:forward(input_table)
 			target = torch.Tensor({target})
 			local mseloss = self.criterion:forward(output, target)
 			self:updateTrainStats(math.sqrt(mseloss) * std)
 			self:zeroGradParameters()
+
 			local gradient = self.criterion:backward(output, target)
 			gradient = self:clipGradTensor(gradient, self.maxgrad)
 			self:backward(input_table, gradient)
@@ -343,7 +384,12 @@ function ScalarOneHot:train( data_scalar, data_onehot, n, epoch_size )
 			self:updateParameters(current_learning_rate)
 		end
 	end
-	self:updateVisuals()
+	for k,v in pairs(obs_counts) do
+		if v == 0 then
+			self:setClusterWeights(k, 0)
+		end
+	end
+	--self:updateVisuals()
 	print("epoch " .. n .. " got " .. self.total_mse / self.counter .. " MSE on " .. self.counter .." training samples and " .. locscnt)
 end
 
@@ -375,13 +421,18 @@ function ScalarOneHot:valid( data_scalar, data_onehot )
 			end
 
 
+			local onehot_denom = torch.Tensor({1})
+			if onehot_sample:clone():ne(0):sum() > 0 and self.denom == true then 
+				onehot_denom = torch.Tensor({onehot_sample:clone():ne(0):sum()})
+			end
+
 
 			local onehot_input = self:format(onehot_sample)
 			local input_table = {
-									{scalar_input:double(), onehot_input:double()}, 
-									{scalar_sample:clone():ne(0):double(), torch.Tensor({onehot_sample:clone():ne(0):sum()})}
+									{scalar_input:double(), scalar_sample:clone():ne(0):double()  },
+									onehot_input:double()
 								}
-			locscnt = (onehot_sample:sum() > 0) and locscnt + 1 or locscnt
+			locscnt = (onehot_sample:eq(-1):sum() > 0) and locscnt + 1 or locscnt
 			local output = self:forward(input_table)
 			target = torch.Tensor({target})
 			local mseloss = self.criterion:forward(output, target)
@@ -408,18 +459,17 @@ function test()
 	print("training_data size " .. td:size(1))
 	print("validation_data size " ..  vv:size(1))
 
-	td = td:cat(vv,1)
-
 	training_data_onehot = td[{{},td:size(2)}]
-	valid_data_onehot = vd[{{},vd:size(2)}]
+	valid_data_onehot = vv[{{},vv:size(2)}]
 
 	training_data_scalar_bgs = td[{{},2}]
-	valid_data_scalar_bgs = vd[{{},2}]
+	valid_data_scalar_bgs = vv[{{},2}]
 
 	local num_acts = 6
 	for i=1,1000 do
 		net:train(training_data_scalar_bgs, training_data_onehot, i)
 		net:valid(valid_data_scalar_bgs, valid_data_onehot)
+		torch.save('latest_const.t7', net)
 		--net:updateVisuals(valid_data_scalar_bgs, valid_data_onehot)
 
 	--	local loss = net:valid(valid_data_scalar_bgs, valid_data_onehot)
@@ -452,7 +502,7 @@ if arg[1] == 'apply' then
 	local new_data = apply_model(arg[2] or 'data/activity_kernel_aug_49_15sec.t7', '')
 	local data_table = new_data:totable()
 	savejsonfile(data_table, 'data/fulldata_w_likelyhoods.json')
-else
+elseif arg[2] == 'train' then 
 	test()
 end
 

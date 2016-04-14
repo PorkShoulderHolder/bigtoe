@@ -41,14 +41,14 @@ end
 function train_test_split(identifier)
 	-- body
 	local x,y,z = assert(loadfile('readjson.lua'))(identifier) -- include cluster partition identifier to specify which
-	local training_data, validation_data = tts(x, 5.0/6.0, 9.0/10.0)
+	local training_data, validation_data = tts(x, 23.0/24.0, 24.0/25.0)
 	return training_data, validation_data
 end
 
 function tts(data, t_split, tv_split)
-	tv_split = tv_split or 0.85
-	t_split = t_split or 0.85
-	local fair_game = data[{{1, data:size(1) * t_split}}]:clone()
+	tv_split = 0.95
+	t_split = 0.95
+	local fair_game = data[{{1000000, data:size(1) * t_split}}]:clone()
 	local training_data = fair_game[{{1,fair_game:size(1) * tv_split}}]:clone()
 	local validation_data = fair_game[{{fair_game:size(1) * tv_split, fair_game:size(1)}}]:clone() 
 	local testing_data = data[{{data:size(1) * t_split, data:size(1)}}]
